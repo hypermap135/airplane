@@ -1,31 +1,82 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import ProductCard from "./ProductCard";
 import SectionHeading from "./SectionHeading";
 import { PRODUCTS } from "@/lib/products";
+
+const containerVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+};
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 24, filter: "blur(4px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
 export default function BestSellers() {
   const bestsellers = PRODUCTS.filter((p) => p.bestseller && p.inStock).slice(0, 4);
 
   return (
-    <section className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
+    <section className="relative py-24 md:py-36 overflow-hidden">
+      {/* Subtle glow */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(700px 500px at 15% 60%, rgba(58,142,255,0.06), transparent 60%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <SectionHeading
           eyebrow="Bestsellers"
           title="Les modèles préférés des passionnés"
-          subtitle="Quatre pièces iconiques qui partent le plus souvent — toutes en stock."
+          subtitle="Quatre pièces iconiques, toutes en stock — prêtes à livrer."
         />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {bestsellers.map((p) => (
-            <ProductCard key={p.id} product={p} />
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-60px" }}
+          className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {bestsellers.map((p, i) => (
+            <motion.div key={p.id} variants={cardVariant} className="relative">
+              {/* Featured badge on first card */}
+              {i === 0 && (
+                <div className="absolute -top-3 left-4 z-10 px-3 py-1 rounded-full bg-led/10 border border-led/30 backdrop-blur-sm">
+                  <span className="hud text-led text-[0.65rem]">★ MEILLEURE VENTE</span>
+                </div>
+              )}
+              <ProductCard product={p} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mt-12 flex justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-4"
+        >
           <Link href="/collections/all" className="btn-chrome">
             Voir toute la collection →
           </Link>
-        </div>
+          <Link href="/collections/packs" className="btn-ghost">
+            Packs et offres
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
