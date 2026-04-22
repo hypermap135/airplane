@@ -1,114 +1,128 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-interface StatDef {
-  value: number;
-  suffix: string;
-  label: string;
-  hud: string;
-  decimals?: number;
-}
+gsap.registerPlugin(ScrollTrigger);
 
-const STATS: StatDef[] = [
-  { value: 2000, suffix: "+", label: "Passionnés nous font confiance", hud: "CLI" },
-  { value: 4.9, suffix: "/5", label: "Note moyenne clients vérifiés", hud: "RTG", decimals: 1 },
-  { value: 47, suffix: " cm", label: "Longueur de chaque maquette", hud: "DIM" },
-  { value: 30, suffix: "j", label: "Retour garanti satisfait ou remboursé", hud: "SVC" },
+const STATS = [
+  { value: 2000, suffix: "+",   label: "Clients",    hud: "CLI" },
+  { value: 4.9,  suffix: "/5",  label: "Satisfaction",hud: "RTG", decimals: 1 },
+  { value: 47,   suffix: " cm", label: "Longueur",   hud: "DIM" },
+  { value: 30,   suffix: "j",   label: "Retour garanti", hud: "SVC" },
 ];
 
-function CountUp({ target, suffix, decimals = 0, duration = 2 }: {
-  target: number;
-  suffix: string;
-  decimals?: number;
-  duration?: number;
-}) {
-  const [displayed, setDisplayed] = useState(0);
-  const hasRun = useRef(false);
-  const elRef = useRef<HTMLSpanElement>(null);
+export default function StatsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const lineRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = elRef.current;
-    if (!el) return;
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        /* Line sweeps in */
+        gsap.fromTo(lineRef.current,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 1.4, ease: "expo.inOut",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 85%" } }
+        );
 
-    if (prefersReduced) {
-      setDisplayed(target);
-      return;
-    }
+        /* Stats pop up */
+        gsap.fromTo(".stat-item",
+          { opacity: 0, y: 60, filter: "blur(10px)" },
+          {
+            opacity: 1, y: 0, filter: "blur(0px)",
+            stagger: 0.1, duration: 1, ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
+          }
+        );
 
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasRun.current) {
-          hasRun.current = true;
-          const startTime = performance.now();
-          const tick = (now: number) => {
-            const progress = Math.min((now - startTime) / (duration * 1000), 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setDisplayed(parseFloat((eased * target).toFixed(decimals)));
-            if (progress < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        }
-      },
-      { threshold: 0.6 }
-    );
+        /* Counters */
+        STATS.forEach((stat, i) => {
+          const el = document.querySelector<HTMLElement>(`.stat-val-${i}`);
+          if (!el) return;
+          const obj = { val: 0 };
+          gsap.to(obj, {
+            val: stat.value,
+            duration: 2.4,
+            ease: "power2.out",
+            delay: i * 0.1,
+            scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" },
+            onUpdate: () => {
+              const d = stat.decimals ?? 0;
+              const v = d > 0
+                ? obj.val.toFixed(d).replace(".", ",")
+                : Math.round(obj.val).toLocaleString("fr-FR");
+              el.textContent = v + stat.suffix;
+            },
+          });
+        });
+      });
 
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [target, duration, decimals]);
-
-  const formatted =
-    decimals > 0
-      ? displayed.toFixed(decimals).replace(".", ",")
-      : Math.round(displayed).toLocaleString("fr-FR");
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(".stat-item", { opacity: 1, y: 0, filter: "none" });
+        gsap.set(lineRef.current, { scaleX: 1 });
+        STATS.forEach((stat, i) => {
+          const el = document.querySelector<HTMLElement>(`.stat-val-${i}`);
+          if (!el) return;
+          const d = stat.decimals ?? 0;
+          const v = d > 0
+            ? stat.value.toFixed(d).replace(".", ",")
+            : stat.value.toLocaleString("fr-FR");
+          el.textContent = v + stat.suffix;
+        });
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <span ref={elRef}>
-      {formatted}
-      {suffix}
-    </span>
-  );
-}
+    <section ref={sectionRef} className="relative py-20 md:py-28 overflow-hidden"
+      style={{ background: "#040410", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(18,50,160,0.08) 0%, transparent 70%)",
+      }} />
 
-export default function StatsSection() {
-  return (
-    <section className="relative py-20 md:py-28 overflow-hidden border-y border-ink-border">
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(1000px 400px at 50% 50%, rgba(58,142,255,0.06), transparent 65%)",
-        }}
-      />
-      <div aria-hidden className="absolute inset-0 grid-hud opacity-35" />
+      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
+        {/* Top divider */}
+        <div ref={lineRef} className="mb-16 origin-left" style={{
+          height: 1,
+          background: "linear-gradient(to right, rgba(58,142,255,0.5) 0%, rgba(58,142,255,0.1) 60%, transparent 100%)",
+          transform: "scaleX(0)",
+        }} />
 
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8">
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.hud}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
-              className="card-bento px-5 py-6 md:px-7 md:py-8 text-center"
-            >
-              <div className="hud text-led/60 text-[0.65rem] mb-3">{stat.hud}</div>
-              <div className="font-display font-black chrome-text text-[clamp(2.2rem,5vw,3.4rem)] leading-none tracking-tight">
-                <CountUp
-                  target={stat.value}
-                  suffix={stat.suffix}
-                  decimals={stat.decimals}
-                />
+            <div key={stat.hud} className="stat-item relative" style={{ opacity: 0 }}>
+              {/* Divider between items (desktop) */}
+              {i > 0 && (
+                <div className="hidden md:block absolute -left-2 top-4 bottom-4 w-px"
+                  style={{ background: "rgba(255,255,255,0.07)" }} />
+              )}
+              <div className="font-mono text-[0.6rem] tracking-[0.24em] uppercase mb-3"
+                style={{ color: "rgba(58,142,255,0.5)" }}>
+                {stat.hud}
               </div>
-              <p className="mt-3 text-[0.77rem] text-mute leading-snug">{stat.label}</p>
-            </motion.div>
+              <div
+                className={`stat-val-${i} font-black leading-none tracking-tight`}
+                style={{
+                  fontSize: "clamp(2.8rem,6vw,5.2rem)",
+                  letterSpacing: "-0.03em",
+                  background: "linear-gradient(135deg, #ffffff 0%, #c0c8d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}>
+                0{stat.suffix}
+              </div>
+              <p className="mt-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase"
+                style={{ color: "#444858" }}>
+                {stat.label}
+              </p>
+            </div>
           ))}
         </div>
       </div>

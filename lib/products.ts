@@ -2,7 +2,6 @@ export type Collection =
   | "airbus"
   | "boeing"
   | "concorde"
-  | "chasse"
   | "jet"
   | "packs"
   | "accessoires";
@@ -27,7 +26,6 @@ export const COLLECTIONS: { slug: Collection; label: string }[] = [
   { slug: "airbus", label: "Airbus" },
   { slug: "boeing", label: "Boeing" },
   { slug: "concorde", label: "Concorde" },
-  { slug: "chasse", label: "Avions de chasse" },
   { slug: "jet", label: "Jet privé" },
   { slug: "packs", label: "Packs" },
   { slug: "accessoires", label: "Accessoires" },
@@ -36,7 +34,7 @@ export const COLLECTIONS: { slug: Collection; label: string }[] = [
 const CDN = "https://airplanestore.fr/cdn/shop/files";
 
 export const PRODUCTS: Product[] = [
-  // Airbus
+  // ── Airbus ────────────────────────────────────────────────────────────────
   {
     id: "a380-af",
     variantId: "50833322279252",
@@ -64,18 +62,6 @@ export const PRODUCTS: Product[] = [
     scale: "1/147",
   },
   {
-    id: "a320-neo",
-    variantId: "53357075595604",
-    handle: "a320-neo",
-    title: "Airbus A320 / A320neo",
-    subtitle: "Moyen-courrier de référence",
-    price: 89,
-    collection: "airbus",
-    inStock: true,
-    image: `${CDN}/a320-neo.jpg`,
-    scale: "1/147",
-  },
-  {
     id: "a321-af",
     variantId: "50902114730324",
     handle: "a-321",
@@ -88,23 +74,23 @@ export const PRODUCTS: Product[] = [
     scale: "1/147",
   },
   {
-    id: "beluga-xl",
-    variantId: "50905280610644",
-    handle: "airbus-beluga-xl",
-    title: "Airbus Béluga XL",
-    subtitle: "Cargo hors-gabarit — édition collector",
-    price: 119,
+    id: "a320-af",
+    variantId: "53357075595604",
+    handle: "a320-neo",
+    title: "Airbus A320 Air France",
+    subtitle: "Moyen-courrier de référence — livrée Air France",
+    price: 89,
     collection: "airbus",
-    inStock: false,
-    image: `${CDN}/beluga-xl.jpg`,
+    inStock: true,
+    image: `${CDN}/a320-neo.jpg`,
     scale: "1/147",
   },
   {
-    id: "a320-livree-af",
+    id: "a320-new-livery-af",
     variantId: "53492404945236",
     handle: "airbus-a320-echelle-1-85-finition-premium",
-    title: "A320 livrée spéciale Air France",
-    subtitle: "Édition limitée — finition premium",
+    title: "Airbus A320 New Livery Air France",
+    subtitle: "Nouvelle livrée — finition premium",
     price: 89,
     collection: "airbus",
     inStock: true,
@@ -115,7 +101,7 @@ export const PRODUCTS: Product[] = [
     id: "a320-qatar-psg",
     variantId: "53519416721748",
     handle: "copie-airbus-a320-echelle-1-85-finition-premium",
-    title: "A320 Qatar × PSG",
+    title: "Airbus A320 Qatar × PSG",
     subtitle: "Livrée sponsor — édition PSG",
     price: 89,
     collection: "airbus",
@@ -123,20 +109,8 @@ export const PRODUCTS: Product[] = [
     image: `${CDN}/a320-qatar-psg.jpg`,
     scale: "1/147",
   },
-  {
-    id: "a320neo-air-asia",
-    variantId: "53935540699476",
-    handle: "a320neo-air-asia",
-    title: "A320neo Air Asia",
-    subtitle: "Livrée rouge iconique",
-    price: 89,
-    collection: "airbus",
-    inStock: true,
-    image: `${CDN}/a320neo-airasia.jpg`,
-    scale: "1/147",
-  },
 
-  // Boeing
+  // ── Boeing ────────────────────────────────────────────────────────────────
   {
     id: "b737-ryanair",
     variantId: "50905345753428",
@@ -150,36 +124,24 @@ export const PRODUCTS: Product[] = [
     scale: "1/147",
   },
   {
-    id: "b747-lh",
-    variantId: "53357386531156",
-    handle: "maquette-avion-maquette-boeing-747",
-    title: "Boeing 747 Lufthansa",
-    subtitle: "Reine des cieux — livrée Lufthansa",
-    price: 89,
-    collection: "boeing",
-    inStock: true,
-    image: `${CDN}/b747-lufthansa.jpg`,
-    bestseller: true,
-    scale: "1/147",
-  },
-  {
     id: "b777-af",
     variantId: "50833361797460",
     handle: "boeing-777",
     title: "Boeing 777 Air France",
-    subtitle: "Long-courrier bi-réacteur",
+    subtitle: "Long-courrier bi-réacteur — livrée Air France",
     price: 89,
     collection: "boeing",
     inStock: true,
     image: `${CDN}/b777-airfrance.jpg`,
+    bestseller: true,
     scale: "1/147",
   },
   {
-    id: "b787-8",
+    id: "b787-af",
     variantId: "52227315794260",
     handle: "boeing-787",
-    title: "Boeing 787-8 Dreamliner",
-    subtitle: "Long-courrier composite nouvelle génération",
+    title: "Boeing 787 Air France",
+    subtitle: "Dreamliner nouvelle génération — livrée Air France",
     price: 89,
     collection: "boeing",
     inStock: true,
@@ -224,41 +186,6 @@ export const PRODUCTS: Product[] = [
     inStock: true,
     image: `${CDN}/concorde-british.jpg`,
     scale: "1/200",
-  },
-
-  // Chasse
-  {
-    id: "f16",
-    variantId: "50833491722580",
-    handle: "f-16-fighting-falcon",
-    title: "F-16 Fighting Falcon",
-    subtitle: "Chasseur multirôle",
-    price: 89,
-    collection: "chasse",
-    inStock: false,
-    image: `${CDN}/f16.jpg`,
-  },
-  {
-    id: "mirage-2000",
-    variantId: "50833498702164",
-    handle: "mirage-2000",
-    title: "Mirage 2000",
-    subtitle: "Chasseur Dassault",
-    price: 89,
-    collection: "chasse",
-    inStock: false,
-    image: `${CDN}/mirage-2000.jpg`,
-  },
-  {
-    id: "rafale",
-    variantId: "50833505026388",
-    handle: "rafale-dassault",
-    title: "Rafale Dassault",
-    subtitle: "Omnirôle de 4e génération",
-    price: 89,
-    collection: "chasse",
-    inStock: false,
-    image: `${CDN}/rafale.jpg`,
   },
 
   // Jet

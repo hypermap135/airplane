@@ -1,147 +1,155 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const EXAMPLES = [
-  { text: "Commandant Dupont", delay: 0 },
-  { text: "Vol AF001 — 15/06/2024", delay: 0.07 },
-  { text: "Joyeux anniversaire Papa", delay: 0.14 },
+  { text: "Commandant Dupont" },
+  { text: "Vol AF001 — 15/06/2024" },
+  { text: "Joyeux anniversaire Papa" },
 ];
 
 export default function PersonalizationSection() {
-  const ref = useRef<HTMLElement>(null);
-  const shouldReduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const textRef    = useRef<HTMLDivElement>(null);
+  const imageRef   = useRef<HTMLDivElement>(null);
+  const imgElemRef = useRef<HTMLImageElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-  const imageScale = useTransform(scrollYProgress, [0, 0.5], [1.08, 1]);
-  const imageY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(textRef.current,
+          { opacity: 0, x: -50, filter: "blur(10px)" },
+          { opacity: 1, x: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
+        );
+        gsap.fromTo(imageRef.current,
+          { opacity: 0, x: 50, scale: 0.95, filter: "blur(10px)" },
+          { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
+        );
+        gsap.fromTo(".perso-example",
+          { opacity: 0, x: -24 },
+          { opacity: 1, x: 0, stagger: 0.1, duration: 0.7, ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 65%" } }
+        );
+        // Image parallax
+        gsap.to(imgElemRef.current, {
+          yPercent: -10,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.5,
+          },
+        });
+      });
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set([textRef.current, imageRef.current, ".perso-example"], { opacity: 1, x: 0, scale: 1, filter: "none" });
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-36 overflow-hidden">
-      {/* Background accent */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(700px 500px at 75% 50%, rgba(58,142,255,0.07), transparent 65%)",
-        }}
-      />
+    <section ref={sectionRef} className="relative py-24 md:py-36 overflow-hidden"
+      style={{ background: "#040410" }}>
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 70% 55% at 75% 50%, rgba(20,50,160,0.09) 0%, transparent 65%)",
+      }} />
 
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8 grid gap-14 lg:grid-cols-2 items-center">
-        {/* Text side */}
-        <motion.div
-          initial={{ opacity: 0, x: -24 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="hud text-led/80 mb-2">Gravure +15€</div>
+      <div className="relative mx-auto max-w-7xl px-6 md:px-12 grid gap-14 lg:grid-cols-2 items-center">
 
-          <div className="overflow-hidden">
-            <motion.h2
-              initial={{ y: "110%" }}
-              whileInView={{ y: "0%" }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
-              className="display text-[clamp(1.9rem,4.5vw,3rem)] leading-tight chrome-text"
-            >
-              Personnalisez votre maquette
-            </motion.h2>
+        {/* Text */}
+        <div ref={textRef} style={{ opacity: 0 }}>
+          <div className="flex items-center gap-3 mb-6">
+            <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
+            <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+              Gravure +15€
+            </span>
           </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.65, delay: 0.2 }}
-            className="mt-5 text-mute text-base md:text-lg max-w-xl leading-relaxed"
-          >
+          <h2 className="font-black uppercase leading-[0.9] tracking-tight mb-6"
+            style={{
+              fontSize: "clamp(2.5rem,6vw,5rem)",
+              letterSpacing: "-0.02em",
+              background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>
+            Votre nom<br />sur le socle.
+          </h2>
+
+          <p className="text-[1.02rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 420 }}>
             Faites graver un nom, une date ou une immatriculation sur le socle en bois.
             Une pièce vraiment unique, pensée pour durer.
-          </motion.p>
+          </p>
 
-          {/* Example tags — staggered */}
-          <div className="mt-8 space-y-3">
-            {EXAMPLES.map((e, i) => (
-              <motion.div
-                key={e.text}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.55, delay: 0.3 + e.delay, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-center gap-4 rounded-xl border border-ink-border bg-ink-600/60 px-5 py-3 group hover:border-led/30 transition-colors duration-300"
+          <div className="space-y-3 mb-10">
+            {EXAMPLES.map((e) => (
+              <div key={e.text}
+                className="perso-example flex items-center gap-4 px-5 py-3.5 transition-all duration-300 group cursor-default"
+                style={{
+                  borderRadius: "0.875rem",
+                  background: "#0c0c1a",
+                  border: "1px solid #1c1c2e",
+                  opacity: 0,
+                }}
+                onMouseEnter={e2 => { (e2.currentTarget as HTMLDivElement).style.border = "1px solid rgba(58,142,255,0.3)"; }}
+                onMouseLeave={e2 => { (e2.currentTarget as HTMLDivElement).style.border = "1px solid #1c1c2e"; }}
               >
-                <span className="hud text-white/40 shrink-0">EX.</span>
-                <span className="font-mono text-sm text-white/85 group-hover:text-white transition-colors">
+                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase shrink-0" style={{ color: "rgba(58,142,255,0.5)" }}>
+                  EX.
+                </span>
+                <span className="font-mono text-[0.85rem] text-white/80 group-hover:text-white transition-colors">
                   &quot;{e.text}&quot;
                 </span>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.55, delay: 0.55 }}
-            className="mt-8"
-          >
-            <Link href="/products/gravure-personnalisee" className="btn-chrome">
-              Ajouter une gravure →
-            </Link>
-          </motion.div>
-        </motion.div>
+          <Link href="/products/gravure-personnalisee" className="btn-chrome">
+            Ajouter une gravure →
+          </Link>
+        </div>
 
-        {/* Image side — scroll parallax scale */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="relative aspect-[4/5] hublot noise overflow-hidden"
-        >
-          <motion.div
-            className="absolute inset-0 bg-center bg-cover"
-            style={{
-              backgroundImage: "url(https://airplanestore.fr/cdn/shop/files/gravure.jpg)",
-              opacity: 0.75,
-              scale: shouldReduce ? 1 : imageScale,
-              y: shouldReduce ? 0 : imageY,
-            }}
+        {/* Image */}
+        <div ref={imageRef} className="relative overflow-hidden"
+          style={{ borderRadius: "1.5rem", aspectRatio: "4/5", opacity: 0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={imgElemRef}
+            src="https://airplanestore.fr/cdn/shop/files/gravure.jpg"
+            alt="Gravure personnalisée sur socle bois"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ top: "-12%", height: "124%" }}
+            referrerPolicy="no-referrer"
+            loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-transparent to-transparent" />
-
-          {/* HUD badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="absolute bottom-5 left-5 right-5"
-          >
-            <div className="hud text-white/60">SOCLE BOIS MASSIF · GRAVURE LASER</div>
-            <div className="mt-2 font-mono text-sm text-white/85 tracking-wide">
-              &gt; À partir de 15€
+          {/* Bottom overlay */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: "linear-gradient(to top, rgba(4,4,16,0.92) 0%, rgba(4,4,16,0.3) 40%, transparent 70%)",
+          }} />
+          {/* Caption */}
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="font-mono text-[0.62rem] tracking-[0.22em] uppercase mb-1.5" style={{ color: "rgba(58,142,255,0.6)" }}>
+              Socle bois massif · Gravure laser
             </div>
-          </motion.div>
-
-          {/* Pulsing corner accent */}
-          {!shouldReduce && (
-            <motion.div
-              animate={{ opacity: [0.3, 0.8, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-led"
-              aria-hidden
-            />
-          )}
-        </motion.div>
+            <div className="font-bold text-white text-sm">À partir de 15€</div>
+          </div>
+          {/* Active dot */}
+          <div aria-hidden className="absolute top-5 right-5 w-2 h-2 rounded-full"
+            style={{ background: "#3a8eff", boxShadow: "0 0 8px rgba(58,142,255,0.8)", animation: "blink 3s ease-in-out infinite" }} />
+        </div>
       </div>
     </section>
   );

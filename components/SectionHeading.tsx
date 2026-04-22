@@ -1,7 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
-
 export default function SectionHeading({
   eyebrow,
   title,
@@ -13,54 +9,41 @@ export default function SectionHeading({
   subtitle?: string;
   align?: "left" | "center";
 }) {
-  const alignment = align === "center" ? "text-center mx-auto" : "";
-
   return (
-    <div className={`max-w-3xl ${alignment} overflow-hidden`}>
+    <div className={`max-w-3xl ${align === "center" ? "text-center mx-auto" : ""}`}>
       {eyebrow && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5 }}
-          className="hud text-led/70"
-        >
-          {eyebrow}
-        </motion.div>
+        <div className="flex items-center gap-3 mb-5" style={align === "center" ? { justifyContent: "center" } : {}}>
+          <div style={{ width: 20, height: 1, background: "rgba(58,142,255,0.6)" }} />
+          <span className="font-mono text-[0.6rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+            {eyebrow}
+          </span>
+        </div>
       )}
 
-      {/* Clip-path reveal on title */}
-      <div className="overflow-hidden mt-2">
-        <motion.h2
-          initial={{ y: "110%", opacity: 0 }}
-          whileInView={{ y: "0%", opacity: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-          className="display text-[clamp(1.7rem,3.8vw,2.8rem)] leading-tight chrome-text"
-        >
-          {title}
-        </motion.h2>
-      </div>
+      <h2 className="font-black uppercase leading-[0.9] tracking-tight"
+        style={{
+          fontSize: "clamp(2rem,4.5vw,3.8rem)",
+          letterSpacing: "-0.02em",
+          background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}>
+        {title}
+      </h2>
 
       {subtitle && (
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: 0.18 }}
-          className="mt-4 text-mute text-base md:text-lg"
-        >
+        <p className="mt-4 text-[0.95rem] leading-relaxed" style={{ color: "#565870" }}>
           {subtitle}
-        </motion.p>
+        </p>
       )}
 
-      <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        whileInView={{ scaleX: 1, opacity: 1 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-        className={`divider-glow mt-6 ${align === "center" ? "origin-center" : "origin-left"}`}
-      />
+      <div className="mt-6" style={{
+        height: 1,
+        background: align === "center"
+          ? "linear-gradient(to right, transparent, rgba(58,142,255,0.5) 50%, transparent)"
+          : "linear-gradient(to right, rgba(58,142,255,0.5), rgba(58,142,255,0.12) 60%, transparent)",
+      }} />
     </div>
   );
 }

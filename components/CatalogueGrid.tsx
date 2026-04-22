@@ -36,7 +36,10 @@ export default function CatalogueGrid({
   return (
     <div>
       {showFilters && (
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink-border pb-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-8 mb-2"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+
+          {/* Collection filters */}
           <div className="flex flex-wrap gap-2">
             <FilterChip href="/collections/all" active={!activeCollection}>
               Tout
@@ -52,12 +55,22 @@ export default function CatalogueGrid({
             ))}
           </div>
 
-          <label className="flex items-center gap-3 text-sm text-mute">
-            <span className="hud text-white/50">Trier</span>
+          {/* Sort */}
+          <label className="flex items-center gap-3">
+            <span className="font-mono text-[0.58rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
+              Trier
+            </span>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
-              className="bg-ink-600 border border-ink-border rounded-full px-4 py-2 text-white/90 text-sm outline-none focus:border-white/40"
+              className="text-[0.78rem] outline-none cursor-pointer"
+              style={{
+                background: "rgba(12,12,26,0.9)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 999,
+                padding: "0.5rem 1rem",
+                color: "rgba(255,255,255,0.8)",
+              }}
             >
               <option value="default">Défaut</option>
               <option value="asc">Prix croissant</option>
@@ -67,14 +80,18 @@ export default function CatalogueGrid({
         </div>
       )}
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {sorted.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
 
       {sorted.length === 0 && (
-        <div className="mt-16 text-center text-mute">Aucun produit dans cette collection.</div>
+        <div className="mt-20 text-center">
+          <div className="font-mono text-[0.65rem] tracking-[0.25em] uppercase" style={{ color: "#3a4055" }}>
+            Aucun produit dans cette collection
+          </div>
+        </div>
       )}
     </div>
   );
@@ -92,11 +109,19 @@ function FilterChip({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium tracking-wide transition ${
-        active
-          ? "bg-chrome-grad text-ink-900 border border-transparent"
-          : "border border-ink-border text-white/75 hover:text-white hover:border-white/30"
-      }`}
+      className="inline-flex items-center font-mono text-[0.6rem] tracking-[0.16em] uppercase transition-all duration-200"
+      style={{
+        padding: "0.45rem 1rem",
+        borderRadius: 999,
+        border: active
+          ? "1px solid rgba(255,255,255,0.4)"
+          : "1px solid rgba(255,255,255,0.08)",
+        background: active
+          ? "linear-gradient(135deg, #d0d4da 0%, #f0f2f5 50%, #ffffff 100%)"
+          : "rgba(255,255,255,0.03)",
+        color: active ? "#010108" : "rgba(255,255,255,0.45)",
+        fontWeight: active ? 700 : 500,
+      }}
     >
       {children}
     </Link>

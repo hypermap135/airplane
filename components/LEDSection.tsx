@@ -1,6 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const SPECS = [
   { label: "Durée", value: "~20s" },
@@ -9,134 +13,157 @@ const SPECS = [
 ];
 
 export default function LEDSection() {
-  const shouldReduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const imgRef     = useRef<HTMLDivElement>(null);
+  const textRef    = useRef<HTMLDivElement>(null);
+  const glowRef    = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(imgRef.current,
+          { opacity: 0, x: -60, scale: 0.92, filter: "blur(12px)" },
+          { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
+        );
+        gsap.fromTo(textRef.current,
+          { opacity: 0, x: 60, filter: "blur(8px)" },
+          { opacity: 1, x: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
+        );
+        gsap.fromTo(".led-spec",
+          { opacity: 0, y: 20, scale: 0.9 },
+          { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.7, ease: "back.out(2)",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 65%" } }
+        );
+        // Pulse glow
+        gsap.to(glowRef.current, {
+          opacity: 0.9,
+          scale: 1.15,
+          duration: 2.4,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+        });
+      });
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set([imgRef.current, textRef.current, ".led-spec"], { opacity: 1, x: 0, scale: 1, filter: "none" });
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="relative py-24 md:py-36 overflow-hidden bg-ink-900">
-      {/* Background glow — more dramatic */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(700px 500px at 65% 50%, rgba(58,142,255,0.12), transparent 65%)",
-        }}
-      />
-      <div aria-hidden className="absolute inset-0 grid-hud opacity-30" />
+    <section ref={sectionRef} className="relative py-24 md:py-36 overflow-hidden"
+      style={{ background: "#060612" }}>
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 70% 55% at 65% 50%, rgba(30,70,200,0.11) 0%, transparent 65%)",
+      }} />
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: "linear-gradient(rgba(58,142,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(58,142,255,0.018) 1px, transparent 1px)",
+        backgroundSize: "80px 80px",
+      }} />
 
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8 grid gap-14 lg:grid-cols-2 items-center">
-        {/* Image with pulsing LED ring */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="relative order-2 lg:order-1"
-        >
-          {/* Outer glow ring — pulsing */}
-          {!shouldReduce && (
-            <div
-              aria-hidden
-              className="absolute inset-[-3px] rounded-[1.6rem] pointer-events-none animate-pulse-led"
+      <div className="relative mx-auto max-w-7xl px-6 md:px-12 grid gap-14 lg:grid-cols-2 items-center">
+
+        {/* Image */}
+        <div ref={imgRef} className="relative order-2 lg:order-1" style={{ opacity: 0 }}>
+          {/* Outer glow ring */}
+          <div ref={glowRef} aria-hidden className="absolute -inset-3 pointer-events-none"
+            style={{
+              borderRadius: "1.75rem",
+              background: "transparent",
+              boxShadow: "0 0 60px rgba(58,142,255,0.35), 0 0 120px rgba(58,142,255,0.15)",
+              opacity: 0.5,
+            }} />
+
+          {/* Frame */}
+          <div className="relative overflow-hidden" style={{ borderRadius: "1.5rem", aspectRatio: "1/1" }}>
+            {/* Airplane image — referrerPolicy bypasses CDN hotlink protection */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://airplanestore.fr/cdn/shop/files/a380-airfrance.jpg"
+              alt="Maquette A380 Air France éclairée"
+              className="absolute inset-0 w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+              loading="lazy"
             />
-          )}
 
-          {/* Image frame */}
-          <div className="relative aspect-square hublot overflow-hidden">
-            <div
-              className="absolute inset-0 bg-center bg-cover"
+            {/* Pulsing LED overlay */}
+            <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+              background: "radial-gradient(ellipse 70% 50% at 50% 60%, rgba(58,142,255,0.45) 0%, transparent 70%), linear-gradient(180deg, rgba(6,6,18,0.5) 0%, rgba(6,6,18,0.88) 100%)",
+              animation: "ledPulse 2.4s ease-in-out infinite",
+            }} />
+
+            {/* LED badge */}
+            <div className="absolute bottom-5 left-5 flex items-center gap-2.5 px-3.5 py-2"
               style={{
-                backgroundImage:
-                  "url(https://airplanestore.fr/cdn/shop/files/a380-airfrance.jpg)",
-              }}
-            />
-
-            {/* Blue LED overlay that pulses */}
-            {!shouldReduce ? (
-              <motion.div
-                aria-hidden
-                className="absolute inset-0"
-                animate={{
-                  opacity: [0.4, 0.9, 0.4],
-                  background: [
-                    "radial-gradient(350px 220px at 50% 60%, rgba(58,142,255,0.35), transparent 70%), linear-gradient(180deg, rgba(10,10,20,0.6) 0%, rgba(10,10,20,0.92) 100%)",
-                    "radial-gradient(450px 300px at 50% 55%, rgba(58,142,255,0.65), transparent 65%), linear-gradient(180deg, rgba(10,10,20,0.5) 0%, rgba(10,10,20,0.88) 100%)",
-                    "radial-gradient(350px 220px at 50% 60%, rgba(58,142,255,0.35), transparent 70%), linear-gradient(180deg, rgba(10,10,20,0.6) 0%, rgba(10,10,20,0.92) 100%)",
-                  ],
-                }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-              />
-            ) : (
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(350px 220px at 50% 60%, rgba(58,142,255,0.45), transparent 70%), linear-gradient(180deg, rgba(10,10,20,0.55) 0%, rgba(10,10,20,0.9) 100%)",
-                }}
-              />
-            )}
-
-            {/* LED indicator badge */}
-            <div className="absolute bottom-5 left-5 flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-ink-900/70 border border-led/30 backdrop-blur-sm">
-              {!shouldReduce ? (
-                <motion.span
-                  aria-hidden
-                  animate={{ opacity: [1, 0.1, 1] }}
-                  transition={{ duration: 1.2, repeat: Infinity }}
-                  className="inline-block w-2 h-2 rounded-full bg-led"
-                />
-              ) : (
-                <span aria-hidden className="inline-block w-2 h-2 rounded-full bg-led" />
-              )}
-              <span className="hud text-led text-[0.68rem]">LED ACTIVE</span>
+                borderRadius: 999,
+                background: "rgba(6,6,18,0.75)",
+                border: "1px solid rgba(58,142,255,0.35)",
+                backdropFilter: "blur(12px)",
+              }}>
+              <span aria-hidden className="w-2 h-2 rounded-full"
+                style={{ background: "#3a8eff", boxShadow: "0 0 8px rgba(58,142,255,0.9)", animation: "blink 1.4s ease-in-out infinite" }} />
+              <span className="font-mono text-[0.65rem] tracking-[0.2em] uppercase" style={{ color: "rgba(100,170,255,0.9)" }}>
+                LED ACTIVE
+              </span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Text side */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          className="order-1 lg:order-2"
-        >
-          <div className="hud text-led/80">FONCTIONNALITÉ EXCLUSIVE</div>
+        {/* Text */}
+        <div ref={textRef} className="order-1 lg:order-2" style={{ opacity: 0 }}>
+          <div className="flex items-center gap-3 mb-6">
+            <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
+            <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+              Fonctionnalité exclusive
+            </span>
+          </div>
 
-          <h2 className="display mt-4 text-[clamp(2.4rem,5.5vw,4rem)] leading-[0.95] chrome-text">
-            Elle s'illumine.
+          <h2 className="font-black uppercase leading-[0.9] tracking-tight mb-6"
+            style={{
+              fontSize: "clamp(2.8rem,6.5vw,5.5rem)",
+              letterSpacing: "-0.02em",
+              background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>
+            Elle<br />s'illumine.
           </h2>
 
-          <p className="mt-6 text-mute text-base md:text-[1.05rem] leading-relaxed max-w-lg">
-            LED intégré dans le fuselage et le cockpit. Environ 20 secondes d'illumination par
-            pression. Activation par interrupteur sous la maquette. Batterie lithium rechargeable
-            par USB — câble fourni.
+          <p className="text-[1.02rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 440 }}>
+            LED intégré dans le fuselage et le cockpit. Environ 20 secondes d'illumination
+            par pression. Activation par interrupteur sous la maquette. Batterie lithium
+            rechargeable par USB — câble fourni.
           </p>
 
-          {/* Spec cards */}
-          <div className="mt-10 grid grid-cols-3 gap-3 max-w-sm">
-            {SPECS.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 + i * 0.08 }}
-                className="card-bento px-4 py-4"
-              >
-                <div className="hud text-white/40 text-[0.65rem]">{s.label}</div>
-                <div className="mt-1.5 font-mono font-bold text-white text-sm">{s.value}</div>
-              </motion.div>
+          <div className="grid grid-cols-3 gap-3 max-w-xs mb-10">
+            {SPECS.map((s) => (
+              <div key={s.label} className="led-spec flex flex-col gap-1.5 px-4 py-4"
+                style={{
+                  borderRadius: "1rem",
+                  background: "#0c0c1a",
+                  border: "1px solid #1c1c2e",
+                  opacity: 0,
+                }}>
+                <div className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "#444858" }}>
+                  {s.label}
+                </div>
+                <div className="font-bold text-white text-[0.95rem]">{s.value}</div>
+              </div>
             ))}
           </div>
 
-          {/* Glow divider */}
-          <div className="mt-10 divider-led max-w-sm" />
-          <p className="mt-5 hud text-white/35">
+          <div style={{ height: 1, background: "linear-gradient(to right, rgba(58,142,255,0.4) 0%, transparent 70%)", marginBottom: "1.25rem" }} />
+          <p className="font-mono text-[0.63rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
             Câble de charge inclus · Interrupteur sous le socle
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

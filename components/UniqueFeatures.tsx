@@ -1,131 +1,181 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import SectionHeading from "./SectionHeading";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const FEATURES = [
   {
-    hud: "MAT-01",
-    icon: "◈",
+    hud: "MAT-01", icon: "◈",
     title: "Résine monobloc",
     body: "Coulée d'une seule pièce, peinte à la main. Longueur 47 cm, poids 1,3 kg. Socle bois massif inclus.",
-    stat: "47",
-    statUnit: "cm",
-    statLabel: "Longueur",
-    accent: "rgba(58,142,255,0.08)",
-    span: "col-span-1 md:col-span-1 lg:col-span-2",
-    large: true,
+    stat: "47", statUnit: "cm", statLabel: "Longueur",
+    accent: "rgba(58,142,255,0.07)",
+    span: "col-span-1 md:col-span-1 lg:col-span-2", large: true,
   },
   {
-    hud: "LED-20S",
-    icon: "◉",
+    hud: "LED-20S", icon: "◉",
     title: "Éclairage LED",
     body: "Fuselage et cockpit illuminés ~20 secondes. Batterie lithium rechargeable USB.",
-    stat: "20",
-    statUnit: "s",
-    statLabel: "Illumination",
-    accent: "rgba(58,142,255,0.12)",
-    span: "col-span-1",
-    large: false,
+    stat: "20", statUnit: "s", statLabel: "Illumination",
+    accent: "rgba(58,142,255,0.1)",
+    span: "col-span-1", large: false,
   },
   {
-    hud: "SCL-147",
-    icon: "◇",
+    hud: "SCL-147", icon: "◇",
     title: "Détails réalistes",
     body: "Train d'atterrissage amovible. Échelle 1/147. Livraison emballage premium.",
-    stat: "1/147",
-    statUnit: "",
-    statLabel: "Échelle",
-    accent: "rgba(80,130,255,0.07)",
-    span: "col-span-1",
-    large: false,
+    stat: "1/147", statUnit: "", statLabel: "Échelle",
+    accent: "rgba(40,100,220,0.07)",
+    span: "col-span-1", large: false,
   },
 ];
 
 export default function UniqueFeatures() {
-  const shouldReduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(headingRef.current,
+          { opacity: 0, y: 70, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
+            scrollTrigger: { trigger: headingRef.current, start: "top 88%" } }
+        );
+
+        gsap.utils.toArray<HTMLElement>(".feat-card").forEach((card, i) => {
+          gsap.fromTo(card,
+            { opacity: 0, y: 100, scale: 0.84, filter: "blur(14px)" },
+            {
+              opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+              duration: 1.1, ease: "expo.out",
+              delay: i * 0.14,
+              scrollTrigger: { trigger: card, start: "top 92%", toggleActions: "play none none none" },
+            }
+          );
+        });
+
+        gsap.utils.toArray<HTMLElement>(".feat-stat").forEach((stat) => {
+          gsap.fromTo(stat,
+            { opacity: 0, scale: 0.35, y: 24 },
+            {
+              opacity: 1, scale: 1, y: 0, duration: 1, ease: "back.out(2.8)",
+              scrollTrigger: { trigger: stat, start: "top 90%" },
+            }
+          );
+        });
+      });
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(".feat-card", { opacity: 1, y: 0, scale: 1, filter: "none" });
+        gsap.set(".feat-stat", { opacity: 1, scale: 1, y: 0 });
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="relative py-24 md:py-36 bg-ink-700/30 border-y border-ink-border overflow-hidden">
-      {/* Background glow */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(900px 600px at 80% 50%, rgba(58,142,255,0.06), transparent 65%)",
-        }}
-      />
-      <div aria-hidden className="absolute inset-0 grid-hud opacity-40" />
+    <section ref={sectionRef} className="relative py-24 md:py-36 overflow-hidden"
+      style={{ background: "#07071a", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 80% 55% at 85% 50%, rgba(18,50,160,0.08) 0%, transparent 65%)",
+      }} />
+      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: "linear-gradient(rgba(58,142,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(58,142,255,0.015) 1px, transparent 1px)",
+        backgroundSize: "80px 80px",
+      }} />
 
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <SectionHeading
-          eyebrow="Fabrication"
-          title="Ce qui rend nos maquettes uniques"
-          subtitle="Trois détails qui changent tout — de la matière à la mise en lumière."
-        />
+      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
+        <div ref={headingRef} className="mb-14 md:mb-20" style={{ opacity: 0 }}>
+          <div className="flex items-center gap-3 mb-5">
+            <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
+            <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+              Fabrication
+            </span>
+          </div>
+          <h2 className="font-black uppercase leading-[0.9] tracking-tight"
+            style={{
+              fontSize: "clamp(2.4rem,5.5vw,4.5rem)",
+              letterSpacing: "-0.02em",
+              background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>
+            Ce qui rend nos<br />maquettes uniques
+          </h2>
+        </div>
 
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr">
-          {FEATURES.map((f, i) => (
-            <motion.div
-              key={f.hud}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className={`card-bento p-7 flex flex-col ${f.span}`}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+          {FEATURES.map((f) => (
+            <div key={f.hud}
+              className={`feat-card relative flex flex-col overflow-hidden ${f.span}`}
+              style={{
+                opacity: 0,
+                borderRadius: "1.5rem",
+                background: "#0c0c1a",
+                border: "1px solid #1c1c2e",
+                padding: "1.75rem",
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLDivElement;
+                el.style.border = "1px solid rgba(58,142,255,0.22)";
+                el.style.boxShadow = "0 20px 60px -20px rgba(58,142,255,0.18)";
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLDivElement;
+                el.style.border = "1px solid #1c1c2e";
+                el.style.boxShadow = "none";
+              }}
             >
-              {/* Glow accent */}
-              <div
-                aria-hidden
-                className="absolute inset-0 rounded-[1.5rem] pointer-events-none"
-                style={{
-                  background: `radial-gradient(300px 200px at 20% 20%, ${f.accent}, transparent 70%)`,
-                }}
-              />
+              <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+                borderRadius: "inherit",
+                background: `radial-gradient(280px 200px at 20% 20%, ${f.accent}, transparent 70%)`,
+              }} />
 
-              {/* Top row */}
-              <div className="relative flex items-start justify-between">
-                <div className="hud text-led/70">{f.hud}</div>
-                <span className="text-led/50 text-lg leading-none" aria-hidden>
-                  {f.icon}
+              <div className="relative flex items-start justify-between mb-5">
+                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase" style={{ color: "rgba(58,142,255,0.55)" }}>
+                  {f.hud}
                 </span>
+                <span style={{ color: "rgba(58,142,255,0.4)", fontSize: "1.1rem" }} aria-hidden>{f.icon}</span>
               </div>
 
-              {/* Animated stat */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-                className={`relative mt-5 font-display font-black chrome-text leading-none ${
-                  f.large ? "text-[4.5rem] md:text-[5.5rem]" : "text-[3.5rem]"
-                }`}
-              >
+              <div className={`feat-stat relative font-black leading-none ${f.large ? "text-[4.5rem] md:text-[5.5rem]" : "text-[3.5rem]"}`}
+                style={{
+                  opacity: 0,
+                  letterSpacing: "-0.02em",
+                  background: "linear-gradient(135deg, #ffffff 0%, #c0c8d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}>
                 {f.stat}
-                <span className="text-[0.45em] text-mute align-top mt-2 ml-0.5 font-mono font-normal">
-                  {f.statUnit}
-                </span>
-              </motion.div>
-              <div className="relative hud text-white/35 mt-1">{f.statLabel}</div>
+                {f.statUnit && (
+                  <span style={{ fontSize: "0.42em", opacity: 0.55, fontWeight: 500, fontFamily: "monospace", verticalAlign: "top", marginTop: "0.5em", marginLeft: "0.2em" }}>
+                    {f.statUnit}
+                  </span>
+                )}
+              </div>
+              <div className="font-mono text-[0.58rem] tracking-[0.2em] uppercase mt-1 mb-5" style={{ color: "#3a4055" }}>
+                {f.statLabel}
+              </div>
 
-              {/* Separator */}
-              <div className="relative mt-5 mb-5 h-px bg-gradient-to-r from-led/20 via-led/10 to-transparent" />
+              <div style={{ height: 1, background: "linear-gradient(to right, rgba(58,142,255,0.2), rgba(58,142,255,0.05), transparent)", marginBottom: "1.25rem" }} />
 
-              {/* Content */}
-              <h3 className="relative display text-sm text-white">{f.title}</h3>
-              <p className="relative mt-3 text-[0.82rem] text-mute leading-relaxed flex-1">
-                {f.body}
-              </p>
+              <h3 className="font-bold text-white text-[0.88rem] uppercase tracking-wide mb-2">{f.title}</h3>
+              <p className="text-[0.8rem] leading-relaxed flex-1" style={{ color: "#565870" }}>{f.body}</p>
 
-              {/* Bottom indicator */}
-              {!shouldReduce && (
-                <div className="relative mt-6 flex items-center gap-2">
-                  <span className="animate-blink inline-block w-1.5 h-1.5 rounded-full bg-led/70" aria-hidden />
-                  <span className="hud text-white/25 text-[0.6rem]">ACTIF</span>
-                </div>
-              )}
-            </motion.div>
+              <div className="flex items-center gap-2 mt-5">
+                <span aria-hidden className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: "#3a8eff", boxShadow: "0 0 6px rgba(58,142,255,0.8)", animation: "blink 2s infinite" }} />
+                <span className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#2a3040" }}>ACTIF</span>
+              </div>
+            </div>
           ))}
         </div>
       </div>

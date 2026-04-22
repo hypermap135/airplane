@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useCart, useCartDrawer } from "@/lib/cart";
@@ -8,17 +7,18 @@ import { formatPrice, related, type Product } from "@/lib/products";
 import ProductCard from "./ProductCard";
 
 const SPECS: { label: string; value: string }[] = [
-  { label: "Matière", value: "Résine monobloc" },
-  { label: "Longueur", value: "~47 cm" },
-  { label: "Poids", value: "~1,3 kg" },
-  { label: "Socle", value: "Bois massif inclus" },
-  { label: "Train d'atterrissage", value: "Amovible (se met ou s'enlève)" },
-  { label: "Éclairage", value: "LED ~20 s · interrupteur sous la maquette" },
-  { label: "Batterie", value: "Lithium 75 mAh · charge USB ~1h" },
+  { label: "Matière",             value: "Résine monobloc" },
+  { label: "Longueur",            value: "~47 cm" },
+  { label: "Poids",               value: "~1,3 kg" },
+  { label: "Socle",               value: "Bois massif inclus" },
+  { label: "Train d'atterrissage",value: "Amovible" },
+  { label: "Éclairage",           value: "LED ~20 s · USB" },
+  { label: "Batterie",            value: "75 mAh · charge ~1h" },
 ];
 
 export default function ProductDetail({ product }: { product: Product }) {
   const [submitted, setSubmitted] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const { add } = useCart();
   const { setOpen } = useCartDrawer();
 
@@ -31,54 +31,128 @@ export default function ProductDetail({ product }: { product: Product }) {
   const relatedItems = related(product, 4);
 
   return (
-    <section className="pt-28 pb-24">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <nav className="text-xs text-mute mb-6">
-          <Link href="/" className="hover:text-white">Accueil</Link>
-          <span className="mx-2">/</span>
-          <Link href={`/collections/${product.collection}`} className="hover:text-white capitalize">
+    <div style={{ background: "#010108", minHeight: "100vh" }}>
+      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 pt-28 pb-24">
+
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 mb-10" style={{ opacity: 0.45 }}>
+          <Link href="/" className="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-white hover:opacity-100 transition-opacity">
+            Accueil
+          </Link>
+          <span className="font-mono text-[0.6rem]" style={{ color: "rgba(58,142,255,0.5)" }}>/</span>
+          <Link href={`/collections/${product.collection}`}
+            className="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-white hover:opacity-100 transition-opacity capitalize">
             {product.collection}
           </Link>
-          <span className="mx-2">/</span>
-          <span className="text-white/70">{product.title}</span>
+          <span className="font-mono text-[0.6rem]" style={{ color: "rgba(58,142,255,0.5)" }}>/</span>
+          <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.7)" }}>
+            {product.title}
+          </span>
         </nav>
 
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div className="hublot aspect-[4/5] relative">
-            <Image
-              src={product.image}
-              alt={product.title}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
-              priority
-            />
-            {!product.inStock && (
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-ink-900/80 border border-white/15 hud">
-                Épuisé
-              </div>
-            )}
+        {/* Main grid */}
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-start">
+
+          {/* ── Image ── */}
+          <div className="relative" style={{ borderRadius: "1.5rem", overflow: "hidden", background: "#0c0c1a" }}>
+            {/* Glow ring */}
+            <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
+              borderRadius: "inherit",
+              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 80px rgba(58,142,255,0.05)",
+            }} />
+
+            <div style={{ aspectRatio: "4/5", position: "relative" }}>
+              {!imgError ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgError(true)}
+                  style={{ display: "block" }}
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-4"
+                  style={{ background: "linear-gradient(145deg, #0d0d20 0%, #080816 100%)" }}>
+                  <svg width="80" height="40" viewBox="0 0 64 32" fill="none" opacity={0.15}>
+                    <path d="M2 20 L20 8 L44 6 L58 14 L44 14 L36 20 Z" fill="white"/>
+                    <path d="M20 14 L20 22 L16 24" stroke="white" strokeWidth="1.5"/>
+                  </svg>
+                  <span className="font-mono text-[0.6rem] tracking-[0.22em] uppercase" style={{ color: "rgba(58,142,255,0.4)" }}>
+                    {product.collection} · {product.scale ?? "maquette"}
+                  </span>
+                </div>
+              )}
+
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                background: "linear-gradient(to top, rgba(12,12,26,0.6) 0%, transparent 40%)",
+              }} />
+
+              {!product.inStock && (
+                <div className="absolute inset-0 flex items-center justify-center"
+                  style={{ background: "rgba(1,1,8,0.65)", backdropFilter: "blur(6px)" }}>
+                  <span className="font-mono text-[0.75rem] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    Épuisé
+                  </span>
+                </div>
+              )}
+
+              {/* Scale badge */}
+              {product.scale && (
+                <div className="absolute bottom-4 right-4">
+                  <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+                    {product.scale}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div>
-            <div className="hud text-white/60 capitalize">Collection · {product.collection}</div>
-            <h1 className="display mt-3 text-[clamp(1.8rem,4vw,3rem)] leading-tight chrome-text">
+          {/* ── Info ── */}
+          <div className="flex flex-col">
+            {/* Eyebrow */}
+            <div className="flex items-center gap-3 mb-6">
+              <div style={{ width: 20, height: 1, background: "rgba(58,142,255,0.6)" }} />
+              <span className="font-mono text-[0.6rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+                Collection {product.collection}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="font-black uppercase leading-[0.92] tracking-tight text-white mb-2"
+              style={{ fontSize: "clamp(2rem,4.5vw,3.5rem)", letterSpacing: "-0.02em" }}>
               {product.title}
             </h1>
             {product.subtitle && (
-              <p className="mt-3 text-mute text-base md:text-lg">{product.subtitle}</p>
+              <p className="text-[1rem] leading-relaxed mb-6" style={{ color: "#6a7080" }}>
+                {product.subtitle}
+              </p>
             )}
 
-            <div className="mt-6 flex items-end gap-4">
-              <div className="chrome-text display text-3xl">{formatPrice(product.price)}</div>
+            {/* Price */}
+            <div className="flex items-end gap-4 mb-8">
+              <div className="font-black text-white" style={{ fontSize: "clamp(1.8rem,3vw,2.4rem)" }}>
+                {formatPrice(product.price)}
+              </div>
               {product.compareAt && (
-                <div className="text-mute line-through pb-1">{formatPrice(product.compareAt)}</div>
+                <>
+                  <div className="text-[1rem] line-through mb-1" style={{ color: "#2a3040" }}>
+                    {formatPrice(product.compareAt)}
+                  </div>
+                  <div className="mb-1 px-2.5 py-0.5 rounded-full text-[0.72rem] font-bold"
+                    style={{ background: "linear-gradient(135deg, #d0d4da, #ffffff)", color: "#010108" }}>
+                    –{Math.round(100 - (product.price / product.compareAt) * 100)}%
+                  </div>
+                </>
               )}
             </div>
 
-            <div className="mt-8">
+            {/* CTA */}
+            <div className="mb-8">
               {product.inStock ? (
-                <button onClick={onAdd} className="btn-chrome w-full md:w-auto">
+                <button onClick={onAdd} className="btn-chrome">
                   Ajouter au panier →
                 </button>
               ) : (
@@ -90,37 +164,62 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
 
-            <div className="mt-10">
-              <div className="hud text-white/60 mb-3">Caractéristiques</div>
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 border-t border-ink-border pt-5">
-                {SPECS.map((s) => (
-                  <div key={s.label} className="flex justify-between gap-4 border-b border-ink-border/60 pb-3">
-                    <dt className="text-sm text-mute">{s.label}</dt>
-                    <dd className="text-sm text-white text-right">{s.value}</dd>
+            {/* Trust badges */}
+            <div className="grid grid-cols-3 gap-3 mb-10">
+              {[
+                { top: "Livraison", bot: "7–15 jours" },
+                { top: "Retour",    bot: "30 jours" },
+                { top: "Paiement", bot: "Sécurisé" },
+              ].map((item) => (
+                <div key={item.top} className="flex flex-col items-center justify-center gap-1 py-3"
+                  style={{
+                    borderRadius: "0.875rem",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    background: "rgba(12,12,26,0.6)",
+                  }}>
+                  <div className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#3a4055" }}>
+                    {item.top}
                   </div>
-                ))}
-                {product.scale && (
-                  <div className="flex justify-between gap-4 border-b border-ink-border/60 pb-3">
-                    <dt className="text-sm text-mute">Échelle</dt>
-                    <dd className="text-sm text-white text-right">{product.scale}</dd>
-                  </div>
-                )}
-              </dl>
+                  <div className="font-semibold text-white text-[0.82rem]">{item.bot}</div>
+                </div>
+              ))}
             </div>
 
-            <div className="mt-8 grid grid-cols-3 gap-3">
-              <Info icon="🚚" label="Livraison" value="7–15 j" />
-              <Info icon="↩" label="Retour" value="30 j" />
-              <Info icon="🔒" label="Paiement" value="Sécurisé" />
+            {/* Specs */}
+            <div>
+              <div className="font-mono text-[0.6rem] tracking-[0.28em] uppercase mb-4" style={{ color: "rgba(58,142,255,0.5)" }}>
+                Caractéristiques
+              </div>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                {[...SPECS, ...(product.scale ? [{ label: "Échelle", value: product.scale }] : [])].map((s, i) => (
+                  <div key={s.label} className="flex items-center justify-between py-3 gap-6"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <dt className="font-mono text-[0.65rem] tracking-[0.1em] uppercase" style={{ color: "#3a4055" }}>
+                      {s.label}
+                    </dt>
+                    <dd className="text-[0.82rem] text-white text-right">{s.value}</dd>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Related products */}
         {relatedItems.length > 0 && (
-          <div className="mt-24">
-            <div className="hud text-white/60">Dans la même collection</div>
-            <h2 className="display mt-2 text-2xl text-white">Vous aimerez aussi</h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-24 md:mt-32">
+            <div style={{ height: 1, background: "rgba(255,255,255,0.05)", marginBottom: "3rem" }} />
+            <div className="flex items-center gap-3 mb-4">
+              <div style={{ width: 20, height: 1, background: "rgba(58,142,255,0.6)" }} />
+              <span className="font-mono text-[0.6rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
+                Dans la même collection
+              </span>
+            </div>
+            <h2 className="font-black uppercase leading-[0.9] tracking-tight text-white mb-10"
+              style={{ fontSize: "clamp(1.6rem,3.5vw,2.6rem)", letterSpacing: "-0.02em" }}>
+              Vous aimerez aussi
+            </h2>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {relatedItems.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -128,16 +227,6 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         )}
       </div>
-    </section>
-  );
-}
-
-function Info({ icon, label, value }: { icon: string; label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-ink-border bg-ink-600/50 px-4 py-3">
-      <div className="text-xs">{icon}</div>
-      <div className="hud text-white/50 mt-1">{label}</div>
-      <div className="font-mono text-white text-sm mt-0.5">{value}</div>
     </div>
   );
 }
@@ -152,30 +241,38 @@ function NotifyForm({
   onSubmit: () => void;
 }) {
   const [email, setEmail] = useState("");
+
   return (
-    <div className="rounded-2xl border border-ink-border bg-ink-600/60 p-5">
-      <div className="hud text-led">● ACTUELLEMENT ÉPUISÉ</div>
-      <h3 className="display mt-2 text-white text-base">Prévenez-moi du retour en stock</h3>
+    <div className="p-5" style={{
+      borderRadius: "1.25rem",
+      border: "1px solid rgba(58,142,255,0.2)",
+      background: "rgba(12,12,26,0.8)",
+    }}>
+      <div className="font-mono text-[0.6rem] tracking-[0.2em] uppercase mb-3" style={{ color: "rgba(58,142,255,0.7)" }}>
+        ● Actuellement épuisé
+      </div>
+      <h3 className="font-bold text-white text-[0.9rem] mb-4">Prévenez-moi du retour en stock</h3>
       {submitted ? (
-        <p className="mt-4 text-sm text-white/85">
-          Merci, nous vous préviendrons dès que <span className="font-medium">{productTitle}</span>{" "}
-          sera de nouveau en stock.
+        <p className="text-[0.85rem]" style={{ color: "#6a7080" }}>
+          Merci ! Nous vous préviendrons dès que <span className="text-white font-medium">{productTitle}</span> sera de nouveau disponible.
         </p>
       ) : (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (email.trim().length > 3) onSubmit();
-          }}
-          className="mt-4 flex flex-col sm:flex-row gap-2"
-        >
+        <form onSubmit={(e) => { e.preventDefault(); if (email.trim().length > 3) onSubmit(); }}
+          className="flex flex-col sm:flex-row gap-2">
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="votre@email.fr"
-            className="flex-1 bg-ink-900 border border-ink-border rounded-full px-4 py-2.5 text-sm outline-none focus:border-white/40"
+            className="flex-1 text-[0.82rem] outline-none"
+            style={{
+              background: "rgba(1,1,8,0.8)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 999,
+              padding: "0.65rem 1.1rem",
+              color: "white",
+            }}
           />
           <button type="submit" className="btn-chrome">Prévenez-moi</button>
         </form>

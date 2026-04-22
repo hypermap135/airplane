@@ -5,9 +5,8 @@ import { COLLECTIONS, byCollection, type Collection } from "@/lib/products";
 
 const SUBTITLES: Record<Collection, string> = {
   airbus: "La gamme Airbus : A320, A321, A350, A380 et éditions spéciales.",
-  boeing: "Les Boeing iconiques : 737, 747, 777, 787 Dreamliner.",
+  boeing: "Les Boeing iconiques : 737, 777, 787 Dreamliner.",
   concorde: "Le supersonique, en livrées Air France et British Airways.",
-  chasse: "Rafale, F-16, Mirage 2000 — l'élite des chasseurs.",
   jet: "Jets privés d'affaires — longue distance, grande classe.",
   packs: "Regroupez plusieurs maquettes et économisez jusqu'à 17€.",
   accessoires: "Porte-clés, horloges, gravures — la touche finale.",
@@ -33,8 +32,8 @@ export default function CollectionPage({ params }: { params: { collection: strin
   const products = byCollection(match.slug);
 
   return (
-    <section className="pt-28 pb-24">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
+    <section className="pt-28 pb-24" style={{ background: "#010108", minHeight: "100vh" }}>
+      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20">
         <SectionHeading
           eyebrow={`Collection · ${match.label}`}
           title={match.label}
