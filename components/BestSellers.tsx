@@ -29,8 +29,8 @@ export default function BestSellers() {
       const getDistance = () => track.scrollWidth - section.clientWidth + 96;
 
       /* Heading */
-      gsap.fromTo(headingRef.current,
-        { opacity: 0, y: 60, filter: "blur(8px)" },
+      gsap.set(headingRef.current, { opacity: 0, y: 60, filter: "blur(8px)" });
+      gsap.to(headingRef.current,
         {
           opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
           scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none none" },
@@ -58,8 +58,8 @@ export default function BestSellers() {
 
       /* Cards stagger-in */
       gsap.utils.toArray<HTMLElement>(".bseller-card").forEach((card, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 50, scale: 0.92, filter: "blur(8px)" },
+        gsap.set(card, { opacity: 0, y: 50, scale: 0.92, filter: "blur(8px)" });
+        gsap.to(card,
           {
             opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
             duration: 0.8, ease: "expo.out",
@@ -75,8 +75,8 @@ export default function BestSellers() {
       });
 
       /* CTA */
-      gsap.fromTo(ctaRef.current,
-        { opacity: 0, y: 32 },
+      gsap.set(ctaRef.current, { opacity: 0, y: 32 });
+      gsap.to(ctaRef.current,
         {
           opacity: 1, y: 0, duration: 0.8,
           scrollTrigger: { trigger: ctaRef.current, start: "top 88%", toggleActions: "play none none none" },
@@ -86,14 +86,15 @@ export default function BestSellers() {
 
     /* Mobile — simple vertical stagger */
     mm.add("(max-width: 767px), (prefers-reduced-motion: reduce)", () => {
-      gsap.fromTo(headingRef.current,
-        { opacity: 0, y: 40 },
+      gsap.set(headingRef.current, { opacity: 0, y: 40 });
+      gsap.set(ctaRef.current, { opacity: 0, y: 32 });
+      gsap.to(headingRef.current,
         { opacity: 1, y: 0, duration: 0.9, ease: "expo.out",
           scrollTrigger: { trigger: headingRef.current, start: "top 85%" } }
       );
       gsap.utils.toArray<HTMLElement>(".bseller-card").forEach((card, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 50, scale: 0.95 },
+        gsap.set(card, { opacity: 0, y: 50, scale: 0.95 });
+        gsap.to(card,
           {
             opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "expo.out",
             delay: i * 0.08,
@@ -101,6 +102,10 @@ export default function BestSellers() {
           }
         );
       });
+      gsap.to(ctaRef.current,
+        { opacity: 1, y: 0, duration: 0.8,
+          scrollTrigger: { trigger: ctaRef.current, start: "top 88%", toggleActions: "play none none none" } }
+      );
     });
 
     return () => mm.revert();
@@ -120,7 +125,7 @@ export default function BestSellers() {
       <div className="relative px-6 md:px-12 pt-24 md:pt-32 pb-8">
 
         {/* Section heading */}
-        <div ref={headingRef} className="mb-14 md:mb-16" style={{ opacity: 0 }}>
+        <div ref={headingRef} className="mb-14 md:mb-16">
           <div className="flex items-center gap-3 mb-5">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
@@ -155,14 +160,14 @@ export default function BestSellers() {
           {products.map((p, i) => (
             <div key={p.id}
               className="bseller-card relative shrink-0"
-              style={{ width: "min(82vw, 360px)", opacity: 0 }}>
+              style={{ width: "min(82vw, 360px)" }}>
                   <ProductCard product={p} />
             </div>
           ))}
         </div>
 
         {/* CTAs */}
-        <div ref={ctaRef} className="mt-10 flex flex-wrap items-center justify-center gap-4 pb-12" style={{ opacity: 0 }}>
+        <div ref={ctaRef} className="mt-10 flex flex-wrap items-center justify-center gap-4 pb-12">
           <Link href="/collections/all" className="btn-chrome">
             Voir toute la collection →
           </Link>

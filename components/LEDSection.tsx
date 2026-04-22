@@ -23,18 +23,18 @@ export default function LEDSection() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(imgRef.current,
-          { opacity: 0, x: -60, scale: 0.92, filter: "blur(12px)" },
+        gsap.set(imgRef.current, { opacity: 0, x: -60, scale: 0.92, filter: "blur(12px)" });
+        gsap.to(imgRef.current,
           { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
             scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
         );
-        gsap.fromTo(textRef.current,
-          { opacity: 0, x: 60, filter: "blur(8px)" },
+        gsap.set(textRef.current, { opacity: 0, x: 60, filter: "blur(8px)" });
+        gsap.to(textRef.current,
           { opacity: 1, x: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
             scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
         );
-        gsap.fromTo(".led-spec",
-          { opacity: 0, y: 20, scale: 0.9 },
+        gsap.set(".led-spec", { opacity: 0, y: 20, scale: 0.9 });
+        gsap.to(".led-spec",
           { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.7, ease: "back.out(2)",
             scrollTrigger: { trigger: sectionRef.current, start: "top 65%" } }
         );
@@ -70,7 +70,7 @@ export default function LEDSection() {
       <div className="relative mx-auto max-w-7xl px-6 md:px-12 grid gap-14 lg:grid-cols-2 items-center">
 
         {/* Image */}
-        <div ref={imgRef} className="relative order-2 lg:order-1" style={{ opacity: 0 }}>
+        <div ref={imgRef} className="relative order-2 lg:order-1">
           {/* Outer glow ring */}
           <div ref={glowRef} aria-hidden className="absolute -inset-3 pointer-events-none"
             style={{
@@ -116,7 +116,7 @@ export default function LEDSection() {
         </div>
 
         {/* Text */}
-        <div ref={textRef} className="order-1 lg:order-2" style={{ opacity: 0 }}>
+        <div ref={textRef} className="order-1 lg:order-2">
           <div className="flex items-center gap-3 mb-6">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
@@ -149,7 +149,6 @@ export default function LEDSection() {
                   borderRadius: "1rem",
                   background: "#0c0c1a",
                   border: "1px solid #1c1c2e",
-                  opacity: 0,
                 }}>
                 <div className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "#444858" }}>
                   {s.label}

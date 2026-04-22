@@ -42,15 +42,15 @@ export default function UniqueFeatures() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(headingRef.current,
-          { opacity: 0, y: 70, filter: "blur(10px)" },
+        gsap.set(headingRef.current, { opacity: 0, y: 70, filter: "blur(10px)" });
+        gsap.to(headingRef.current,
           { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
             scrollTrigger: { trigger: headingRef.current, start: "top 88%" } }
         );
 
         gsap.utils.toArray<HTMLElement>(".feat-card").forEach((card, i) => {
-          gsap.fromTo(card,
-            { opacity: 0, y: 100, scale: 0.84, filter: "blur(14px)" },
+          gsap.set(card, { opacity: 0, y: 100, scale: 0.84, filter: "blur(14px)" });
+          gsap.to(card,
             {
               opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
               duration: 1.1, ease: "expo.out",
@@ -61,8 +61,8 @@ export default function UniqueFeatures() {
         });
 
         gsap.utils.toArray<HTMLElement>(".feat-stat").forEach((stat) => {
-          gsap.fromTo(stat,
-            { opacity: 0, scale: 0.35, y: 24 },
+          gsap.set(stat, { opacity: 0, scale: 0.35, y: 24 });
+          gsap.to(stat,
             {
               opacity: 1, scale: 1, y: 0, duration: 1, ease: "back.out(2.8)",
               scrollTrigger: { trigger: stat, start: "top 90%" },
@@ -91,7 +91,7 @@ export default function UniqueFeatures() {
       }} />
 
       <div className="relative mx-auto max-w-7xl px-6 md:px-12">
-        <div ref={headingRef} className="mb-14 md:mb-20" style={{ opacity: 0 }}>
+        <div ref={headingRef} className="mb-14 md:mb-20">
           <div className="flex items-center gap-3 mb-5">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
@@ -116,7 +116,6 @@ export default function UniqueFeatures() {
             <div key={f.hud}
               className={`feat-card relative flex flex-col overflow-hidden ${f.span}`}
               style={{
-                opacity: 0,
                 borderRadius: "1.5rem",
                 background: "#0c0c1a",
                 border: "1px solid #1c1c2e",
@@ -147,7 +146,6 @@ export default function UniqueFeatures() {
 
               <div className={`feat-stat relative font-black leading-none ${f.large ? "text-[4.5rem] md:text-[5.5rem]" : "text-[3.5rem]"}`}
                 style={{
-                  opacity: 0,
                   letterSpacing: "-0.02em",
                   background: "linear-gradient(135deg, #ffffff 0%, #c0c8d4 100%)",
                   WebkitBackgroundClip: "text",

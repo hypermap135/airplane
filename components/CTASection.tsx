@@ -25,31 +25,33 @@ export default function CTASection() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(heroRef.current,
-          { opacity: 0, y: 60, filter: "blur(10px)" },
+        gsap.set(heroRef.current, { opacity: 0, y: 60, filter: "blur(10px)" });
+        gsap.to(heroRef.current,
           { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
             scrollTrigger: { trigger: heroRef.current, start: "top 82%" } }
         );
-        gsap.fromTo(".cta-chip",
-          { opacity: 0, x: -24, scale: 0.86 },
+        gsap.set(".cta-chip", { opacity: 0, x: -24, scale: 0.86 });
+        gsap.to(".cta-chip",
           {
             opacity: 1, x: 0, scale: 1,
             stagger: 0.09, duration: 0.65, ease: "back.out(1.8)",
             scrollTrigger: { trigger: ".cta-chip", start: "top 88%" },
           }
         );
-        if (faqRef.current?.children[0])
-          gsap.fromTo(faqRef.current.children[0],
-            { opacity: 0, x: -40 },
+        if (faqRef.current?.children[0]) {
+          gsap.set(faqRef.current.children[0], { opacity: 0, x: -40 });
+          gsap.to(faqRef.current.children[0],
             { opacity: 1, x: 0, duration: 0.9, ease: "expo.out",
               scrollTrigger: { trigger: faqRef.current, start: "top 82%" } }
           );
-        if (faqRef.current?.children[1])
-          gsap.fromTo(faqRef.current.children[1],
-            { opacity: 0, x: 40 },
+        }
+        if (faqRef.current?.children[1]) {
+          gsap.set(faqRef.current.children[1], { opacity: 0, x: 40 });
+          gsap.to(faqRef.current.children[1],
             { opacity: 1, x: 0, duration: 0.9, ease: "expo.out", delay: 0.1,
               scrollTrigger: { trigger: faqRef.current, start: "top 82%" } }
           );
+        }
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -74,7 +76,7 @@ export default function CTASection() {
       <div className="relative mx-auto max-w-7xl px-6 md:px-12">
 
         {/* Main CTA block */}
-        <div ref={heroRef} className="mb-20 md:mb-28" style={{ opacity: 0 }}>
+        <div ref={heroRef} className="mb-20 md:mb-28">
           <div className="flex items-center gap-3 mb-6">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
@@ -109,7 +111,6 @@ export default function CTASection() {
               <div key={s.label}
                 className="cta-chip flex items-center gap-3 px-4 py-3"
                 style={{
-                  opacity: 0,
                   borderRadius: "0.875rem",
                   border: "1px solid #1c1c2e",
                   background: "rgba(12,12,26,0.7)",
@@ -132,7 +133,7 @@ export default function CTASection() {
 
         {/* FAQ */}
         <div ref={faqRef} className="grid gap-12 lg:grid-cols-2 items-start">
-          <div style={{ opacity: 0 }}>
+          <div>
             <div className="font-mono text-[0.63rem] tracking-[0.28em] uppercase mb-5" style={{ color: "rgba(255,255,255,0.35)" }}>
               Questions fréquentes
             </div>
@@ -148,7 +149,7 @@ export default function CTASection() {
               Tout ce qu&apos;il faut<br />savoir avant de commander.
             </h3>
           </div>
-          <div style={{ opacity: 0 }}>
+          <div>
             <FAQ />
           </div>
         </div>

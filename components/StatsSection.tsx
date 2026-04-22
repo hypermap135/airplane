@@ -23,15 +23,15 @@ export default function StatsSection() {
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         /* Line sweeps in */
-        gsap.fromTo(lineRef.current,
-          { scaleX: 0 },
+        gsap.set(lineRef.current, { scaleX: 0 });
+        gsap.to(lineRef.current,
           { scaleX: 1, duration: 1.4, ease: "expo.inOut",
             scrollTrigger: { trigger: sectionRef.current, start: "top 85%" } }
         );
 
         /* Stats pop up */
-        gsap.fromTo(".stat-item",
-          { opacity: 0, y: 60, filter: "blur(10px)" },
+        gsap.set(".stat-item", { opacity: 0, y: 60, filter: "blur(10px)" });
+        gsap.to(".stat-item",
           {
             opacity: 1, y: 0, filter: "blur(0px)",
             stagger: 0.1, duration: 1, ease: "expo.out",
@@ -90,13 +90,12 @@ export default function StatsSection() {
         <div ref={lineRef} className="mb-16 origin-left" style={{
           height: 1,
           background: "linear-gradient(to right, rgba(58,142,255,0.5) 0%, rgba(58,142,255,0.1) 60%, transparent 100%)",
-          transform: "scaleX(0)",
         }} />
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           {STATS.map((stat, i) => (
-            <div key={stat.hud} className="stat-item relative" style={{ opacity: 0 }}>
+            <div key={stat.hud} className="stat-item relative">
               {/* Divider between items (desktop) */}
               {i > 0 && (
                 <div className="hidden md:block absolute -left-2 top-4 bottom-4 w-px"

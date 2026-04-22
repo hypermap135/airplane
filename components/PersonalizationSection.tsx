@@ -24,18 +24,18 @@ export default function PersonalizationSection() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(textRef.current,
-          { opacity: 0, x: -50, filter: "blur(10px)" },
+        gsap.set(textRef.current, { opacity: 0, x: -50, filter: "blur(10px)" });
+        gsap.to(textRef.current,
           { opacity: 1, x: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
             scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
         );
-        gsap.fromTo(imageRef.current,
-          { opacity: 0, x: 50, scale: 0.95, filter: "blur(10px)" },
+        gsap.set(imageRef.current, { opacity: 0, x: 50, scale: 0.95, filter: "blur(10px)" });
+        gsap.to(imageRef.current,
           { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
             scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } }
         );
-        gsap.fromTo(".perso-example",
-          { opacity: 0, x: -24 },
+        gsap.set(".perso-example", { opacity: 0, x: -24 });
+        gsap.to(".perso-example",
           { opacity: 1, x: 0, stagger: 0.1, duration: 0.7, ease: "expo.out",
             scrollTrigger: { trigger: sectionRef.current, start: "top 65%" } }
         );
@@ -69,7 +69,7 @@ export default function PersonalizationSection() {
       <div className="relative mx-auto max-w-7xl px-6 md:px-12 grid gap-14 lg:grid-cols-2 items-center">
 
         {/* Text */}
-        <div ref={textRef} style={{ opacity: 0 }}>
+        <div ref={textRef}>
           <div className="flex items-center gap-3 mb-6">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
@@ -102,7 +102,6 @@ export default function PersonalizationSection() {
                   borderRadius: "0.875rem",
                   background: "#0c0c1a",
                   border: "1px solid #1c1c2e",
-                  opacity: 0,
                 }}
                 onMouseEnter={e2 => { (e2.currentTarget as HTMLDivElement).style.border = "1px solid rgba(58,142,255,0.3)"; }}
                 onMouseLeave={e2 => { (e2.currentTarget as HTMLDivElement).style.border = "1px solid #1c1c2e"; }}
@@ -124,7 +123,7 @@ export default function PersonalizationSection() {
 
         {/* Image */}
         <div ref={imageRef} className="relative overflow-hidden"
-          style={{ borderRadius: "1.5rem", aspectRatio: "4/5", opacity: 0 }}>
+          style={{ borderRadius: "1.5rem", aspectRatio: "4/5" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={imgElemRef}
