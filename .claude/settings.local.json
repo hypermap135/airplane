@@ -8,7 +8,9 @@
       "Bash(npm run *)",
       "Bash(vercel whoami *)",
       "Bash(echo \"EXIT:$?\")",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(vercel --yes)",
+      "mcp___21st-dev_magic__21st_magic_component_inspiration"
     ]
   }
 }
