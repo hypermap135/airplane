@@ -6,7 +6,7 @@ const nextConfig = {
       { protocol: "https", hostname: "cdn.shopify.com" },
     ],
   },
-  experimental: { optimizePackageImports: ["framer-motion"] },
+  experimental: { optimizePackageImports: ["gsap"] },
 };
 
 module.exports = nextConfig;

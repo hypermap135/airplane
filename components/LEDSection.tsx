@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,6 +10,7 @@ const SPECS = [
   { label: "Durée", value: "~20s" },
   { label: "Batterie", value: "75 mAh" },
   { label: "Charge", value: "~1h USB" },
+  { label: "Zones LED", value: "Fuselage + Cockpit" },
 ];
 
 export default function LEDSection() {
@@ -17,6 +18,7 @@ export default function LEDSection() {
   const imgRef     = useRef<HTMLDivElement>(null);
   const textRef    = useRef<HTMLDivElement>(null);
   const glowRef    = useRef<HTMLDivElement>(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -84,13 +86,27 @@ export default function LEDSection() {
           <div className="relative overflow-hidden" style={{ borderRadius: "1.5rem", aspectRatio: "1/1" }}>
             {/* Airplane image — referrerPolicy bypasses CDN hotlink protection */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://airplanestore.fr/cdn/shop/files/a380-airfrance.jpg"
-              alt="Maquette A380 Air France éclairée"
-              className="absolute inset-0 w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-              loading="lazy"
-            />
+            {!imgError ? (
+              <img
+                src="https://airplanestore.fr/cdn/shop/files/a380-airfrance.jpg"
+                alt="Maquette A380 Air France éclairée"
+                className="absolute inset-0 w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              /* Fallback: ambient blue dark panel that looks great with the LED overlay */
+              <div className="absolute inset-0" style={{
+                background: "radial-gradient(ellipse 80% 70% at 50% 55%, rgba(14,30,80,0.9) 0%, rgba(4,4,18,0.98) 100%)",
+              }}>
+                <svg className="absolute inset-0 m-auto opacity-[0.07]" width="180" height="90" viewBox="0 0 180 90" fill="none">
+                  <path d="M10 62 L50 28 L120 24 L164 50 L120 50 L96 62 Z" fill="white"/>
+                  <path d="M50 42 L50 66 L38 72" stroke="white" strokeWidth="3"/>
+                  <path d="M96 50 L96 72 L84 78" stroke="white" strokeWidth="3"/>
+                </svg>
+              </div>
+            )}
 
             {/* Pulsing LED overlay */}
             <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
@@ -124,25 +140,37 @@ export default function LEDSection() {
             </span>
           </div>
 
-          <h2 className="font-black uppercase leading-[0.9] tracking-tight mb-6"
+          <h2 className="font-black uppercase leading-[0.88] tracking-tight mb-6"
             style={{
               fontSize: "clamp(2.8rem,6.5vw,5.5rem)",
               letterSpacing: "-0.02em",
+            }}>
+            <span style={{
               background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}>
-            Elle<br />s'illumine.
+              Un geste.
+            </span>
+            <br />
+            <span style={{
+              background: "linear-gradient(135deg, #3a8eff 0%, #7ab8ff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>
+              Elle s'illumine.
+            </span>
           </h2>
 
           <p className="text-[1.02rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 440 }}>
-            LED intégré dans le fuselage et le cockpit. Environ 20 secondes d'illumination
-            par pression. Activation par interrupteur sous la maquette. Batterie lithium
-            rechargeable par USB — câble fourni.
+            LED intégré dans le fuselage et le cockpit. Fuselage et cockpit illuminés
+            environ 20 secondes. Interrupteur sous le socle. Batterie lithium rechargeable
+            par USB — câble inclus.
           </p>
 
-          <div className="grid grid-cols-3 gap-3 max-w-xs mb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10" style={{ maxWidth: 420 }}>
             {SPECS.map((s) => (
               <div key={s.label} className="led-spec flex flex-col gap-1.5 px-4 py-4"
                 style={{

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,6 +11,7 @@ const EXAMPLES = [
   { text: "Commandant Dupont" },
   { text: "Vol AF001 — 15/06/2024" },
   { text: "Joyeux anniversaire Papa" },
+  { text: "F-WXWB — Premier vol" },
 ];
 
 export default function PersonalizationSection() {
@@ -18,6 +19,7 @@ export default function PersonalizationSection() {
   const textRef    = useRef<HTMLDivElement>(null);
   const imageRef   = useRef<HTMLDivElement>(null);
   const imgElemRef = useRef<HTMLImageElement>(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -125,15 +127,31 @@ export default function PersonalizationSection() {
         <div ref={imageRef} className="relative overflow-hidden"
           style={{ borderRadius: "1.5rem", aspectRatio: "4/5" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={imgElemRef}
-            src="https://airplanestore.fr/cdn/shop/files/gravure.jpg"
-            alt="Gravure personnalisée sur socle bois"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ top: "-12%", height: "124%" }}
-            referrerPolicy="no-referrer"
-            loading="lazy"
-          />
+          {!imgError ? (
+            <img
+              ref={imgElemRef}
+              src="https://airplanestore.fr/cdn/shop/files/gravure.jpg"
+              alt="Gravure personnalisée sur socle bois"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: "-12%", height: "124%" }}
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            /* Fallback: dark wood texture feel */
+            <div className="absolute inset-0" style={{
+              background: "linear-gradient(160deg, #0e0a06 0%, #1a1208 40%, #0c0a08 100%)",
+            }}>
+              {/* Engraving illustration */}
+              <svg className="absolute inset-0 m-auto opacity-10" width="120" height="80" viewBox="0 0 120 80" fill="none">
+                <rect x="10" y="10" width="100" height="60" rx="4" stroke="white" strokeWidth="1.5"/>
+                <rect x="20" y="30" width="80" height="2" fill="white" opacity="0.6"/>
+                <rect x="20" y="38" width="60" height="2" fill="white" opacity="0.4"/>
+                <rect x="20" y="46" width="70" height="2" fill="white" opacity="0.3"/>
+              </svg>
+            </div>
+          )}
           {/* Bottom overlay */}
           <div className="absolute inset-0 pointer-events-none" style={{
             background: "linear-gradient(to top, rgba(4,4,16,0.92) 0%, rgba(4,4,16,0.3) 40%, transparent 70%)",
