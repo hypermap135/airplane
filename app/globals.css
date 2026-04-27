@@ -353,6 +353,11 @@ body {
 
 /* ─── Misc keyframes ──────────────────────────────────── */
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+
 @keyframes radarScan {
   0%   { transform: translateY(0); opacity: 1; }
   90%  { transform: translateY(264px); opacity: 0.6; }
