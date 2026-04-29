@@ -1,18 +1,12 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValue,
-  useSpring,
-} from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const PLANE_IMG =
-  "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_Air_France.png";
+  "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_AIR_FRANCE.jpg";
 
 /* ── Starfield ──────────────────────────────────────────────────────── */
 function Starfield() {
@@ -83,34 +77,6 @@ export default function HeroSection() {
   const planeScrollY = useTransform(scrollY, [0, 600], [0, -80]);
   const planeScrollOpacity = useTransform(scrollY, [0, 400], [1, 0]);
   const glowScrollY = useTransform(scrollY, [0, 600], [0, -32]);
-
-  /* ── Framer Motion: mouse parallax (spring physics) ── */
-  const rawMouseX = useMotionValue(0);
-  const rawMouseY = useMotionValue(0);
-  const springCfg = { stiffness: 60, damping: 18, mass: 0.8 };
-  const planeX = useSpring(rawMouseX, springCfg);
-  const planeY = useSpring(rawMouseY, springCfg);
-  const glowX = useSpring(useMotionValue(0), { stiffness: 40, damping: 20 });
-  const glowY = useSpring(useMotionValue(0), { stiffness: 40, damping: 20 });
-
-  /* Keep glow spring values in sync with plane (at 40% intensity) */
-  const glowRawX = useMotionValue(0);
-  const glowRawY = useMotionValue(0);
-  const glowSpringX = useSpring(glowRawX, { stiffness: 40, damping: 20 });
-  const glowSpringY = useSpring(glowRawY, { stiffness: 40, damping: 20 });
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      const { innerWidth: W, innerHeight: H } = window;
-      const nx = (e.clientX / W - 0.5) * 2; // -1 … 1
-      const ny = (e.clientY / H - 0.5) * 2;
-      rawMouseX.set(nx * 25);
-      rawMouseY.set(ny * 12);
-      glowRawX.set(nx * 10);
-      glowRawY.set(ny * 6);
-    },
-    [rawMouseX, rawMouseY, glowRawX, glowRawY],
-  );
 
   /* ── GSAP entry animations ── */
   useEffect(() => {
@@ -193,7 +159,6 @@ export default function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      onMouseMove={handleMouseMove}
       className="relative min-h-screen overflow-hidden flex flex-col"
       style={{ background: "#010108" }}
     >
@@ -358,16 +323,12 @@ export default function HeroSection() {
             minHeight: "clamp(320px, 50vw, 100vh)",
           }}
         >
-          {/* Radial glow behind plane — also parallaxes */}
+          {/* Radial glow behind plane */}
           <motion.div
             ref={glowRef}
             aria-hidden
             className="absolute inset-0 pointer-events-none"
-            style={{
-              x: glowSpringX,
-              y: glowSpringY,
-              translateY: glowScrollY,
-            }}
+            style={{ translateY: glowScrollY }}
           >
             {/* Main directional glow */}
             <div
@@ -475,12 +436,10 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* ── Plane image — float + mouse + scroll parallax ── */}
+          {/* ── Plane image — CSS float + scroll parallax ── */}
           <motion.div
             ref={planeWrapRef}
             style={{
-              x: planeX,
-              y: planeY,
               translateY: planeScrollY,
               opacity: planeScrollOpacity,
               position: "relative",
