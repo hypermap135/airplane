@@ -5,110 +5,54 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProductCard from "./ProductCard";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, sortForDisplay } from "@/lib/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function BestSellers() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const trackRef    = useRef<HTMLDivElement>(null);
-  const headingRef  = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const ctaRef      = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const ctaRef     = useRef<HTMLDivElement>(null);
 
-  const products = PRODUCTS.filter((p) => p.inStock).slice(0, 6);
+  // Show bestsellers first, then other in-stock products
+  const products = sortForDisplay(PRODUCTS.filter((p) => p.inStock && p.collection !== "accessoires")).slice(0, 8);
 
   useEffect(() => {
-    const mm = gsap.matchMedia();
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      const track   = trackRef.current;
-      const section = sectionRef.current;
-      if (!track || !section) return;
-
-      const getDistance = () => track.scrollWidth - section.clientWidth + 96;
-
-      /* Heading */
-      gsap.set(headingRef.current, { opacity: 0, y: 60, filter: "blur(8px)" });
-      gsap.to(headingRef.current,
-        {
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        /* Heading */
+        gsap.set(headingRef.current, { opacity: 0, y: 60, filter: "blur(8px)" });
+        gsap.to(headingRef.current, {
           opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
-          scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none none" },
-        }
-      );
+          scrollTrigger: { trigger: headingRef.current, start: "top 85%", toggleActions: "play none none none" },
+        });
 
-      /* Horizontal scroll pin */
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${getDistance() + 240}`,
-          scrub: 1.4,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (progressRef.current)
-              progressRef.current.style.transform = `scaleX(${self.progress})`;
-          },
-        },
-      });
-
-      tl.to(track, { x: () => -(getDistance()), ease: "none" });
-
-      /* Cards stagger-in */
-      gsap.utils.toArray<HTMLElement>(".bseller-card").forEach((card, i) => {
-        gsap.set(card, { opacity: 0, y: 50, scale: 0.92, filter: "blur(8px)" });
-        gsap.to(card,
-          {
+        /* Cards stagger */
+        gsap.utils.toArray<HTMLElement>(".bseller-card").forEach((card, i) => {
+          gsap.set(card, { opacity: 0, y: 60, scale: 0.93, filter: "blur(8px)" });
+          gsap.to(card, {
             opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
-            duration: 0.8, ease: "expo.out",
-            scrollTrigger: {
-              trigger: card,
-              containerAnimation: tl,
-              start: "left 92%",
-              toggleActions: "play none none none",
-            },
-            delay: i * 0.05,
-          }
-        );
-      });
+            duration: 0.9, ease: "expo.out",
+            delay: (i % 4) * 0.1,
+            scrollTrigger: { trigger: card, start: "top 92%", toggleActions: "play none none none" },
+          });
+        });
 
-      /* CTA */
-      gsap.set(ctaRef.current, { opacity: 0, y: 32 });
-      gsap.to(ctaRef.current,
-        {
-          opacity: 1, y: 0, duration: 0.8,
+        /* CTA */
+        gsap.set(ctaRef.current, { opacity: 0, y: 32 });
+        gsap.to(ctaRef.current, {
+          opacity: 1, y: 0, duration: 0.8, ease: "expo.out",
           scrollTrigger: { trigger: ctaRef.current, start: "top 88%", toggleActions: "play none none none" },
-        }
-      );
-    });
-
-    /* Mobile — simple vertical stagger */
-    mm.add("(max-width: 767px), (prefers-reduced-motion: reduce)", () => {
-      gsap.set(headingRef.current, { opacity: 0, y: 40 });
-      gsap.set(ctaRef.current, { opacity: 0, y: 32 });
-      gsap.to(headingRef.current,
-        { opacity: 1, y: 0, duration: 0.9, ease: "expo.out",
-          scrollTrigger: { trigger: headingRef.current, start: "top 85%" } }
-      );
-      gsap.utils.toArray<HTMLElement>(".bseller-card").forEach((card, i) => {
-        gsap.set(card, { opacity: 0, y: 50, scale: 0.95 });
-        gsap.to(card,
-          {
-            opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "expo.out",
-            delay: i * 0.08,
-            scrollTrigger: { trigger: card, start: "top 88%", toggleActions: "play none none none" },
-          }
-        );
+        });
       });
-      gsap.to(ctaRef.current,
-        { opacity: 1, y: 0, duration: 0.8,
-          scrollTrigger: { trigger: ctaRef.current, start: "top 88%", toggleActions: "play none none none" } }
-      );
-    });
 
-    return () => mm.revert();
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set([headingRef.current, ".bseller-card", ctaRef.current], { opacity: 1, y: 0, scale: 1, filter: "none" });
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -122,52 +66,47 @@ export default function BestSellers() {
         backgroundSize: "80px 80px",
       }} />
 
-      <div className="relative px-6 md:px-12 pt-24 md:pt-32 pb-8">
+      <div className="relative px-6 md:px-12 pt-24 md:pt-32 pb-16">
 
         {/* Section heading */}
-        <div ref={headingRef} className="mb-14 md:mb-16">
+        <div ref={headingRef} className="mb-12 md:mb-16">
           <div className="flex items-center gap-3 mb-5">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Bestsellers
+              Collection
             </span>
           </div>
           <div className="flex items-end justify-between flex-wrap gap-6">
             <h2 className="font-black text-white uppercase leading-[0.9] tracking-tight"
               style={{ fontSize: "clamp(2.2rem,5.5vw,4.5rem)", letterSpacing: "-0.02em" }}>
-              Les modèles<br />préférés
+              Les pièces<br />maîtresses
             </h2>
-            <p className="text-[0.88rem] leading-relaxed hidden md:block max-w-xs" style={{ color: "#565870" }}>
-              Six pièces iconiques, toutes en stock — prêtes à livrer sous 7 à 15 jours.
-            </p>
-          </div>
-
-          {/* Scroll progress */}
-          <div className="mt-8 hidden md:block" style={{ height: 1, background: "rgba(255,255,255,0.07)", position: "relative" }}>
-            <div ref={progressRef} className="absolute inset-y-0 left-0"
-              style={{
-                background: "linear-gradient(to right, rgba(58,142,255,0.8), rgba(100,170,255,0.4))",
-                width: "100%",
-                transform: "scaleX(0)",
-                transformOrigin: "left",
-                boxShadow: "0 0 12px rgba(58,142,255,0.5)",
-              }} />
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                {[1,2,3,4,5].map(i => (
+                  <span key={i} aria-hidden style={{ color: "#f59e0b", fontSize: "0.9rem" }}>★</span>
+                ))}
+                <span className="font-mono text-[0.62rem] tracking-[0.12em] ml-1" style={{ color: "#565870" }}>4.9 · +2 000 avis</span>
+              </div>
+              <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.08)" }} />
+              <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "#565870" }}>
+                Livraison 7–15 jours
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Horizontal track */}
-        <div ref={trackRef} className="flex gap-5 md:gap-6 will-change-transform pb-8">
-          {products.map((p, i) => (
-            <div key={p.id}
-              className="bseller-card relative shrink-0"
-              style={{ width: "min(82vw, 360px)" }}>
-                  <ProductCard product={p} />
+        {/* Products grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+          {products.map((p) => (
+            <div key={p.id} className="bseller-card">
+              <ProductCard product={p} />
             </div>
           ))}
         </div>
 
         {/* CTAs */}
-        <div ref={ctaRef} className="mt-10 flex flex-wrap items-center justify-center gap-4 pb-12">
+        <div ref={ctaRef} className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <Link href="/collections/all" className="btn-chrome">
             Voir toute la collection →
           </Link>

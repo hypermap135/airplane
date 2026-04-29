@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: "/collections/airbus",  label: "Airbus" },
   { href: "/collections/boeing",  label: "Boeing" },
   { href: "/collections/concorde",label: "Concorde" },
+  { href: "/collections/chasse",  label: "Militaire" },
   { href: "/collections/packs",   label: "Packs" },
   { href: "/faq",                 label: "FAQ" },
 ];
@@ -45,9 +46,11 @@ export default function Header() {
             backdropFilter: "blur(12px)",
           }}>
           <span className="font-mono text-[0.6rem] tracking-[0.22em] uppercase" style={{ color: "rgba(180,210,255,0.8)" }}>
-            ✈ Première commande&nbsp;?&nbsp;
+            ✈ Offre limitée&nbsp;·&nbsp;
           </span>
-          <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.5)", margin: "0 0.5rem" }}>–10% avec le code</span>
+          <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.5)", margin: "0 0.4rem" }}>
+            –10% sur votre 1re commande avec
+          </span>
           <span className="font-mono text-[0.62rem] font-bold tracking-[0.18em] px-2 py-0.5 mx-1"
             style={{
               background: "linear-gradient(135deg, #c8ccd0, #f0f2f5)",
@@ -56,7 +59,7 @@ export default function Header() {
             }}>
             TAKEOFF10
           </span>
-          <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.3)", marginLeft: "0.5rem" }}>
+          <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase hidden sm:inline" style={{ color: "rgba(255,255,255,0.3)", marginLeft: "0.5rem" }}>
             · Livraison offerte dès 100€
           </span>
           <button

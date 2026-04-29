@@ -110,6 +110,22 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* ── Info ── */}
       <div className="flex flex-col p-4 gap-3">
+        {/* Stars + low-stock urgency */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            {[1,2,3,4,5].map(i => (
+              <span key={i} aria-hidden style={{ color: "#f59e0b", fontSize: "0.72rem", lineHeight: 1 }}>★</span>
+            ))}
+            <span className="font-mono text-[0.58rem] ml-1" style={{ color: "#565870" }}>4.9</span>
+          </div>
+          {product.bestseller && product.inStock && (
+            <span className="font-mono text-[0.55rem] tracking-[0.1em] uppercase"
+              style={{ color: "rgba(251,146,60,0.9)" }}>
+              ⚡ Stock limité
+            </span>
+          )}
+        </div>
+
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <Link href={`/products/${product.handle}`}>

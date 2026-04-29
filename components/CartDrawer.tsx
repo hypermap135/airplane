@@ -14,6 +14,7 @@ export default function CartDrawer() {
   const { entries, subtotal, update, remove } = useCart();
   const [promo, setPromo] = useState(DISCOUNT_CODE);
   const [promoApplied, setPromoApplied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const discount = promoApplied && promo.trim().toUpperCase() === DISCOUNT_CODE ? 0.1 : 0;
   const discountAmount = subtotal * discount;
@@ -21,13 +22,37 @@ export default function CartDrawer() {
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
   const progress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
 
-  const onCheckout = () => {
-    if (entries.length === 0) return;
-    const url = checkoutUrl(
-      entries.map((e) => ({ variantId: e.product.variantId, quantity: e.quantity })),
-      promoApplied ? DISCOUNT_CODE : undefined,
-    );
-    window.location.href = url;
+  const onCheckout = async () => {
+    if (entries.length === 0 || loading) return;
+    setLoading(true);
+    try {
+      const items = entries.map((e) => ({ variantId: e.product.variantId, quantity: e.quantity }));
+      const appliedDiscount = promoApplied ? promo.trim().toUpperCase() : undefined;
+
+      // Try API route first (uses Storefront API if token available, else permalink)
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, discount: appliedDiscount }),
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as { url?: string };
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+
+      // Hard fallback (client-side permalink)
+      window.location.href = checkoutUrl(items, appliedDiscount ?? null);
+    } catch {
+      // Last resort fallback
+      const items = entries.map((e) => ({ variantId: e.product.variantId, quantity: e.quantity }));
+      window.location.href = checkoutUrl(items, promoApplied ? promo.trim().toUpperCase() : null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -181,10 +206,20 @@ export default function CartDrawer() {
 
           <button
             onClick={onCheckout}
-            disabled={entries.length === 0}
-            className="btn-chrome w-full disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled={entries.length === 0 || loading}
+            className="btn-chrome w-full disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Commander →
+            {loading ? (
+              <>
+                <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3"/>
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+                </svg>
+                Redirection…
+              </>
+            ) : (
+              "Commander →"
+            )}
           </button>
           <div className="text-[0.68rem] text-mute text-center">
             Paiement sécurisé Shopify · Checkout invité disponible

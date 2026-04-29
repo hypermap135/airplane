@@ -10,24 +10,24 @@ const FEATURES = [
   {
     hud: "MAT-01", icon: "◈",
     title: "Résine monobloc",
-    body: "Coulée d'une seule pièce, peinte à la main. Longueur 47 cm, poids 1,3 kg. Socle bois massif inclus.",
-    stat: "47", statUnit: "cm", statLabel: "Longueur",
+    body: "Coulée sous pression, immuable. 47 cm de présence dans n'importe quel espace. Socle bois massif inclus. Une pièce pensée pour traverser le temps — pas une maquette de salon.",
+    stat: "47", statUnit: "cm", statLabel: "Format",
     accent: "rgba(58,142,255,0.07)",
     span: "col-span-1 md:col-span-1 lg:col-span-2", large: true,
   },
   {
     hud: "LED-20S", icon: "◉",
-    title: "Éclairage LED",
-    body: "Fuselage et cockpit illuminés ~20 secondes. Batterie lithium rechargeable USB.",
+    title: "La lumière sur commande",
+    body: "Un interrupteur sous le socle. Le fuselage et le cockpit s'allument — vingt secondes de lumière pure. La conversation commence, sans un mot.",
     stat: "20", statUnit: "s", statLabel: "Illumination",
     accent: "rgba(58,142,255,0.1)",
     span: "col-span-1", large: false,
   },
   {
     hud: "SCL-147", icon: "◇",
-    title: "Détails réalistes",
-    body: "Train d'atterrissage amovible. Échelle 1/147. Livraison emballage premium.",
-    stat: "1/147", statUnit: "", statLabel: "Échelle",
+    title: "Échelle 1/147",
+    body: "Chaque rivet, chaque livrée reproduits avec exactitude. Peinture main, train amovible. Emballage premium — prête à offrir dès réception.",
+    stat: "1/147", statUnit: "", statLabel: "Précision",
     accent: "rgba(40,100,220,0.07)",
     span: "col-span-1", large: false,
   },
@@ -95,7 +95,7 @@ export default function UniqueFeatures() {
           <div className="flex items-center gap-3 mb-5">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Fabrication
+              Savoir-faire
             </span>
           </div>
           <h2 className="font-black uppercase leading-[0.9] tracking-tight"
@@ -107,7 +107,7 @@ export default function UniqueFeatures() {
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}>
-            Ce qui rend nos<br />maquettes uniques
+            L&apos;obsession<br />du détail.
           </h2>
         </div>
 

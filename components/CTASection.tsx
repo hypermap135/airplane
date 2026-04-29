@@ -80,7 +80,7 @@ export default function CTASection() {
           <div className="flex items-center gap-3 mb-6">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Passez aux commandes
+              Commander
             </span>
           </div>
 
@@ -94,11 +94,11 @@ export default function CTASection() {
               backgroundClip: "text",
               maxWidth: "14ch",
             }}>
-            Votre prochaine<br />pièce de collection.
+            Elle<br />vous attend.
           </h2>
 
           <p className="text-[1.05rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 480 }}>
-            Livraison France & Europe. Emballage premium. Satisfait ou remboursé 30 jours.
+            Livraison France & Europe. Emballage premium. 30 jours pour changer d'avis.
           </p>
 
           <div className="flex flex-wrap gap-4 items-center mb-10">
@@ -146,7 +146,7 @@ export default function CTASection() {
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}>
-              Tout ce qu&apos;il faut<br />savoir avant de commander.
+              Vos<br />questions.
             </h3>
           </div>
           <div>

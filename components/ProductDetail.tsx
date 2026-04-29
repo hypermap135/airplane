@@ -19,12 +19,16 @@ const SPECS: { label: string; value: string }[] = [
 export default function ProductDetail({ product }: { product: Product }) {
   const [submitted, setSubmitted] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [gravure, setGravure] = useState(false);
   const { add } = useCart();
   const { setOpen } = useCartDrawer();
+
+  const GRAVURE_VARIANT_ID = "53749941698900";
 
   const onAdd = () => {
     if (!product.inStock) return;
     add(product.variantId, 1);
+    if (gravure) add(GRAVURE_VARIANT_ID, 1);
     setOpen(true);
   };
 
@@ -131,8 +135,19 @@ export default function ProductDetail({ product }: { product: Product }) {
               </p>
             )}
 
+            {/* Stars */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-0.5">
+                {[1,2,3,4,5].map(i => (
+                  <span key={i} aria-hidden style={{ color: "#f59e0b", fontSize: "0.95rem" }}>★</span>
+                ))}
+              </div>
+              <span className="font-bold text-white text-[0.88rem]">4.9</span>
+              <span className="font-mono text-[0.58rem] tracking-[0.12em]" style={{ color: "#565870" }}>· +2 000 avis clients</span>
+            </div>
+
             {/* Price */}
-            <div className="flex items-end gap-4 mb-8">
+            <div className="flex items-end gap-4 mb-6">
               <div className="font-black text-white" style={{ fontSize: "clamp(1.8rem,3vw,2.4rem)" }}>
                 {formatPrice(product.price)}
               </div>
@@ -149,11 +164,93 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
 
+            {/* Stock urgency */}
+            {product.inStock && product.bestseller && (
+              <div className="flex items-center gap-2 mb-5 px-3 py-2.5"
+                style={{
+                  borderRadius: "0.75rem",
+                  background: "rgba(251,146,60,0.07)",
+                  border: "1px solid rgba(251,146,60,0.2)",
+                }}>
+                <span style={{ color: "#fb923c", fontSize: "0.9rem" }}>⚡</span>
+                <span className="font-mono text-[0.62rem] tracking-[0.12em] uppercase" style={{ color: "rgba(251,146,60,0.9)" }}>
+                  Dernières pièces disponibles
+                </span>
+              </div>
+            )}
+
+            {/* Trust badges — ABOVE CTA */}
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { icon: "🚚", top: "Livraison", bot: "7–15 jours" },
+                { icon: "↩", top: "Retour",    bot: "30 jours" },
+                { icon: "🔒", top: "Paiement", bot: "Sécurisé" },
+              ].map((item) => (
+                <div key={item.top} className="flex flex-col items-center justify-center gap-1 py-3"
+                  style={{
+                    borderRadius: "0.875rem",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    background: "rgba(12,12,26,0.6)",
+                  }}>
+                  <span aria-hidden style={{ fontSize: "1rem" }}>{item.icon}</span>
+                  <div className="font-mono text-[0.55rem] tracking-[0.15em] uppercase" style={{ color: "#3a4055" }}>
+                    {item.top}
+                  </div>
+                  <div className="font-semibold text-white text-[0.78rem]">{item.bot}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Gravure upsell */}
+            {product.collection !== "accessoires" && product.inStock && (
+              <div className="mb-6">
+                <button
+                  type="button"
+                  onClick={() => setGravure(v => !v)}
+                  className="w-full flex items-center gap-3 p-4 text-left transition-all duration-200"
+                  style={{
+                    borderRadius: "1rem",
+                    background: gravure ? "rgba(58,142,255,0.07)" : "rgba(12,12,26,0.6)",
+                    border: gravure ? "1px solid rgba(58,142,255,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  {/* Checkbox */}
+                  <div className="shrink-0 flex items-center justify-center"
+                    style={{
+                      width: 20, height: 20,
+                      borderRadius: 5,
+                      border: gravure ? "2px solid #3a8eff" : "2px solid rgba(255,255,255,0.2)",
+                      background: gravure ? "#3a8eff" : "transparent",
+                    }}>
+                    {gravure && (
+                      <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                        <path d="M1 4.5L4 7.5L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-white text-[0.84rem]">Ajouter une gravure personnalisée</span>
+                      <span className="font-mono text-[0.65rem] font-bold px-2 py-0.5"
+                        style={{
+                          borderRadius: 999,
+                          background: "linear-gradient(135deg, #c8ccd0, #f0f2f5)",
+                          color: "#010108",
+                        }}>+15€</span>
+                    </div>
+                    <p className="text-[0.74rem] mt-0.5" style={{ color: "#565870" }}>
+                      Nom, date ou immatriculation gravés laser sur le socle
+                    </p>
+                  </div>
+                </button>
+              </div>
+            )}
+
             {/* CTA */}
             <div className="mb-8">
               {product.inStock ? (
-                <button onClick={onAdd} className="btn-chrome">
-                  Ajouter au panier →
+                <button onClick={onAdd} className="btn-chrome w-full text-center justify-center">
+                  {gravure ? `Ajouter au panier — ${formatPrice(product.price + 15)} →` : "Ajouter au panier →"}
                 </button>
               ) : (
                 <NotifyForm
@@ -164,23 +261,18 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
 
-            {/* Trust badges */}
-            <div className="grid grid-cols-3 gap-3 mb-10">
-              {[
-                { top: "Livraison", bot: "7–15 jours" },
-                { top: "Retour",    bot: "30 jours" },
-                { top: "Paiement", bot: "Sécurisé" },
-              ].map((item) => (
-                <div key={item.top} className="flex flex-col items-center justify-center gap-1 py-3"
+            {/* Payment logos */}
+            <div className="flex items-center gap-2 mb-10">
+              <span className="font-mono text-[0.58rem] tracking-[0.12em] uppercase mr-1" style={{ color: "#3a4055" }}>Paiement :</span>
+              {["Visa", "MC", "CB", "PayPal", "Apple Pay"].map(p => (
+                <div key={p} className="px-2 py-1 font-mono text-[0.55rem] tracking-wide"
                   style={{
-                    borderRadius: "0.875rem",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    background: "rgba(12,12,26,0.6)",
+                    borderRadius: 4,
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "rgba(255,255,255,0.4)",
                   }}>
-                  <div className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#3a4055" }}>
-                    {item.top}
-                  </div>
-                  <div className="font-semibold text-white text-[0.82rem]">{item.bot}</div>
+                  {p}
                 </div>
               ))}
             </div>
@@ -217,7 +309,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             </div>
             <h2 className="font-black uppercase leading-[0.9] tracking-tight text-white mb-10"
               style={{ fontSize: "clamp(1.6rem,3.5vw,2.6rem)", letterSpacing: "-0.02em" }}>
-              Vous aimerez aussi
+              Dans le même esprit
             </h2>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {relatedItems.map((p) => (

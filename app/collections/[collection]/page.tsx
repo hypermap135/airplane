@@ -1,15 +1,17 @@
 import { notFound } from "next/navigation";
 import CatalogueGrid from "@/components/CatalogueGrid";
+
 import SectionHeading from "@/components/SectionHeading";
 import { COLLECTIONS, byCollection, type Collection } from "@/lib/products";
 
 const SUBTITLES: Record<Collection, string> = {
-  airbus: "La gamme Airbus : A320, A321, A350, A380 et éditions spéciales.",
-  boeing: "Les Boeing iconiques : 737, 777, 787 Dreamliner.",
-  concorde: "Le supersonique, en livrées Air France et British Airways.",
-  jet: "Jets privés d'affaires — longue distance, grande classe.",
-  packs: "Regroupez plusieurs maquettes et économisez jusqu'à 17€.",
-  accessoires: "Porte-clés, horloges, gravures — la touche finale.",
+  airbus: "A320, A321, A350, A380, Béluga XL — toute la famille Airbus en résine monobloc.",
+  boeing: "737, 747, 777, 787 Dreamliner — les légendes Boeing, à l'échelle 1/147.",
+  concorde: "Le supersonique, en livrées Air France et British Airways. Une pièce hors du temps.",
+  chasse: "Rafale, Mirage 2000, F16 — l'aviation militaire française, coulée dans la résine.",
+  jet: "La grande classe des airs. Jets d'affaires longue distance — pour les collections d'exception.",
+  packs: "Deux maquettes ou trois — constituez une collection d'un seul geste.",
+  accessoires: "Porte-clés, horloges, gravures — la touche finale pour compléter votre collection.",
 };
 
 export function generateStaticParams() {

@@ -9,6 +9,7 @@ const NAV = [
       { href: "/collections/airbus",        label: "Airbus" },
       { href: "/collections/boeing",        label: "Boeing" },
       { href: "/collections/concorde",      label: "Concorde" },
+      { href: "/collections/chasse",        label: "Aviation militaire" },
       { href: "/collections/packs",         label: "Packs & offres" },
       { href: "/collections/all",           label: "Tout voir" },
     ],
@@ -127,17 +128,28 @@ export default function Footer() {
         }} />
 
         {/* Bottom bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#3a4055" }}>
             © {new Date().getFullYear()} AirplaneStore — Tous droits réservés
           </div>
-          <div className="flex items-center gap-6">
-            <span className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#3a4055" }}>
-              Est. Paris · France & Europe
-            </span>
+
+          {/* Payment logos */}
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            {["Visa", "Mastercard", "CB", "PayPal", "Apple Pay", "3x sans frais"].map(p => (
+              <div key={p}
+                className="px-2.5 py-1 font-mono text-[0.55rem] font-semibold tracking-wide"
+                style={{
+                  borderRadius: 5,
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  color: "rgba(255,255,255,0.28)",
+                }}>
+                {p}
+              </div>
+            ))}
             <div style={{ width: 1, height: 12, background: "rgba(255,255,255,0.06)" }} />
-            <span className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#3a4055" }}>
-              Résine · LED · 1/147
+            <span className="font-mono text-[0.55rem] tracking-[0.12em] uppercase" style={{ color: "#2a3040" }}>
+              🔒 Paiement sécurisé
             </span>
           </div>
         </div>

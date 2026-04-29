@@ -17,6 +17,22 @@ const DEFAULT_ITEMS: FAQItem[] = [
     q: "Quelle est votre politique de retour ?",
     a: "Satisfait ou remboursé 30 jours. Retour offert depuis la France. La maquette doit être retournée dans sa boîte d'origine, en parfait état.",
   },
+  {
+    q: "La maquette est-elle fragile ?",
+    a: "Non. Nos maquettes sont coulées en résine monobloc sous pression — le même matériau utilisé pour les pièces industrielles. Elles résistent aux chocs du quotidien et ne se cassent pas comme le plastique ordinaire. L'emballage de livraison est conçu pour protéger la pièce pendant le transport.",
+  },
+  {
+    q: "C'est un cadeau. Y a-t-il un emballage soigné ?",
+    a: "Oui. Chaque maquette est livrée dans une boîte premium avec calage sur mesure. L'emballage est pensé pour être offert directement. Vous pouvez également ajouter une gravure personnalisée (+15€) pour rendre le cadeau inoubliable.",
+  },
+  {
+    q: "Puis-je payer en plusieurs fois ?",
+    a: "Oui. Le paiement en 3x ou 4x sans frais est disponible au moment du règlement. Vous pouvez régler par carte bancaire, PayPal ou Apple Pay. Toutes les transactions sont sécurisées SSL.",
+  },
+  {
+    q: "Est-ce une copie bon marché fabriquée en Chine ?",
+    a: "Absolument pas. Nos maquettes sont fabriquées en résine haute densité, peintes à la main, et contrôlées pièce par pièce avant expédition. Elles ne peuvent pas être comparées aux reproductions plastique que l'on trouve sur les marketplaces. C'est pour cela que plus de 2 000 clients — dont de nombreux pilotes et collectionneurs — nous font confiance.",
+  },
 ];
 
 export default function FAQ({ items = DEFAULT_ITEMS }: { items?: FAQItem[] }) {

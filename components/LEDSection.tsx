@@ -136,7 +136,7 @@ export default function LEDSection() {
           <div className="flex items-center gap-3 mb-6">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Fonctionnalité exclusive
+              Système LED intégré
             </span>
           </div>
 
@@ -165,9 +165,9 @@ export default function LEDSection() {
           </h2>
 
           <p className="text-[1.02rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 440 }}>
-            LED intégré dans le fuselage et le cockpit. Fuselage et cockpit illuminés
-            environ 20 secondes. Interrupteur sous le socle. Batterie lithium rechargeable
-            par USB — câble inclus.
+            Un interrupteur sous le socle. Le fuselage s'allume, le cockpit aussi —
+            vingt secondes, précisément. Batterie lithium rechargeable par USB.
+            Câble de charge inclus.
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10" style={{ maxWidth: 420 }}>

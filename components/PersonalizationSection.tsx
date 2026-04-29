@@ -75,7 +75,7 @@ export default function PersonalizationSection() {
           <div className="flex items-center gap-3 mb-6">
             <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
             <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Gravure +15€
+              Option gravure · +15€
             </span>
           </div>
 
@@ -92,8 +92,8 @@ export default function PersonalizationSection() {
           </h2>
 
           <p className="text-[1.02rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 420 }}>
-            Faites graver un nom, une date ou une immatriculation sur le socle en bois.
-            Une pièce vraiment unique, pensée pour durer.
+            Un nom. Une date. Une immatriculation. Gravés au laser sur le socle
+            en bois massif — pour toujours.
           </p>
 
           <div className="space-y-3 mb-10">
