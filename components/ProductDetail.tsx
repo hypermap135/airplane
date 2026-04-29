@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, related, type Product } from "@/lib/products";
 import ProductCard from "./ProductCard";
@@ -17,9 +18,14 @@ const SPECS: { label: string; value: string }[] = [
 ];
 
 export default function ProductDetail({ product }: { product: Product }) {
+  const images = product.images && product.images.length > 0
+    ? product.images
+    : [product.image];
+
+  const [activeImg, setActiveImg] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [imgError, setImgError] = useState(false);
   const [gravure, setGravure] = useState(false);
+  const [thumbErrors, setThumbErrors] = useState<Record<number, boolean>>({});
   const { add } = useCart();
   const { setOpen } = useCartDrawer();
 
@@ -32,10 +38,21 @@ export default function ProductDetail({ product }: { product: Product }) {
     setOpen(true);
   };
 
+  const handleThumbError = useCallback((idx: number) => {
+    setThumbErrors(prev => ({ ...prev, [idx]: true }));
+  }, []);
+
   const relatedItems = related(product, 4);
 
+  const collectionLabel = product.collection.charAt(0).toUpperCase() + product.collection.slice(1);
+
   return (
-    <div style={{ background: "#010108", minHeight: "100vh" }}>
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      style={{ background: "#030308", minHeight: "100vh" }}
+    >
       <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 pt-28 pb-24">
 
         {/* Breadcrumb */}
@@ -44,9 +61,11 @@ export default function ProductDetail({ product }: { product: Product }) {
             Accueil
           </Link>
           <span className="font-mono text-[0.6rem]" style={{ color: "rgba(58,142,255,0.5)" }}>/</span>
-          <Link href={`/collections/${product.collection}`}
-            className="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-white hover:opacity-100 transition-opacity capitalize">
-            {product.collection}
+          <Link
+            href={`/collections/${product.collection}`}
+            className="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-white hover:opacity-100 transition-opacity capitalize"
+          >
+            {collectionLabel}
           </Link>
           <span className="font-mono text-[0.6rem]" style={{ color: "rgba(58,142,255,0.5)" }}>/</span>
           <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(255,255,255,0.7)" }}>
@@ -55,105 +74,177 @@ export default function ProductDetail({ product }: { product: Product }) {
         </nav>
 
         {/* Main grid */}
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-start">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16 xl:gap-24 items-start">
 
-          {/* ── Image ── */}
-          <div className="relative" style={{ borderRadius: "1.5rem", overflow: "hidden", background: "#0c0c1a" }}>
-            {/* Glow ring */}
-            <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-              borderRadius: "inherit",
-              boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 80px rgba(58,142,255,0.05)",
-            }} />
+          {/* ── Image gallery ── */}
+          <div className="relative">
+            {/* Radial glow behind image */}
+            <div
+              aria-hidden
+              className="absolute pointer-events-none"
+              style={{
+                inset: "-20% -30%",
+                background: "radial-gradient(ellipse 70% 60% at 40% 50%, rgba(26,74,255,0.12) 0%, transparent 70%)",
+                zIndex: 0,
+              }}
+            />
 
-            <div style={{ aspectRatio: "4/5", position: "relative" }}>
-              {!imgError ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                  onError={() => setImgError(true)}
-                  style={{ display: "block" }}
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-4"
-                  style={{ background: "linear-gradient(145deg, #0d0d20 0%, #080816 100%)" }}>
-                  <svg width="80" height="40" viewBox="0 0 64 32" fill="none" opacity={0.15}>
-                    <path d="M2 20 L20 8 L44 6 L58 14 L44 14 L36 20 Z" fill="white"/>
-                    <path d="M20 14 L20 22 L16 24" stroke="white" strokeWidth="1.5"/>
-                  </svg>
-                  <span className="font-mono text-[0.6rem] tracking-[0.22em] uppercase" style={{ color: "rgba(58,142,255,0.4)" }}>
-                    {product.collection} · {product.scale ?? "maquette"}
-                  </span>
-                </div>
-              )}
+            <div className="relative z-10 flex flex-col gap-3">
+              {/* Main image */}
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  borderRadius: "1.5rem",
+                  background: "#0c0c1a",
+                  aspectRatio: "4/3",
+                  boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px rgba(0,0,0,0.6)",
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeImg}
+                    src={images[activeImg]}
+                    alt={product.title}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    style={{ display: "block" }}
+                  />
+                </AnimatePresence>
 
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: "linear-gradient(to top, rgba(12,12,26,0.6) 0%, transparent 40%)",
-              }} />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 pointer-events-none" style={{
+                  background: "linear-gradient(to top, rgba(3,3,8,0.5) 0%, transparent 45%)",
+                }} />
 
-              {!product.inStock && (
-                <div className="absolute inset-0 flex items-center justify-center"
-                  style={{ background: "rgba(1,1,8,0.65)", backdropFilter: "blur(6px)" }}>
-                  <span className="font-mono text-[0.75rem] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
-                    {product.comingSoon ? "Bientôt disponible" : "Épuisé"}
-                  </span>
-                </div>
-              )}
+                {/* Out of stock overlay */}
+                {!product.inStock && (
+                  <div className="absolute inset-0 flex items-center justify-center"
+                    style={{ background: "rgba(3,3,8,0.65)", backdropFilter: "blur(6px)" }}>
+                    <span className="font-mono text-[0.75rem] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
+                      {product.comingSoon ? "Bientôt disponible" : "Épuisé"}
+                    </span>
+                  </div>
+                )}
 
-              {/* Scale badge */}
-              {product.scale && (
-                <div className="absolute bottom-4 right-4">
-                  <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-                    {product.scale}
-                  </span>
-                </div>
+                {/* Scale badge */}
+                {product.scale && (
+                  <div className="absolute bottom-4 right-4">
+                    <span
+                      className="font-mono text-[0.6rem] tracking-[0.18em] uppercase px-2.5 py-1"
+                      style={{
+                        borderRadius: 999,
+                        background: "rgba(3,3,8,0.7)",
+                        border: "1px solid rgba(58,142,255,0.25)",
+                        color: "rgba(58,142,255,0.7)",
+                      }}
+                    >
+                      {product.scale}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Thumbnail strip — vertical on desktop, horizontal scroll on mobile */}
+              {images.length > 1 && (
+                <>
+                  {/* Mobile: horizontal scroll */}
+                  <div
+                    className="flex gap-2 overflow-x-auto pb-1 lg:hidden"
+                    style={{ scrollbarWidth: "none" }}
+                  >
+                    {images.map((src, idx) => (
+                      <ThumbButton
+                        key={idx}
+                        src={src}
+                        alt={`${product.title} — vue ${idx + 1}`}
+                        active={activeImg === idx}
+                        hasError={!!thumbErrors[idx]}
+                        onError={() => handleThumbError(idx)}
+                        onClick={() => setActiveImg(idx)}
+                        mobile
+                      />
+                    ))}
+                  </div>
+
+                  {/* Desktop: vertical stack below main image */}
+                  <div className="hidden lg:flex flex-col gap-2.5">
+                    {images.slice(1).map((src, i) => {
+                      const idx = i + 1;
+                      return (
+                        <ThumbButton
+                          key={idx}
+                          src={src}
+                          alt={`${product.title} — vue ${idx + 1}`}
+                          active={activeImg === idx}
+                          hasError={!!thumbErrors[idx]}
+                          onError={() => handleThumbError(idx)}
+                          onClick={() => setActiveImg(idx)}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
           </div>
 
-          {/* ── Info ── */}
+          {/* ── Info panel ── */}
           <div className="flex flex-col">
-            {/* Eyebrow */}
-            <div className="flex items-center gap-3 mb-6">
+
+            {/* Collection breadcrumb in mono small caps */}
+            <div className="flex items-center gap-3 mb-5">
               <div style={{ width: 20, height: 1, background: "rgba(58,142,255,0.6)" }} />
-              <span className="font-mono text-[0.6rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-                Collection {product.collection}
-              </span>
+              <Link
+                href={`/collections/${product.collection}`}
+                className="font-mono text-[0.6rem] tracking-[0.28em] transition-opacity hover:opacity-100"
+                style={{ color: "rgba(58,142,255,0.6)", textTransform: "uppercase", fontVariant: "small-caps" }}
+              >
+                ★ Collection · {collectionLabel}
+              </Link>
             </div>
 
             {/* Title */}
-            <h1 className="font-black uppercase leading-[0.92] tracking-tight text-white mb-2"
-              style={{ fontSize: "clamp(2rem,4.5vw,3.5rem)", letterSpacing: "-0.02em" }}>
+            <h1
+              className="font-black uppercase leading-tight text-white mb-2"
+              style={{
+                fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                letterSpacing: "-0.02em",
+                lineHeight: 0.95,
+              }}
+            >
               {product.title}
             </h1>
             {product.subtitle && (
-              <p className="text-[1rem] leading-relaxed mb-6" style={{ color: "#6a7080" }}>
+              <p className="text-[1rem] leading-relaxed mb-5" style={{ color: "#6a7080" }}>
                 {product.subtitle}
               </p>
             )}
 
-            {/* Stars */}
-            <div className="flex items-center gap-2 mb-4">
+            {/* Star rating */}
+            <div className="flex items-center gap-2 mb-5">
               <div className="flex items-center gap-0.5">
-                {[1,2,3,4,5].map(i => (
+                {[1, 2, 3, 4, 5].map(i => (
                   <span key={i} aria-hidden style={{ color: "#f59e0b", fontSize: "0.95rem" }}>★</span>
                 ))}
               </div>
               <span className="font-bold text-white text-[0.88rem]">4.9</span>
-              <span className="font-mono text-[0.58rem] tracking-[0.12em]" style={{ color: "#565870" }}>· +2 000 avis clients</span>
+              <span className="font-mono text-[0.58rem] tracking-[0.12em]" style={{ color: "#565870" }}>
+                · +2 000 avis clients
+              </span>
             </div>
 
             {/* Price */}
             <div className="flex items-end gap-4 mb-6">
-              <div className="font-black text-white" style={{ fontSize: "clamp(1.8rem,3vw,2.4rem)" }}>
-                {formatPrice(product.price)}
+              <div className="font-black text-white" style={{ fontSize: "clamp(2rem,3vw,3rem)", lineHeight: 1 }}>
+                {formatPrice(product.price + (gravure ? 15 : 0))}
               </div>
               {product.compareAt && (
                 <>
-                  <div className="text-[1rem] line-through mb-1" style={{ color: "#2a3040" }}>
+                  <div className="text-[1rem] line-through mb-1" style={{ color: "rgba(255,255,255,0.2)" }}>
                     {formatPrice(product.compareAt)}
                   </div>
                   <div className="mb-1 px-2.5 py-0.5 rounded-full text-[0.72rem] font-bold"
@@ -162,6 +253,31 @@ export default function ProductDetail({ product }: { product: Product }) {
                   </div>
                 </>
               )}
+            </div>
+
+            {/* Trust badges — glass pills */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {[
+                { icon: "🚀", label: "Livraison 7–15j" },
+                { icon: "↩️", label: "30j retour" },
+                { icon: "🔒", label: "Paiement sécurisé" },
+              ].map(({ icon, label }) => (
+                <div
+                  key={label}
+                  className="inline-flex items-center gap-2 px-3 py-2"
+                  style={{
+                    borderRadius: 999,
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(12px)",
+                  }}
+                >
+                  <span aria-hidden style={{ fontSize: "0.85rem" }}>{icon}</span>
+                  <span className="font-mono text-[0.58rem] tracking-[0.1em] uppercase text-white" style={{ opacity: 0.65 }}>
+                    {label}
+                  </span>
+                </div>
+              ))}
             </div>
 
             {/* Stock urgency */}
@@ -178,28 +294,6 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </span>
               </div>
             )}
-
-            {/* Trust badges — ABOVE CTA */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {[
-                { icon: "🚚", top: "Livraison", bot: "7–15 jours" },
-                { icon: "↩", top: "Retour",    bot: "30 jours" },
-                { icon: "🔒", top: "Paiement", bot: "Sécurisé" },
-              ].map((item) => (
-                <div key={item.top} className="flex flex-col items-center justify-center gap-1 py-3"
-                  style={{
-                    borderRadius: "0.875rem",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    background: "rgba(12,12,26,0.6)",
-                  }}>
-                  <span aria-hidden style={{ fontSize: "1rem" }}>{item.icon}</span>
-                  <div className="font-mono text-[0.55rem] tracking-[0.15em] uppercase" style={{ color: "#3a4055" }}>
-                    {item.top}
-                  </div>
-                  <div className="font-semibold text-white text-[0.78rem]">{item.bot}</div>
-                </div>
-              ))}
-            </div>
 
             {/* Gravure upsell */}
             {product.collection !== "accessoires" && product.inStock && (
@@ -221,6 +315,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                       borderRadius: 5,
                       border: gravure ? "2px solid #3a8eff" : "2px solid rgba(255,255,255,0.2)",
                       background: gravure ? "#3a8eff" : "transparent",
+                      transition: "all 0.15s ease",
                     }}>
                     {gravure && (
                       <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
@@ -229,7 +324,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-white text-[0.84rem]">Ajouter une gravure personnalisée</span>
                       <span className="font-mono text-[0.65rem] font-bold px-2 py-0.5"
                         style={{
@@ -247,11 +342,33 @@ export default function ProductDetail({ product }: { product: Product }) {
             )}
 
             {/* CTA */}
-            <div className="mb-8">
+            <div className="mb-4">
               {product.inStock ? (
-                <button onClick={onAdd} className="btn-chrome w-full text-center justify-center">
-                  {gravure ? `Ajouter au panier — ${formatPrice(product.price + 15)} →` : "Ajouter au panier →"}
-                </button>
+                <motion.button
+                  onClick={onAdd}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full font-black text-white text-[0.9rem] tracking-[0.1em] uppercase py-4 px-8 transition-all duration-200"
+                  style={{
+                    borderRadius: "0.875rem",
+                    background: "linear-gradient(135deg, #1a4aff, #0a2fd4)",
+                    boxShadow: "0 8px 32px rgba(26,74,255,0.35), inset 0 1px 0 rgba(255,255,255,0.12)",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #2a5aff, #1a3fe4)";
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 12px 40px rgba(26,74,255,0.5), inset 0 1px 0 rgba(255,255,255,0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #1a4aff, #0a2fd4)";
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 32px rgba(26,74,255,0.35), inset 0 1px 0 rgba(255,255,255,0.12)";
+                  }}
+                >
+                  {gravure
+                    ? `Ajouter au panier — ${formatPrice(product.price + 15)} →`
+                    : "Ajouter au panier →"}
+                </motion.button>
               ) : (
                 <NotifyForm
                   productTitle={product.title}
@@ -259,6 +376,17 @@ export default function ProductDetail({ product }: { product: Product }) {
                   onSubmit={() => setSubmitted(true)}
                 />
               )}
+            </div>
+
+            {/* Secondary link */}
+            <div className="mb-8">
+              <Link
+                href={`/collections/${product.collection}`}
+                className="inline-flex items-center gap-1 font-mono text-[0.62rem] tracking-[0.15em] uppercase transition-opacity hover:opacity-100"
+                style={{ color: "rgba(255,255,255,0.3)" }}
+              >
+                Voir toute la collection {collectionLabel} →
+              </Link>
             </div>
 
             {/* Payment logos */}
@@ -282,17 +410,20 @@ export default function ProductDetail({ product }: { product: Product }) {
               <div className="font-mono text-[0.6rem] tracking-[0.28em] uppercase mb-4" style={{ color: "rgba(58,142,255,0.5)" }}>
                 Caractéristiques
               </div>
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                {[...SPECS, ...(product.scale ? [{ label: "Échelle", value: product.scale }] : [])].map((s, i) => (
-                  <div key={s.label} className="flex items-center justify-between py-3 gap-6"
-                    style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+              <dl style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                {[...SPECS, ...(product.scale ? [{ label: "Échelle", value: product.scale }] : [])].map((s) => (
+                  <div
+                    key={s.label}
+                    className="flex items-center justify-between py-3 gap-6"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+                  >
                     <dt className="font-mono text-[0.65rem] tracking-[0.1em] uppercase" style={{ color: "#3a4055" }}>
                       {s.label}
                     </dt>
-                    <dd className="text-[0.82rem] text-white text-right">{s.value}</dd>
+                    <dd className="font-mono text-[0.82rem] text-white text-right">{s.value}</dd>
                   </div>
                 ))}
-              </div>
+              </dl>
             </div>
           </div>
         </div>
@@ -319,9 +450,85 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
+
+/* ── Thumbnail button ─────────────────────────────────────────────────── */
+
+function ThumbButton({
+  src,
+  alt,
+  active,
+  hasError,
+  onError,
+  onClick,
+  mobile = false,
+}: {
+  src: string;
+  alt: string;
+  active: boolean;
+  hasError: boolean;
+  onError: () => void;
+  onClick: () => void;
+  mobile?: boolean;
+}) {
+  const base: React.CSSProperties = {
+    borderRadius: "0.75rem",
+    overflow: "hidden",
+    border: active
+      ? "2px solid rgba(58,142,255,0.7)"
+      : "2px solid rgba(255,255,255,0.06)",
+    background: "#0c0c1a",
+    cursor: "pointer",
+    transition: "border-color 0.2s ease, opacity 0.2s ease",
+    opacity: active ? 1 : 0.55,
+    flexShrink: 0,
+  };
+
+  const mobileStyle: React.CSSProperties = {
+    ...base,
+    width: 72,
+    height: 54,
+  };
+
+  const desktopStyle: React.CSSProperties = {
+    ...base,
+    width: "100%",
+    aspectRatio: "16/5",
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={mobile ? mobileStyle : desktopStyle}
+      aria-label={alt}
+      aria-pressed={active}
+    >
+      {!hasError ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+          onError={onError}
+          style={{ display: "block" }}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center"
+          style={{ background: "linear-gradient(145deg, #0d0d20 0%, #080816 100%)" }}>
+          <svg width="24" height="12" viewBox="0 0 64 32" fill="none" opacity={0.15}>
+            <path d="M2 20 L20 8 L44 6 L58 14 L44 14 L36 20 Z" fill="white"/>
+          </svg>
+        </div>
+      )}
+    </button>
+  );
+}
+
+/* ── Notify form (out of stock) ───────────────────────────────────────── */
 
 function NotifyForm({
   productTitle,
@@ -346,11 +553,15 @@ function NotifyForm({
       <h3 className="font-bold text-white text-[0.9rem] mb-4">Prévenez-moi du retour en stock</h3>
       {submitted ? (
         <p className="text-[0.85rem]" style={{ color: "#6a7080" }}>
-          Merci ! Nous vous préviendrons dès que <span className="text-white font-medium">{productTitle}</span> sera de nouveau disponible.
+          Merci ! Nous vous préviendrons dès que{" "}
+          <span className="text-white font-medium">{productTitle}</span>{" "}
+          sera de nouveau disponible.
         </p>
       ) : (
-        <form onSubmit={(e) => { e.preventDefault(); if (email.trim().length > 3) onSubmit(); }}
-          className="flex flex-col sm:flex-row gap-2">
+        <form
+          onSubmit={(e) => { e.preventDefault(); if (email.trim().length > 3) onSubmit(); }}
+          className="flex flex-col sm:flex-row gap-2"
+        >
           <input
             type="email"
             required

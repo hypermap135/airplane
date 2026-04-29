@@ -5,8 +5,10 @@ import ReviewsSection from "@/components/ReviewsSection";
 import UniqueFeatures from "@/components/UniqueFeatures";
 import LEDSection from "@/components/LEDSection";
 import PersonalizationSection from "@/components/PersonalizationSection";
+import ManifestoSection from "@/components/ManifestoSection";
 import StatsSection from "@/components/StatsSection";
 import CTASection from "@/components/CTASection";
+import CinematicReveal from "@/components/CinematicReveal";
 
 export default function HomePage() {
   return (
@@ -15,9 +17,11 @@ export default function HomePage() {
       <TrustBar />
       <StatsSection />
       <BestSellers />
+      <CinematicReveal />
       <UniqueFeatures />
       <LEDSection />
       <PersonalizationSection />
+      <ManifestoSection />
       <ReviewsSection />
       <CTASection />
     </>

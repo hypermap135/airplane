@@ -56,7 +56,13 @@ export default function BestSellers() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden" style={{ background: "#06060f" }}>
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, #010108 0%, #06060f 15%, #06060f 85%, #010108 100%)",
+      }}
+    >
       {/* Background accent */}
       <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
         background: "radial-gradient(ellipse 80% 60% at 10% 50%, rgba(18,50,160,0.09) 0%, transparent 65%)",
@@ -70,19 +76,41 @@ export default function BestSellers() {
 
         {/* Section heading */}
         <div ref={headingRef} className="mb-12 md:mb-16">
-          <div className="flex items-center gap-3 mb-5">
-            <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
-            <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Collection
+
+          {/* Eyebrow row — accent line + label */}
+          <div className="flex items-center gap-4 mb-6">
+            <div
+              aria-hidden
+              style={{
+                width: 40,
+                height: 1,
+                background: "rgba(58,142,255,0.6)",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              className="font-mono text-[0.6rem] tracking-[0.3em] uppercase"
+              style={{ color: "rgba(58,142,255,0.65)" }}
+            >
+              Sélection · Bestsellers
             </span>
           </div>
+
           <div className="flex items-end justify-between flex-wrap gap-6">
             <div>
-              <h2 className="font-black text-white uppercase leading-[0.9] tracking-tight mb-3"
-                style={{ fontSize: "clamp(2.2rem,5.5vw,4.5rem)", letterSpacing: "-0.02em" }}>
-                Les pièces<br />maîtresses
+              <h2
+                className="font-black text-white leading-[0.88] mb-4"
+                style={{
+                  fontSize: "clamp(2.8rem, 5vw, 5.5rem)",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Les plus aimés.
               </h2>
-              <p className="text-[0.88rem] leading-relaxed" style={{ color: "#565870", maxWidth: 420 }}>
+              <p
+                className="text-[0.88rem] leading-relaxed"
+                style={{ color: "#565870", maxWidth: 420 }}
+              >
                 Sélectionnés parmi +2 000 commandes. Pilotes, collectionneurs, passionnés — c&apos;est ce qu&apos;ils ont choisi en premier.
               </p>
             </div>
@@ -91,10 +119,18 @@ export default function BestSellers() {
                 {[1,2,3,4,5].map(i => (
                   <span key={i} aria-hidden style={{ color: "#f59e0b", fontSize: "0.9rem" }}>★</span>
                 ))}
-                <span className="font-mono text-[0.62rem] tracking-[0.12em] ml-1" style={{ color: "#565870" }}>4.9 · +2 000 avis</span>
+                <span
+                  className="font-mono text-[0.62rem] tracking-[0.12em] ml-1"
+                  style={{ color: "#565870" }}
+                >
+                  4.9 · +2 000 avis
+                </span>
               </div>
               <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.08)" }} />
-              <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "#565870" }}>
+              <span
+                className="font-mono text-[0.6rem] tracking-[0.18em] uppercase"
+                style={{ color: "#565870" }}
+              >
                 Livraison 7–15 jours
               </span>
             </div>

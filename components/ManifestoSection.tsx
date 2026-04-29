@@ -1,136 +1,135 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const QUOTE = "Chaque pièce mérite la même attention qu'un vrai avion.";
-const WORDS  = QUOTE.split(" ");
-
-const PILLARS = [
-  { hud: "MAT", label: "Résine monobloc" },
-  { hud: "FIN", label: "Peinture main" },
-  { hud: "LED", label: "Éclairage intégré" },
-  { hud: "SCL", label: "Échelle 1/147" },
-  { hud: "SVC", label: "Retour 30 jours" },
+const LINES = [
+  "L'aviation est une passion.",
+  "Une passion mérite une sculpture.",
+  "Pas une maquette en plastique.",
+  "Une pièce de résine coulée sous pression.",
+  "Peinte à la main.",
+  "Avec une LED sous le cockpit.",
+  "Pour ceux qui savent.",
 ];
 
-export default function ManifestoSection() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const eyebrowRef  = useRef<HTMLDivElement>(null);
-  const quoteRef    = useRef<HTMLQuoteElement>(null);
-  const dividerRef  = useRef<HTMLDivElement>(null);
-  const pillarsRef  = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
-
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        /* Set initial states in JS — not in JSX */
-        gsap.set(eyebrowRef.current, { opacity: 0, y: 30, filter: "blur(8px)" });
-        gsap.set(".manifesto-word", { opacity: 0.04, filter: "blur(8px)", y: 28 });
-        gsap.set(dividerRef.current, { scaleX: 0, opacity: 0 });
-        gsap.set(".manifesto-pill", { opacity: 0, y: 36, scale: 0.75 });
-
-        gsap.to(eyebrowRef.current,
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "expo.out",
-            scrollTrigger: { trigger: sectionRef.current, start: "top 82%" } }
-        );
-
-        const words = quoteRef.current?.querySelectorAll(".manifesto-word") ?? [];
-        gsap.to(words, {
-          opacity: 1, filter: "blur(0px)", y: 0,
-          stagger: 0.07,
-          scrollTrigger: {
-            trigger: quoteRef.current,
-            start: "top 78%",
-            end: "bottom 28%",
-            scrub: 1.2,
-          },
-        });
-
-        gsap.to(dividerRef.current,
-          { scaleX: 1, opacity: 1, duration: 1.6, ease: "expo.inOut",
-            scrollTrigger: { trigger: dividerRef.current, start: "top 88%" } }
-        );
-
-        gsap.to(".manifesto-pill", {
-          opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
-          stagger: 0.08, duration: 0.75, ease: "back.out(2)",
-          scrollTrigger: { trigger: pillarsRef.current, start: "top 88%" },
-        });
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+/* Renders one line broken into animated word spans */
+function AnimatedLine({
+  line,
+  lineIndex,
+}: {
+  line: string;
+  lineIndex: number;
+}) {
+  const words = line.split(" ");
 
   return (
-    <section ref={sectionRef} className="relative py-28 md:py-44 overflow-hidden" style={{ background: "#010108" }}>
-      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: "linear-gradient(rgba(58,142,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(58,142,255,0.02) 1px, transparent 1px)",
-        backgroundSize: "40px 40px",
-        opacity: 0.5,
-      }} />
-      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse 80% 60% at 50% 55%, rgba(18,50,160,0.1) 0%, transparent 65%)",
-      }} />
+    <p style={{ lineHeight: 1.18, margin: 0 }}>
+      {words.map((word, wi) => (
+        <motion.span
+          key={wi}
+          className="inline-block mr-[0.28em]"
+          variants={{
+            hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
+            visible: {
+              opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
+              transition: {
+                duration: 0.65,
+                ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+                delay: lineIndex * 0.12 + wi * 0.05,
+              },
+            },
+          }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </p>
+  );
+}
 
-      <div className="relative mx-auto max-w-5xl px-6 md:px-8 text-center">
-        <div ref={eyebrowRef} className="flex items-center justify-center gap-3 mb-12">
-          <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.5)" }} />
-          <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.5)" }}>
-            Notre philosophie
-          </span>
-          <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.5)" }} />
-        </div>
+export default function ManifestoSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  /* Fire once when 25 % of the section enters the viewport */
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
 
-        <blockquote ref={quoteRef}
-          className="font-black uppercase leading-[1.05]"
-          style={{ fontSize: "clamp(2rem,5.5vw,4.2rem)", letterSpacing: "-0.01em" }}>
-          {WORDS.map((word, i) => (
-            <span key={i} className="manifesto-word inline-block"
-              style={{
-                marginRight: "0.28em",
-                background: "linear-gradient(135deg, #ffffff 0%, #c0c8d4 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}>
-              {word}
-            </span>
+  const sigDelay = LINES.length * 0.12 + 0.3;
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative py-28 md:py-44 overflow-hidden"
+      style={{ background: "#000000" }}
+      aria-label="Notre manifeste"
+    >
+      {/* Subtle vignette to draw focus to centre */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 60% at 50% 50%, transparent 55%, rgba(0,0,0,0.65) 100%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-4xl px-6 md:px-12 text-center">
+        {/* Manifesto text — word-by-word stagger */}
+        <motion.div
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={{ hidden: {}, visible: {} }}
+          className="flex flex-col gap-4"
+          style={{
+            fontSize: "clamp(1.8rem,4vw,4.5rem)",
+            fontWeight: 900,
+            color: "#ffffff",
+            letterSpacing: "-0.025em",
+          }}
+        >
+          {LINES.map((line, i) => (
+            <AnimatedLine key={i} line={line} lineIndex={i} />
           ))}
-        </blockquote>
+        </motion.div>
 
-        <div className="mt-8 font-mono text-[0.65rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
-          — L&apos;équipe AirplaneStore
-        </div>
+        {/* Blue rule */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={
+            isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 }
+          }
+          transition={{
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+            delay: sigDelay,
+          }}
+          className="mt-14 mb-7 mx-auto"
+          style={{
+            height: 1,
+            maxWidth: 160,
+            background:
+              "linear-gradient(90deg, transparent, rgba(58,142,255,0.6), transparent)",
+            transformOrigin: "center",
+          }}
+        />
 
-        <div ref={dividerRef} className="mt-14 mb-12 origin-center" style={{
-          height: 1,
-          background: "linear-gradient(to right, transparent, rgba(58,142,255,0.5) 50%, transparent)",
-          boxShadow: "0 0 12px rgba(58,142,255,0.3)",
-        }} />
-
-        <div ref={pillarsRef} className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-          {PILLARS.map((p) => (
-            <div key={p.hud}
-              className="manifesto-pill flex items-center gap-2.5 px-4 py-2.5"
-              style={{
-                borderRadius: 999,
-                border: "1px solid rgba(58,142,255,0.2)",
-                background: "rgba(12,12,26,0.8)",
-                backdropFilter: "blur(12px)",
-              }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.18em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-                {p.hud}
-              </span>
-              <span className="text-[0.78rem] font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{p.label}</span>
-            </div>
-          ))}
-        </div>
+        {/* Signature */}
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={
+            isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }
+          }
+          transition={{
+            duration: 0.7,
+            ease: "easeOut",
+            delay: sigDelay + 0.22,
+          }}
+          className="font-mono text-[0.65rem] tracking-[0.28em] uppercase"
+          style={{ color: "rgba(255,255,255,0.28)" }}
+        >
+          AirplaneStore — depuis 2024
+        </motion.p>
       </div>
     </section>
   );

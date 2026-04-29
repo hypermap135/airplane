@@ -7,55 +7,74 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const STATS = [
-  { value: 2000, suffix: "+",  label: "Passionnés",    hud: "CLI" },
-  { value: 4.9,  suffix: "/5", label: "Note moyenne",  hud: "RTG", decimals: 1 },
-  { value: 26,   suffix: "",   label: "Modèles",       hud: "CAT" },
-  { value: 30,   suffix: "j",  label: "Retour libre",  hud: "SVC" },
+  {
+    display: "2 000+",
+    value: 2000,
+    suffix: "+",
+    label: "Passionnés",
+    decimals: 0,
+    formatFn: (v: number) => Math.round(v).toLocaleString("fr-FR") + "+",
+  },
+  {
+    display: "4,9/5",
+    value: 4.9,
+    suffix: "/5",
+    label: "Note moyenne",
+    decimals: 1,
+    formatFn: (v: number) => v.toFixed(1).replace(".", ",") + "/5",
+  },
+  {
+    display: "26",
+    value: 26,
+    suffix: "",
+    label: "Modèles",
+    decimals: 0,
+    formatFn: (v: number) => String(Math.round(v)),
+  },
+  {
+    display: "30j",
+    value: 30,
+    suffix: "j",
+    label: "Retour libre",
+    decimals: 0,
+    formatFn: (v: number) => String(Math.round(v)) + "j",
+  },
 ];
 
 export default function StatsSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const lineRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        /* Line sweeps in */
-        gsap.set(lineRef.current, { scaleX: 0 });
-        gsap.to(lineRef.current,
-          { scaleX: 1, duration: 1.4, ease: "expo.inOut",
-            scrollTrigger: { trigger: sectionRef.current, start: "top 85%" } }
-        );
+        /* Stat items slide up */
+        gsap.set(".stat-item", { opacity: 0, y: 40, filter: "blur(6px)" });
+        gsap.to(".stat-item", {
+          opacity: 1, y: 0, filter: "blur(0px)",
+          stagger: 0.1, duration: 0.9, ease: "expo.out",
+          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+        });
 
-        /* Stats pop up */
-        gsap.set(".stat-item", { opacity: 0, y: 60, filter: "blur(10px)" });
-        gsap.to(".stat-item",
-          {
-            opacity: 1, y: 0, filter: "blur(0px)",
-            stagger: 0.1, duration: 1, ease: "expo.out",
-            scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
-          }
-        );
-
-        /* Counters */
+        /* Animated counters */
         STATS.forEach((stat, i) => {
-          const el = document.querySelector<HTMLElement>(`.stat-val-${i}`);
+          const el = document.querySelector<HTMLElement>(`.sv-${i}`);
           if (!el) return;
           const obj = { val: 0 };
           gsap.to(obj, {
             val: stat.value,
-            duration: 2.4,
+            duration: 2.2,
             ease: "power2.out",
             delay: i * 0.1,
-            scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" },
-            onUpdate: () => {
-              const d = stat.decimals ?? 0;
-              const v = d > 0
-                ? obj.val.toFixed(d).replace(".", ",")
-                : Math.round(obj.val).toLocaleString("fr-FR");
-              el.textContent = v + stat.suffix;
+            snap: { val: stat.decimals === 0 ? 1 : 0 },
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 80%",
+              toggleActions: "play none none none",
+            },
+            onUpdate() {
+              el.textContent = stat.formatFn(obj.val);
             },
           });
         });
@@ -63,15 +82,9 @@ export default function StatsSection() {
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(".stat-item", { opacity: 1, y: 0, filter: "none" });
-        gsap.set(lineRef.current, { scaleX: 1 });
         STATS.forEach((stat, i) => {
-          const el = document.querySelector<HTMLElement>(`.stat-val-${i}`);
-          if (!el) return;
-          const d = stat.decimals ?? 0;
-          const v = d > 0
-            ? stat.value.toFixed(d).replace(".", ",")
-            : stat.value.toLocaleString("fr-FR");
-          el.textContent = v + stat.suffix;
+          const el = document.querySelector<HTMLElement>(`.sv-${i}`);
+          if (el) el.textContent = stat.formatFn(stat.value);
         });
       });
     }, sectionRef);
@@ -79,46 +92,51 @@ export default function StatsSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-20 md:py-28 overflow-hidden"
-      style={{ background: "#040410", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(18,50,160,0.08) 0%, transparent 70%)",
-      }} />
-
-      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
-        {/* Top divider */}
-        <div ref={lineRef} className="mb-16 origin-left" style={{
-          height: 1,
-          background: "linear-gradient(to right, rgba(58,142,255,0.5) 0%, rgba(58,142,255,0.1) 60%, transparent 100%)",
-        }} />
-
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+    <section
+      ref={sectionRef}
+      className="relative py-16"
+      style={{
+        background: "linear-gradient(135deg, #0a0a18 0%, #040410 100%)",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      <div className="mx-auto max-w-7xl px-6 md:px-12">
+        <div className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0">
           {STATS.map((stat, i) => (
-            <div key={stat.hud} className="stat-item relative">
-              {/* Divider between items (desktop) */}
+            <div
+              key={stat.label}
+              className="stat-item relative flex-1 flex flex-col items-center justify-center py-10 sm:py-0 sm:px-8 text-center"
+            >
+              {/* Vertical divider between items */}
               {i > 0 && (
-                <div className="hidden md:block absolute -left-2 top-4 bottom-4 w-px"
-                  style={{ background: "rgba(255,255,255,0.07)" }} />
+                <div
+                  aria-hidden
+                  className="hidden sm:block absolute left-0 top-6 bottom-6 w-px"
+                  style={{ background: "rgba(255,255,255,0.07)" }}
+                />
               )}
-              <div className="font-mono text-[0.6rem] tracking-[0.24em] uppercase mb-3"
-                style={{ color: "rgba(58,142,255,0.5)" }}>
-                {stat.hud}
-              </div>
+
+              {/* Animated number */}
               <div
-                className={`stat-val-${i} font-black leading-none tracking-tight`}
+                className={`sv-${i} font-black leading-none tracking-tight text-white`}
                 style={{
-                  fontSize: "clamp(2.8rem,6vw,5.2rem)",
-                  letterSpacing: "-0.03em",
-                  background: "linear-gradient(135deg, #ffffff 0%, #c0c8d4 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>
-                0{stat.suffix}
+                  fontSize: "clamp(2.8rem, 5vw, 5rem)",
+                  letterSpacing: "-0.04em",
+                }}
+              >
+                {stat.display}
               </div>
-              <p className="mt-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase"
-                style={{ color: "#444858" }}>
+
+              {/* Label */}
+              <p
+                className="font-mono uppercase mt-3"
+                style={{
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.25em",
+                  color: "rgba(58,142,255,0.6)",
+                }}
+              >
                 {stat.label}
               </p>
             </div>

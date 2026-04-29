@@ -1,82 +1,123 @@
-const ITEMS = [
-  "✈ +2 000 clients satisfaits",
-  "★★★★★ 4.9 / 5",
-  "Livraison offerte dès 100€",
-  "Satisfait ou remboursé 30 jours",
-  "47 cm · Résine monobloc",
-  "LED intégré rechargeable USB",
-  "Paiement 3x sans frais",
-  "Emballage premium offert",
-];
+"use client";
 
-const PAYMENT_METHODS = [
-  { label: "Visa",      width: 38 },
-  { label: "MC",        width: 30 },
-  { label: "CB",        width: 26 },
-  { label: "PayPal",    width: 48 },
-  { label: "Apple Pay", width: 52 },
+import { useRef, useEffect } from "react";
+
+const ITEMS = [
+  { icon: "★", text: "4.9/5 — 2 000+ avis clients" },
+  { icon: "🚚", text: "Livraison France & Europe" },
+  { icon: "↩️", text: "Retour 30 jours" },
+  { icon: "🔒", text: "Paiement 100% sécurisé" },
+  { icon: "✦",  text: "Résine premium · Made in Asia" },
 ];
 
 export default function TrustBar() {
-  const tripled = [...ITEMS, ...ITEMS, ...ITEMS];
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  /* Auto-scroll on mobile via CSS-only marquee; on desktop items are static. */
+  useEffect(() => {
+    /* Nothing JS-driven — we rely on CSS animation below for the marquee. */
+  }, []);
+
+  /* Triple the items so the marquee seam is invisible */
+  const marqueeItems = [...ITEMS, ...ITEMS, ...ITEMS];
 
   return (
-    <div style={{ background: "#06060f" }}>
-      {/* Payment strip */}
-      <div className="flex items-center justify-center gap-3 px-6 py-2.5 flex-wrap"
-        style={{
-          borderTop: "1px solid rgba(58,142,255,0.08)",
-          borderBottom: "1px solid rgba(255,255,255,0.04)",
-        }}>
-        <span className="font-mono text-[0.57rem] tracking-[0.18em] uppercase shrink-0" style={{ color: "#3a4055" }}>
-          Paiement sécurisé :
-        </span>
-        {PAYMENT_METHODS.map(pm => (
-          <div key={pm.label}
-            className="inline-flex items-center justify-center px-2.5 py-1 font-mono text-[0.6rem] font-bold"
-            style={{
-              borderRadius: 5,
-              minWidth: pm.width,
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
-              color: "rgba(255,255,255,0.45)",
-              letterSpacing: "0.04em",
-            }}>
-            {pm.label}
+    <div
+      style={{
+        background: "rgba(255,255,255,0.02)",
+        borderTop: "1px solid rgba(255,255,255,0.05)",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}
+    >
+      {/* ── Desktop: static row ── */}
+      <div
+        className="hidden md:flex items-center justify-center gap-8 py-4 px-6 flex-wrap"
+        aria-label="Garanties AirplaneStore"
+      >
+        {ITEMS.map(({ icon, text }, i) => (
+          <div key={i} className="flex items-center gap-2 shrink-0">
+            <span
+              className="text-[0.75rem]"
+              aria-hidden
+              style={{ color: "rgba(58,142,255,0.7)" }}
+            >
+              {icon}
+            </span>
+            <span
+              className="font-mono text-[0.6rem] tracking-[0.15em] uppercase"
+              style={{ color: "rgba(255,255,255,0.45)" }}
+            >
+              {text}
+            </span>
           </div>
         ))}
-        <div style={{ width: 1, height: 14, background: "rgba(255,255,255,0.07)" }} />
-        <span className="font-mono text-[0.57rem] tracking-[0.14em] uppercase" style={{ color: "#3a4055" }}>
-          🔒 SSL 256-bit
-        </span>
       </div>
 
-      {/* Marquee */}
-      <div className="relative overflow-hidden"
-        style={{ borderBottom: "1px solid rgba(58,142,255,0.08)" }}>
+      {/* ── Mobile: auto-scrolling marquee ── */}
+      <div
+        className="md:hidden relative overflow-hidden py-4"
+        aria-label="Garanties AirplaneStore"
+      >
         {/* Fade edges */}
-        <div aria-hidden className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{
-          background: "linear-gradient(90deg, #06060f 0%, transparent 100%)",
-        }} />
-        <div aria-hidden className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{
-          background: "linear-gradient(270deg, #06060f 0%, transparent 100%)",
-        }} />
+        <div
+          aria-hidden
+          className="absolute left-0 top-0 bottom-0 w-10 z-10 pointer-events-none"
+          style={{
+            background: "linear-gradient(90deg, rgba(6,6,15,0.9) 0%, transparent 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute right-0 top-0 bottom-0 w-10 z-10 pointer-events-none"
+          style={{
+            background: "linear-gradient(270deg, rgba(6,6,15,0.9) 0%, transparent 100%)",
+          }}
+        />
 
-        <div className="marquee-track py-3.5">
-          {tripled.map((label, i) => (
-            <span
+        <div
+          ref={trackRef}
+          className="trust-marquee-track flex"
+          style={{ width: "max-content" }}
+        >
+          {marqueeItems.map(({ icon, text }, i) => (
+            <div
               key={i}
-              className="inline-flex items-center gap-4 shrink-0"
-              style={{ margin: "0 2rem" }}
+              className="flex items-center gap-2 shrink-0"
+              style={{ margin: "0 1.75rem" }}
             >
-              <span className="font-mono text-[0.6rem]" style={{ color: "rgba(58,142,255,0.35)" }}>✦</span>
-              <span className="font-mono text-[0.6rem] tracking-[0.22em] uppercase" style={{ color: "rgba(255,255,255,0.22)" }}>
-                {label}
+              <span
+                className="text-[0.75rem]"
+                aria-hidden
+                style={{ color: "rgba(58,142,255,0.7)" }}
+              >
+                {icon}
               </span>
-            </span>
+              <span
+                className="font-mono text-[0.6rem] tracking-[0.15em] uppercase"
+                style={{ color: "rgba(255,255,255,0.45)" }}
+              >
+                {text}
+              </span>
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Inline keyframes — scoped, no global CSS file needed */}
+      <style>{`
+        @keyframes trust-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(calc(-100% / 3)); }
+        }
+        .trust-marquee-track {
+          animation: trust-scroll 22s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .trust-marquee-track {
+            animation: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }

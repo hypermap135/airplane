@@ -8,28 +8,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 const FEATURES = [
   {
-    hud: "MAT-01", icon: "◈",
+    num: "01",
     title: "Indestructible. Pour toujours.",
-    body: "Résine coulée sous pression — immuable. 47 cm de présence sur votre bureau, votre étagère, votre salon. Socle bois massif inclus. Une pièce qui traverse le temps.",
-    stat: "47", statUnit: "cm", statLabel: "Format",
-    accent: "rgba(58,142,255,0.07)",
-    span: "col-span-1 md:col-span-1 lg:col-span-2", large: true,
+    body: "Résine coulée sous pression — immuable. 47 cm de présence sur votre bureau, votre étagère, votre salon. Dix ans, vingt ans — exactement la même pièce.",
+    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/B4394411-C0CC-4A86-AE83-F10D4A500029.jpg",
+    imageAlt: "Maquette avion résine — détail structure",
+    imageLeft: true,
   },
   {
-    hud: "LED-20S", icon: "◉",
+    num: "02",
     title: "Le cockpit s'éveille.",
-    body: "Un interrupteur sous le socle. Le fuselage s'allume, le cockpit aussi — vingt secondes. La conversation commence, sans un mot.",
-    stat: "20", statUnit: "s", statLabel: "Illumination",
-    accent: "rgba(58,142,255,0.1)",
-    span: "col-span-1", large: false,
+    body: "Un interrupteur sous le socle. Le fuselage s'allume, le cockpit aussi — vingt secondes qui transforment une maquette en sculpture lumineuse.",
+    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_Air_France.png",
+    imageAlt: "A380 Air France — éclairage LED intégré",
+    imageLeft: false,
   },
   {
-    hud: "SCL-147", icon: "◇",
+    num: "03",
     title: "Chaque rivet à sa place.",
-    body: "Livrée reproduite au 1/147e. Peinture main, train amovible. Emballage premium — prête à offrir dès réception.",
-    stat: "1/147", statUnit: "", statLabel: "Précision",
-    accent: "rgba(40,100,220,0.07)",
-    span: "col-span-1", large: false,
+    body: "Livrée reproduite au 1/147e. Peinture main, train amovible, hublots gravés. L'exactitude comme signature.",
+    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Air_France.png",
+    imageAlt: "A350 Air France — détail livrée 1/147e",
+    imageLeft: true,
   },
 ];
 
@@ -42,141 +42,223 @@ export default function UniqueFeatures() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Heading reveal
         gsap.set(headingRef.current, { opacity: 0, y: 70, filter: "blur(10px)" });
-        gsap.to(headingRef.current,
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "expo.out",
-            scrollTrigger: { trigger: headingRef.current, start: "top 88%" } }
-        );
-
-        gsap.utils.toArray<HTMLElement>(".feat-card").forEach((card, i) => {
-          gsap.set(card, { opacity: 0, y: 100, scale: 0.84, filter: "blur(14px)" });
-          gsap.to(card,
-            {
-              opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
-              duration: 1.1, ease: "expo.out",
-              delay: i * 0.14,
-              scrollTrigger: { trigger: card, start: "top 92%", toggleActions: "play none none none" },
-            }
-          );
+        gsap.to(headingRef.current, {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.2,
+          ease: "expo.out",
+          scrollTrigger: { trigger: headingRef.current, start: "top 88%" },
         });
 
-        gsap.utils.toArray<HTMLElement>(".feat-stat").forEach((stat) => {
-          gsap.set(stat, { opacity: 0, scale: 0.35, y: 24 });
-          gsap.to(stat,
-            {
-              opacity: 1, scale: 1, y: 0, duration: 1, ease: "back.out(2.8)",
-              scrollTrigger: { trigger: stat, start: "top 90%" },
-            }
-          );
+        // Each feature row reveal
+        gsap.utils.toArray<HTMLElement>(".uf-row").forEach((row) => {
+          gsap.set(row, { opacity: 0, y: 60 });
+          gsap.to(row, {
+            opacity: 1,
+            y: 0,
+            duration: 1.1,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: row,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          });
+        });
+
+        // Image reveal (slightly offset)
+        gsap.utils.toArray<HTMLElement>(".uf-img-wrap").forEach((wrap) => {
+          gsap.set(wrap, { scale: 1.06, filter: "blur(8px)" });
+          gsap.to(wrap, {
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 1.3,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: wrap,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          });
         });
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set(".feat-card", { opacity: 1, y: 0, scale: 1, filter: "none" });
-        gsap.set(".feat-stat", { opacity: 1, scale: 1, y: 0 });
+        gsap.set(".uf-row", { opacity: 1, y: 0 });
+        gsap.set(".uf-img-wrap", { scale: 1, filter: "none" });
       });
     }, sectionRef);
+
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-24 md:py-36 overflow-hidden"
-      style={{ background: "#07071a", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse 80% 55% at 85% 50%, rgba(18,50,160,0.08) 0%, transparent 65%)",
-      }} />
-      <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: "linear-gradient(rgba(58,142,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(58,142,255,0.015) 1px, transparent 1px)",
-        backgroundSize: "80px 80px",
-      }} />
-
-      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
-        <div ref={headingRef} className="mb-14 md:mb-20">
-          <div className="flex items-center gap-3 mb-5">
-            <div style={{ width: 24, height: 1, background: "rgba(58,142,255,0.6)" }} />
-            <span className="font-mono text-[0.63rem] tracking-[0.28em] uppercase" style={{ color: "rgba(58,142,255,0.6)" }}>
-              Savoir-faire
-            </span>
-          </div>
-          <h2 className="font-black uppercase leading-[0.9] tracking-tight"
-            style={{
-              fontSize: "clamp(2.4rem,5.5vw,4.5rem)",
-              letterSpacing: "-0.02em",
-              background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}>
-            L&apos;obsession<br />du détail.
-          </h2>
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden"
+      style={{
+        background: "#06060f",
+        borderTop: "1px solid rgba(255,255,255,0.05)",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}
+    >
+      {/* Section heading */}
+      <div
+        ref={headingRef}
+        className="relative pt-24 md:pt-36 pb-16 md:pb-24 text-center px-6"
+      >
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <div style={{ width: 32, height: 1, background: "rgba(58,142,255,0.5)" }} />
+          <span
+            className="font-mono text-[0.63rem] tracking-[0.3em] uppercase"
+            style={{ color: "rgba(58,142,255,0.6)" }}
+          >
+            Savoir-faire
+          </span>
+          <div style={{ width: 32, height: 1, background: "rgba(58,142,255,0.5)" }} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
-          {FEATURES.map((f) => (
-            <div key={f.hud}
-              className={`feat-card relative flex flex-col overflow-hidden ${f.span}`}
-              style={{
-                borderRadius: "1.5rem",
-                background: "#0c0c1a",
-                border: "1px solid #1c1c2e",
-                padding: "1.75rem",
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLDivElement;
-                el.style.border = "1px solid rgba(58,142,255,0.22)";
-                el.style.boxShadow = "0 20px 60px -20px rgba(58,142,255,0.18)";
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLDivElement;
-                el.style.border = "1px solid #1c1c2e";
-                el.style.boxShadow = "none";
-              }}
+        <h2
+          className="font-black uppercase leading-[0.88] tracking-tight"
+          style={{
+            fontSize: "clamp(3rem,7vw,6rem)",
+            letterSpacing: "-0.025em",
+            background: "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          L&apos;obsession du détail.
+        </h2>
+      </div>
+
+      {/* Feature rows */}
+      <div className="relative">
+        {FEATURES.map((f, idx) => (
+          <div key={f.num}>
+            {/* Top divider */}
+            <div
+              aria-hidden
+              style={{ height: 1, background: "rgba(255,255,255,0.06)" }}
+            />
+
+            <div
+              className={`uf-row relative flex flex-col ${
+                f.imageLeft ? "lg:flex-row" : "lg:flex-row-reverse"
+              } items-stretch`}
+              style={{ minHeight: "80vh" }}
             >
-              <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-                borderRadius: "inherit",
-                background: `radial-gradient(280px 200px at 20% 20%, ${f.accent}, transparent 70%)`,
-              }} />
-
-              <div className="relative flex items-start justify-between mb-5">
-                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase" style={{ color: "rgba(58,142,255,0.55)" }}>
-                  {f.hud}
-                </span>
-                <span style={{ color: "rgba(58,142,255,0.4)", fontSize: "1.1rem" }} aria-hidden>{f.icon}</span>
+              {/* Image side */}
+              <div className="relative w-full lg:w-1/2 overflow-hidden" style={{ minHeight: 380 }}>
+                <div className="uf-img-wrap absolute inset-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={f.image}
+                    alt={f.imageAlt}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  {/* Gradient overlay blending into dark bg */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: f.imageLeft
+                        ? "linear-gradient(to right, transparent 55%, #06060f 100%), linear-gradient(to bottom, rgba(6,6,15,0.3) 0%, transparent 30%)"
+                        : "linear-gradient(to left, transparent 55%, #06060f 100%), linear-gradient(to bottom, rgba(6,6,15,0.3) 0%, transparent 30%)",
+                    }}
+                  />
+                </div>
               </div>
 
-              <div className={`feat-stat relative font-black leading-none ${f.large ? "text-[4.5rem] md:text-[5.5rem]" : "text-[3.5rem]"}`}
-                style={{
-                  letterSpacing: "-0.02em",
-                  background: "linear-gradient(135deg, #ffffff 0%, #c0c8d4 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>
-                {f.stat}
-                {f.statUnit && (
-                  <span style={{ fontSize: "0.42em", opacity: 0.55, fontWeight: 500, fontFamily: "monospace", verticalAlign: "top", marginTop: "0.5em", marginLeft: "0.2em" }}>
-                    {f.statUnit}
-                  </span>
-                )}
-              </div>
-              <div className="font-mono text-[0.58rem] tracking-[0.2em] uppercase mt-1 mb-5" style={{ color: "#3a4055" }}>
-                {f.statLabel}
-              </div>
+              {/* Text side */}
+              <div
+                className={`relative w-full lg:w-1/2 flex items-center px-8 md:px-16 lg:px-20 py-16 lg:py-0`}
+              >
+                {/* Giant ghost number */}
+                <div
+                  aria-hidden
+                  className="absolute font-black pointer-events-none select-none leading-none"
+                  style={{
+                    fontSize: "clamp(6rem,12vw,14rem)",
+                    opacity: 0.07,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    left: f.imageLeft ? "1rem" : "auto",
+                    right: f.imageLeft ? "auto" : "1rem",
+                    color: "#ffffff",
+                    letterSpacing: "-0.04em",
+                  }}
+                >
+                  {f.num}
+                </div>
 
-              <div style={{ height: 1, background: "linear-gradient(to right, rgba(58,142,255,0.2), rgba(58,142,255,0.05), transparent)", marginBottom: "1.25rem" }} />
+                <div className="relative" style={{ maxWidth: 520 }}>
+                  {/* Visible number */}
+                  <div
+                    className="font-mono font-bold mb-4"
+                    style={{
+                      fontSize: "0.7rem",
+                      letterSpacing: "0.28em",
+                      color: "rgba(58,142,255,0.55)",
+                    }}
+                  >
+                    {f.num}
+                  </div>
 
-              <h3 className="font-bold text-white text-[0.88rem] uppercase tracking-wide mb-2">{f.title}</h3>
-              <p className="text-[0.8rem] leading-relaxed flex-1" style={{ color: "#565870" }}>{f.body}</p>
+                  <h3
+                    className="font-black uppercase leading-[0.9] tracking-tight mb-6"
+                    style={{
+                      fontSize: "clamp(2rem,4vw,3.25rem)",
+                      letterSpacing: "-0.02em",
+                      background:
+                        "linear-gradient(125deg, #e0e4ea 0%, #ffffff 45%, #b0b8c8 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    {f.title}
+                  </h3>
 
-              <div className="flex items-center gap-2 mt-5">
-                <span aria-hidden className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: "#3a8eff", boxShadow: "0 0 6px rgba(58,142,255,0.8)", animation: "blink 2s infinite" }} />
-                <span className="font-mono text-[0.58rem] tracking-[0.18em] uppercase" style={{ color: "#2a3040" }}>ACTIF</span>
+                  <div
+                    style={{
+                      height: 1,
+                      background:
+                        "linear-gradient(to right, rgba(58,142,255,0.35), transparent)",
+                      marginBottom: "1.5rem",
+                      width: 80,
+                    }}
+                  />
+
+                  <p
+                    className="leading-[1.8]"
+                    style={{
+                      fontSize: "clamp(0.95rem,1.5vw,1.1rem)",
+                      color: "#6a7080",
+                    }}
+                  >
+                    {f.body}
+                  </p>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+
+        {/* Bottom divider */}
+        <div
+          aria-hidden
+          style={{ height: 1, background: "rgba(255,255,255,0.06)" }}
+        />
       </div>
+
+      {/* Bottom padding */}
+      <div className="pb-24 md:pb-36" />
     </section>
   );
 }
