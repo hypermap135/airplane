@@ -215,16 +215,16 @@ export default function HeroSection() {
           <div className="mt-14 md:mt-18 flex flex-col sm:flex-row sm:items-end gap-10 md:gap-16">
 
             <div ref={bodyRef}>
-              <p className="text-[0.9rem] leading-[1.9]" style={{ color: "#4a5262", maxWidth: 300 }}>
-                Résine monobloc. Peinte à la main.<br />
-                LED intégré — 20 secondes de lumière.<br />
-                Une sculpture, pas une maquette.
+              <p className="text-[0.9rem] leading-[1.9]" style={{ color: "#4a5262", maxWidth: 320 }}>
+                Résine coulée sous pression. LED intégré sous le cockpit.<br />
+                47 cm sur votre bureau — ou emballé pour offrir.<br />
+                Livré en 7 à 15 jours, prêt à impressionner.
               </p>
             </div>
 
             <div ref={ctaRef} className="flex flex-col gap-5 shrink-0">
               <Link href="/collections/all" className="btn-chrome">
-                Voir la collection →
+                Trouver mon modèle →
               </Link>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-0.5">
@@ -250,12 +250,12 @@ export default function HeroSection() {
           style={{ background: "rgba(1,1,8,0.55)", backdropFilter: "blur(8px)" }}>
           <div className="marquee-track">
             {[
-              "Résine monobloc", "LED intégré USB", "Peinture à la main",
-              "Échelle 1/147", "Socle bois massif", "47 cm · 1,3 kg",
-              "Livraison suivie", "Satisfait ou remboursé 30 j",
-              "Résine monobloc", "LED intégré USB", "Peinture à la main",
-              "Échelle 1/147", "Socle bois massif", "47 cm · 1,3 kg",
-              "Livraison suivie", "Satisfait ou remboursé 30 j",
+              "Résine coulée sous pression", "LED sous le cockpit", "Peinte à la main",
+              "Échelle 1/147", "Socle bois massif", "Prête à offrir",
+              "Livraison suivie", "30 j satisfait ou remboursé",
+              "Résine coulée sous pression", "LED sous le cockpit", "Peinte à la main",
+              "Échelle 1/147", "Socle bois massif", "Prête à offrir",
+              "Livraison suivie", "30 j satisfait ou remboursé",
             ].map((s, i) => (
               <span key={i}
                 className="font-mono text-[0.57rem] tracking-[0.24em] uppercase shrink-0"

@@ -128,7 +128,7 @@ export default function ReviewsSection() {
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}>
-            Ils ont commandé.<br />Voici leurs mots.
+            Des pilotes.<br />Des pères. Des collectionneurs.
           </h2>
 
           {/* Global rating pill */}

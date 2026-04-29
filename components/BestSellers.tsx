@@ -77,10 +77,15 @@ export default function BestSellers() {
             </span>
           </div>
           <div className="flex items-end justify-between flex-wrap gap-6">
-            <h2 className="font-black text-white uppercase leading-[0.9] tracking-tight"
-              style={{ fontSize: "clamp(2.2rem,5.5vw,4.5rem)", letterSpacing: "-0.02em" }}>
-              Les pièces<br />maîtresses
-            </h2>
+            <div>
+              <h2 className="font-black text-white uppercase leading-[0.9] tracking-tight mb-3"
+                style={{ fontSize: "clamp(2.2rem,5.5vw,4.5rem)", letterSpacing: "-0.02em" }}>
+                Les pièces<br />maîtresses
+              </h2>
+              <p className="text-[0.88rem] leading-relaxed" style={{ color: "#565870", maxWidth: 420 }}>
+                Sélectionnés parmi +2 000 commandes. Pilotes, collectionneurs, passionnés — c&apos;est ce qu&apos;ils ont choisi en premier.
+              </p>
+            </div>
             <div className="hidden md:flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 {[1,2,3,4,5].map(i => (

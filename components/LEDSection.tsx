@@ -187,6 +187,9 @@ export default function LEDSection() {
           </div>
 
           <div style={{ height: 1, background: "linear-gradient(to right, rgba(58,142,255,0.4) 0%, transparent 70%)", marginBottom: "1.25rem" }} />
+          <p className="text-[0.9rem] leading-[1.75] mb-3" style={{ color: "#565870" }}>
+            Un câble USB. Une heure de charge. Vingt secondes qui font toute la différence.
+          </p>
           <p className="font-mono text-[0.63rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
             Câble de charge inclus · Interrupteur sous le socle
           </p>

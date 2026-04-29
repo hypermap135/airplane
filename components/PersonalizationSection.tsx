@@ -118,6 +118,9 @@ export default function PersonalizationSection() {
             ))}
           </div>
 
+          <p className="text-[0.92rem] leading-[1.75] mb-6" style={{ color: "#565870", maxWidth: 400 }}>
+            Offrir une maquette, c&apos;est bien. Offrir une maquette avec un nom gravé dessus — c&apos;est inoubliable.
+          </p>
           <Link href="/products/gravure-personnalisee" className="btn-chrome">
             Ajouter une gravure →
           </Link>

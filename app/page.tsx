@@ -13,12 +13,12 @@ export default function HomePage() {
     <>
       <HeroSection />
       <TrustBar />
+      <StatsSection />
       <BestSellers />
-      <ReviewsSection />
       <UniqueFeatures />
       <LEDSection />
       <PersonalizationSection />
-      <StatsSection />
+      <ReviewsSection />
       <CTASection />
     </>
   );

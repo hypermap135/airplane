@@ -7,10 +7,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const STATS = [
-  { value: 2000, suffix: "+",   label: "Passionnés",  hud: "CLI" },
-  { value: 4.9,  suffix: "/5",  label: "Note",        hud: "RTG", decimals: 1 },
-  { value: 47,   suffix: " cm", label: "Format",      hud: "DIM" },
-  { value: 30,   suffix: "j",   label: "Retour libre", hud: "SVC" },
+  { value: 2000, suffix: "+",  label: "Passionnés",    hud: "CLI" },
+  { value: 4.9,  suffix: "/5", label: "Note moyenne",  hud: "RTG", decimals: 1 },
+  { value: 26,   suffix: "",   label: "Modèles",       hud: "CAT" },
+  { value: 30,   suffix: "j",  label: "Retour libre",  hud: "SVC" },
 ];
 
 export default function StatsSection() {

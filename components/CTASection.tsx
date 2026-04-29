@@ -94,11 +94,11 @@ export default function CTASection() {
               backgroundClip: "text",
               maxWidth: "14ch",
             }}>
-            Elle<br />vous attend.
+            Prête<br />à décoller.
           </h2>
 
           <p className="text-[1.05rem] leading-[1.75] mb-10" style={{ color: "#6a7080", maxWidth: 480 }}>
-            Livraison France & Europe. Emballage premium. 30 jours pour changer d'avis.
+            Chaque passionné commence par une première pièce. Livraison France & Europe. 30 jours pour changer d&apos;avis.
           </p>
 
           <div className="flex flex-wrap gap-4 items-center mb-10">
