@@ -1,6 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import TrustBar from "@/components/TrustBar";
 import BestSellers from "@/components/BestSellers";
+import ProductShowcase from "@/components/ProductShowcase";
 import ReviewsSection from "@/components/ReviewsSection";
 import UniqueFeatures from "@/components/UniqueFeatures";
 import LEDSection from "@/components/LEDSection";
@@ -17,6 +18,7 @@ export default function HomePage() {
       <TrustBar />
       <StatsSection />
       <BestSellers />
+      <ProductShowcase />
       <CinematicReveal />
       <UniqueFeatures />
       <LEDSection />
