@@ -44,7 +44,7 @@ export const PRODUCTS: Product[] = [
 
   {
     id: "a220-af",
-    variantId: "0",                               // ← à renseigner après upload Shopify
+    variantId: "55663325446484",
     handle: "airbus-a220-air-france",
     title: "Airbus A220 Air France",
     subtitle: "A220-300 · livrée Air France · activation au toucher",
