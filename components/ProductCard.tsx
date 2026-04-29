@@ -93,7 +93,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {!product.inStock && (
           <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(1,1,8,0.6)", backdropFilter: "blur(6px)" }}>
             <span className="font-mono text-[0.7rem] tracking-[0.25em] uppercase" style={{ color: "rgba(255,255,255,0.45)" }}>
-              Épuisé
+              {product.comingSoon ? "Bientôt" : "Épuisé"}
             </span>
           </div>
         )}
@@ -167,7 +167,7 @@ export default function ProductCard({ product }: { product: Product }) {
               className="flex-1 py-2.5 text-[0.76rem] font-semibold tracking-wide text-center rounded-xl transition-colors duration-300"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.35)" }}
             >
-              Prévenez-moi
+              {product.comingSoon ? "Me prévenir" : "Prévenez-moi"}
             </Link>
           )}
           <Link

@@ -98,7 +98,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <div className="absolute inset-0 flex items-center justify-center"
                   style={{ background: "rgba(1,1,8,0.65)", backdropFilter: "blur(6px)" }}>
                   <span className="font-mono text-[0.75rem] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
-                    Épuisé
+                    {product.comingSoon ? "Bientôt disponible" : "Épuisé"}
                   </span>
                 </div>
               )}

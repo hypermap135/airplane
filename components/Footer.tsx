@@ -6,32 +6,30 @@ const NAV = [
   {
     title: "Collections",
     links: [
-      { href: "/collections/airbus",        label: "Airbus" },
-      { href: "/collections/boeing",        label: "Boeing" },
-      { href: "/collections/concorde",      label: "Concorde" },
-      { href: "/collections/chasse",        label: "Aviation militaire" },
-      { href: "/collections/packs",         label: "Packs & offres" },
-      { href: "/collections/all",           label: "Tout voir" },
+      { href: "/collections/airbus",   label: "Airbus" },
+      { href: "/collections/boeing",   label: "Boeing" },
+      { href: "/collections/concorde", label: "Concorde" },
+      { href: "/collections/jet",      label: "Jet privé" },
+      { href: "/collections/packs",    label: "Packs & offres" },
+      { href: "/collections/all",      label: "Tout voir" },
     ],
   },
   {
     title: "Boutique",
     links: [
-      { href: "/a-propos",  label: "À propos" },
-      { href: "/contact",   label: "Contact" },
-      { href: "/faq",       label: "FAQ" },
-      { href: "/cgv",       label: "CGV" },
+      { href: "/a-propos", label: "À propos" },
+      { href: "/contact",  label: "Contact" },
+      { href: "/faq",      label: "FAQ" },
+      { href: "/cgv",      label: "CGV" },
     ],
   },
-  {
-    title: "Garanties",
-    links: [
-      { href: "#", label: "Livraison 7–15 jours" },
-      { href: "#", label: "Livraison offerte dès 100€" },
-      { href: "#", label: "Retour 30 jours" },
-      { href: "#", label: "Paiement sécurisé" },
-    ],
-  },
+];
+
+const GUARANTEES = [
+  "Livraison 7–15 jours",
+  "Livraison offerte dès 100€",
+  "Retour 30 jours",
+  "Paiement sécurisé SSL",
 ];
 
 export default function Footer() {
@@ -51,7 +49,7 @@ export default function Footer() {
       <div className="relative mx-auto max-w-7xl px-6 md:px-12 pt-16 md:pt-20 pb-8">
 
         {/* Main grid */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 md:gap-8 pb-14">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-12 md:gap-8 pb-14">
 
           {/* Brand */}
           <div>
@@ -118,6 +116,22 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+
+          {/* Guarantees — non-linked */}
+          <div>
+            <div className="font-mono text-[0.58rem] tracking-[0.28em] uppercase mb-5"
+              style={{ color: "rgba(58,142,255,0.5)" }}>
+              Garanties
+            </div>
+            <ul className="flex flex-col gap-3">
+              {GUARANTEES.map((g) => (
+                <li key={g} className="flex items-center gap-2">
+                  <span aria-hidden className="font-mono text-[0.6rem]" style={{ color: "rgba(58,142,255,0.4)" }}>✦</span>
+                  <span className="text-[0.82rem]" style={{ color: "#3a4055" }}>{g}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Divider */}

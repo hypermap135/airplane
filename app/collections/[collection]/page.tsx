@@ -5,8 +5,8 @@ import SectionHeading from "@/components/SectionHeading";
 import { COLLECTIONS, byCollection, type Collection } from "@/lib/products";
 
 const SUBTITLES: Record<Collection, string> = {
-  airbus: "A320, A321, A350, A380, Béluga XL — toute la famille Airbus en résine monobloc.",
-  boeing: "737, 747, 777, 787 Dreamliner — les légendes Boeing, à l'échelle 1/147.",
+  airbus: "A220, A320, A321, A350, A380 — toute la famille Airbus en résine monobloc.",
+  boeing: "737, 747, 777, 787 Dreamliner — les légendes Boeing, dont Air Force One.",
   concorde: "Le supersonique, en livrées Air France et British Airways. Une pièce hors du temps.",
   chasse: "Rafale, Mirage 2000, F16 — l'aviation militaire française, coulée dans la résine.",
   jet: "La grande classe des airs. Jets d'affaires longue distance — pour les collections d'exception.",

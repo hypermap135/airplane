@@ -6,13 +6,13 @@ import { useCart, useCartDrawer } from "@/lib/cart";
 import { COLLECTIONS } from "@/lib/products";
 
 const NAV_LINKS = [
-  { href: "/collections/all",     label: "Collection", primary: true },
-  { href: "/collections/airbus",  label: "Airbus" },
-  { href: "/collections/boeing",  label: "Boeing" },
-  { href: "/collections/concorde",label: "Concorde" },
-  { href: "/collections/chasse",  label: "Militaire" },
-  { href: "/collections/packs",   label: "Packs" },
-  { href: "/faq",                 label: "FAQ" },
+  { href: "/collections/all",      label: "Collection", primary: true },
+  { href: "/collections/airbus",   label: "Airbus" },
+  { href: "/collections/boeing",   label: "Boeing" },
+  { href: "/collections/concorde", label: "Concorde" },
+  { href: "/collections/jet",      label: "Jet privé" },
+  { href: "/collections/packs",    label: "Packs" },
+  { href: "/faq",                  label: "FAQ" },
 ];
 
 export default function Header() {
