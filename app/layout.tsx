@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   description:
     "Répliques fidèles en résine monobloc. Échelle 1/147. LED intégré. Livraison France & Europe. Satisfait ou remboursé 30 jours.",
-  metadataBase: new URL("https://shop.airplanestore.fr"),
+  metadataBase: new URL("https://airplanestore.fr"),
   openGraph: {
     title: "AirplaneStore — Maquettes d'avion en résine premium",
     description:
@@ -33,6 +33,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${inter.variable} ${space.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
+        {/* Unregister old Shopify service worker if any */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              regs.forEach(function(r) { r.unregister(); });
+            });
+          }
+        `}} />
         <SmoothScroll>
           <ScrollProgress />
           <Header />
