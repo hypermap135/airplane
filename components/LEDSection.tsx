@@ -190,7 +190,7 @@ export default function LEDSection() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
-                  src="https://airplanestore.fr/cdn/shop/files/a380-airfrance.jpg"
+                  src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_AIR_FRANCE.jpg"
                   alt="Maquette A380 Air France éclairée LED"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"

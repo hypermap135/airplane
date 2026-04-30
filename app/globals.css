@@ -340,16 +340,6 @@ body {
 ::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 999px; border: 2px solid #0a0a14; }
 ::-webkit-scrollbar-thumb:hover { background: #3a4060; }
 
-/* ─── Custom cursor (desktop only) ───────────────────── */
-
-@media (pointer: fine) {
-  html {
-    cursor: none;
-  }
-  a, button, [role="button"], input, select, textarea, label {
-    cursor: none;
-  }
-}
 
 /* ─── Misc keyframes ──────────────────────────────────── */
 

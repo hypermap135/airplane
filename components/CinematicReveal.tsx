@@ -147,7 +147,7 @@ export default function CinematicReveal() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={imageRef}
-          src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Air_France.jpg"
+          src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Air_France_cote_gauche_nobg.png"
           alt="Airbus A350 Air France — maquette résine"
           style={{
             position: "relative",

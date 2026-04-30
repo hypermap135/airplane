@@ -109,9 +109,9 @@ export default function ProductDetail({ product }: { product: Product }) {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     referrerPolicy="no-referrer"
-                    style={{ display: "block" }}
+                    style={{ display: "block", padding: "5%" }}
                   />
                 </AnimatePresence>
 
@@ -511,10 +511,10 @@ function ThumbButton({
         <img
           src={src}
           alt={alt}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
           referrerPolicy="no-referrer"
           onError={onError}
-          style={{ display: "block" }}
+          style={{ display: "block", padding: "8%" }}
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center"

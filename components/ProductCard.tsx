@@ -26,14 +26,15 @@ export default function ProductCard({ product }: { product: Product }) {
     >
       <Link href={`/products/${product.handle}`} className="block relative group" style={{ background: "#080810" }}>
 
-        {/* ── Image block (65% height) ── */}
-        <div className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
+        {/* ── Image block ── */}
+        <div className="relative overflow-hidden" style={{ aspectRatio: "4/3", background: "#080810" }}>
           {!imgError ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={product.image}
               alt={product.title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+              style={{ padding: "6%" }}
               loading="lazy"
               onError={() => setImgError(true)}
             />

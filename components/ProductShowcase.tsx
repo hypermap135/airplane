@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const PRODUCT_IMG =
-  "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/WhatsApp_Image_2026-04-23_at_18.23.27_7.jpg";
+  "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/WhatsApp_Image_2026-04-23_at_18.23.27_7_nobg.png";
 
 export default function ProductShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
