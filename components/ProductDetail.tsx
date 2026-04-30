@@ -111,7 +111,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                     className="w-full h-full object-contain"
                     referrerPolicy="no-referrer"
-                    style={{ display: "block", padding: "4%", transform: "scale(1.1) translateY(-6%)" }}
+                    style={{ display: "block", padding: "4%", transform: "scale(1.1) translateY(-6%)", filter: "brightness(1.18) contrast(0.96)" }}
                   />
                 </AnimatePresence>
 
