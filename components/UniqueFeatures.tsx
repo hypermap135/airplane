@@ -160,7 +160,7 @@ export default function UniqueFeatures() {
                     src={f.image}
                     alt={f.imageAlt}
                     className="absolute inset-0 w-full h-full object-cover"
-                    loading="lazy"
+                    loading="eager"
                   />
                   {/* Gradient overlay blending into dark bg */}
                   <div

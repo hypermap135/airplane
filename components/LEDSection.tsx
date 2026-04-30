@@ -194,7 +194,7 @@ export default function LEDSection() {
                   alt="Maquette A380 Air France éclairée LED"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
-                  loading="lazy"
+                  loading="eager"
                   onError={() => setImgError(true)}
                 />
               ) : (

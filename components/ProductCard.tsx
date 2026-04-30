@@ -35,7 +35,7 @@ export default function ProductCard({ product }: { product: Product }) {
               alt={product.title}
               className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
               style={{ padding: "6%" }}
-              loading="lazy"
+              loading="eager"
               onError={() => setImgError(true)}
             />
           ) : (
