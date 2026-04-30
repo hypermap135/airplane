@@ -96,7 +96,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 style={{
                   borderRadius: "1.5rem",
                   background: "#0c0c1a",
-                  aspectRatio: "4/3",
+                  aspectRatio: "1/1",
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px rgba(0,0,0,0.6)",
                 }}
               >
@@ -111,13 +111,13 @@ export default function ProductDetail({ product }: { product: Product }) {
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                     className="w-full h-full object-contain"
                     referrerPolicy="no-referrer"
-                    style={{ display: "block", padding: "5%" }}
+                    style={{ display: "block", padding: "4%", transform: "scale(1.1) translateY(-6%)" }}
                   />
                 </AnimatePresence>
 
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 pointer-events-none" style={{
-                  background: "linear-gradient(to top, rgba(3,3,8,0.5) 0%, transparent 45%)",
+                  background: "linear-gradient(to top, #0c0c1a 0%, rgba(12,12,26,0.7) 40%, rgba(12,12,26,0.1) 70%, transparent 90%)",
                 }} />
 
                 {/* Out of stock overlay */}
@@ -148,46 +148,24 @@ export default function ProductDetail({ product }: { product: Product }) {
                 )}
               </div>
 
-              {/* Thumbnail strip — vertical on desktop, horizontal scroll on mobile */}
+              {/* Thumbnail strip — horizontal scroll on all screens */}
               {images.length > 1 && (
-                <>
-                  {/* Mobile: horizontal scroll */}
-                  <div
-                    className="flex gap-2 overflow-x-auto pb-1 lg:hidden"
-                    style={{ scrollbarWidth: "none" }}
-                  >
-                    {images.map((src, idx) => (
-                      <ThumbButton
-                        key={idx}
-                        src={src}
-                        alt={`${product.title} — vue ${idx + 1}`}
-                        active={activeImg === idx}
-                        hasError={!!thumbErrors[idx]}
-                        onError={() => handleThumbError(idx)}
-                        onClick={() => setActiveImg(idx)}
-                        mobile
-                      />
-                    ))}
-                  </div>
-
-                  {/* Desktop: vertical stack below main image */}
-                  <div className="hidden lg:flex flex-col gap-2.5">
-                    {images.slice(1).map((src, i) => {
-                      const idx = i + 1;
-                      return (
-                        <ThumbButton
-                          key={idx}
-                          src={src}
-                          alt={`${product.title} — vue ${idx + 1}`}
-                          active={activeImg === idx}
-                          hasError={!!thumbErrors[idx]}
-                          onError={() => handleThumbError(idx)}
-                          onClick={() => setActiveImg(idx)}
-                        />
-                      );
-                    })}
-                  </div>
-                </>
+                <div
+                  className="flex gap-2.5 overflow-x-auto pb-1"
+                  style={{ scrollbarWidth: "none" }}
+                >
+                  {images.map((src, idx) => (
+                    <ThumbButton
+                      key={idx}
+                      src={src}
+                      alt={`${product.title} — vue ${idx + 1}`}
+                      active={activeImg === idx}
+                      hasError={!!thumbErrors[idx]}
+                      onError={() => handleThumbError(idx)}
+                      onClick={() => setActiveImg(idx)}
+                    />
+                  ))}
+                </div>
               )}
             </div>
           </div>
@@ -463,7 +441,6 @@ function ThumbButton({
   hasError,
   onError,
   onClick,
-  mobile = false,
 }: {
   src: string;
   alt: string;
@@ -471,40 +448,27 @@ function ThumbButton({
   hasError: boolean;
   onError: () => void;
   onClick: () => void;
-  mobile?: boolean;
 }) {
-  const base: React.CSSProperties = {
-    borderRadius: "0.75rem",
-    overflow: "hidden",
-    border: active
-      ? "2px solid rgba(58,142,255,0.7)"
-      : "2px solid rgba(255,255,255,0.06)",
-    background: "#0c0c1a",
-    cursor: "pointer",
-    transition: "border-color 0.2s ease, opacity 0.2s ease",
-    opacity: active ? 1 : 0.55,
-    flexShrink: 0,
-  };
-
-  const mobileStyle: React.CSSProperties = {
-    ...base,
-    width: 72,
-    height: 54,
-  };
-
-  const desktopStyle: React.CSSProperties = {
-    ...base,
-    width: "100%",
-    aspectRatio: "16/5",
-  };
-
   return (
     <button
       type="button"
       onClick={onClick}
-      style={mobile ? mobileStyle : desktopStyle}
       aria-label={alt}
       aria-pressed={active}
+      style={{
+        borderRadius: "0.75rem",
+        overflow: "hidden",
+        border: active
+          ? "2px solid rgba(58,142,255,0.7)"
+          : "2px solid rgba(255,255,255,0.06)",
+        background: "#0c0c1a",
+        cursor: "pointer",
+        transition: "border-color 0.2s ease, opacity 0.2s ease",
+        opacity: active ? 1 : 0.5,
+        flexShrink: 0,
+        width: 80,
+        height: 80,
+      }}
     >
       {!hasError ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -514,7 +478,7 @@ function ThumbButton({
           className="w-full h-full object-contain"
           referrerPolicy="no-referrer"
           onError={onError}
-          style={{ display: "block", padding: "8%" }}
+          style={{ display: "block", padding: "8%", transform: "scale(1.1) translateY(-5%)" }}
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center"
