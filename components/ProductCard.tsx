@@ -27,14 +27,14 @@ export default function ProductCard({ product }: { product: Product }) {
       <Link href={`/products/${product.handle}`} className="block relative group" style={{ background: "#080810" }}>
 
         {/* ── Image block ── */}
-        <div className="relative overflow-hidden" style={{ aspectRatio: "4/3", background: "#080810" }}>
+        <div className="relative overflow-hidden" style={{ aspectRatio: "1/1", background: "#080810" }}>
           {!imgError ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={product.image}
               alt={product.title}
               className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ padding: "6%" }}
+              style={{ padding: "5%", transform: "scale(1.08) translateY(-6%)" }}
               loading="eager"
               onLoad={(e) => e.currentTarget.classList.add("loaded")}
               ref={(el) => {
@@ -51,9 +51,9 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Gradient overlay — image fades to black */}
+          {/* Gradient overlay — image fades to dark at bottom */}
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(to top, #080810 0%, rgba(8,8,16,0.5) 40%, transparent 75%)" }} />
+            style={{ background: "linear-gradient(to top, #080810 0%, rgba(8,8,16,0.75) 45%, rgba(8,8,16,0.15) 70%, transparent 90%)" }} />
 
           {/* Bestseller badge */}
           {product.bestseller && (
