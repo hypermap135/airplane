@@ -36,6 +36,10 @@ export default function ProductCard({ product }: { product: Product }) {
               className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
               style={{ padding: "6%" }}
               loading="eager"
+              onLoad={(e) => e.currentTarget.classList.add("loaded")}
+              ref={(el) => {
+                if (el && el.complete && el.naturalWidth > 0) el.classList.add("loaded");
+              }}
               onError={() => setImgError(true)}
             />
           ) : (

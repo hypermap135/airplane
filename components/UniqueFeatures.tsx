@@ -161,6 +161,10 @@ export default function UniqueFeatures() {
                     alt={f.imageAlt}
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="eager"
+                    onLoad={(e) => e.currentTarget.classList.add("loaded")}
+                    ref={(el) => {
+                      if (el && el.complete && el.naturalWidth > 0) el.classList.add("loaded");
+                    }}
                   />
                   {/* Gradient overlay blending into dark bg */}
                   <div

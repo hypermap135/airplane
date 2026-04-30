@@ -441,8 +441,8 @@ body {
 .clip-reveal > * { display: block; }
 
 /* ── Smooth image loading ── */
-img { transition: opacity 0.3s ease; }
-img[loading] { opacity: 0; }
+img { transition: opacity 0.35s ease; }
+img[loading]:not(.loaded) { opacity: 0; }
 img.loaded { opacity: 1; }
 
 /* ── Font display headings ── */

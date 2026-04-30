@@ -195,6 +195,10 @@ export default function LEDSection() {
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"
+                  onLoad={(e) => e.currentTarget.classList.add("loaded")}
+                  ref={(el) => {
+                    if (el && el.complete && el.naturalWidth > 0) el.classList.add("loaded");
+                  }}
                   onError={() => setImgError(true)}
                 />
               ) : (
