@@ -34,7 +34,7 @@ export default function ProductCard({ product }: { product: Product }) {
               src={product.image}
               alt={product.title}
               className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ padding: "5%", transform: "scale(1.08) translateY(-6%)", filter: "brightness(1.18) contrast(0.96)" }}
+              style={{ padding: "5%", transform: "scale(1.08) translateY(-6%)" }}
               loading="eager"
               onLoad={(e) => e.currentTarget.classList.add("loaded")}
               ref={(el) => {
