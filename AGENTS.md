@@ -24,10 +24,12 @@ npm run lint                          # Check code
 | `SHOPIFY_STORE_DOMAIN` | `y823wg-nz.myshopify.com` | Yes | GraphQL endpoint |
 | `SHOPIFY_STOREFRONT_TOKEN` | Shopify Storefront API token | Yes | Public product queries |
 | `SHOPIFY_ADMIN_TOKEN` | Shopify Admin API token | No | WhatsApp agent mutations |
-| `SHOPIFY_PUBLIC_DOMAIN` | `airplanestore.fr` | Yes | Checkout URL construction |
+| `SHOPIFY_PUBLIC_DOMAIN` | (defaults to `SHOPIFY_STORE_DOMAIN`) | No | Cart/checkout URL — only override if Shopify serves a custom subdomain |
 | `SHOPIFY_API_VERSION` | `2024-07` | Yes | Storefront API version |
 
 **Fallback behavior**: Without `SHOPIFY_STOREFRONT_TOKEN`, products load from static `lib/products.ts` and checkout uses permalink URLs. Site is functional but not real-time.
+
+**⚠ Checkout domain trap**: Do NOT set `SHOPIFY_PUBLIC_DOMAIN=airplanestore.fr`. The Next.js app on Vercel serves that domain and has no `/cart` or `/checkouts` route — the redirect will 404. Shopify must also be configured so `*.myshopify.com` doesn't auto-redirect to `airplanestore.fr` (Shopify admin → Settings → Domains: either remove `airplanestore.fr` from Shopify's domain list, or restore a `shop.airplanestore.fr` subdomain as the Shopify primary).
 
 ## Architecture & Key Concepts
 

@@ -156,7 +156,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/031DDDDC-70E9-43CC-B424-BB7BBC77F75B_nobg.png`,
+    image: `/images/a321-easyjet-styled.png`,
     scale: "1/100",
   },
   {
@@ -312,7 +312,7 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/4BC16D16-D848-4680-A696-696A31D55734_nobg.png`,
+    image: `/images/b747-afo-styled.png`,
     scale: "1/150",
   },
   {

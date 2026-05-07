@@ -206,7 +206,7 @@ export default function CTASection() {
               Explorer la collection →
             </Link>
             <Link
-              href="/about"
+              href="/a-propos"
               className="inline-flex items-center gap-2 font-semibold text-[0.95rem] tracking-wide transition-all hover:bg-white/10 active:bg-white/15"
               style={{
                 color: "rgba(255,255,255,0.75)",

@@ -1,12 +1,20 @@
 const STORE_DOMAIN  = process.env.SHOPIFY_STORE_DOMAIN   ?? "y823wg-nz.myshopify.com";
 const TOKEN         = process.env.SHOPIFY_STOREFRONT_TOKEN ?? "";
 const API_VERSION   = process.env.SHOPIFY_API_VERSION      ?? "2024-07";
-const PUBLIC_DOMAIN = process.env.SHOPIFY_PUBLIC_DOMAIN    ?? "y823wg-nz.myshopify.com";
+
+// PUBLIC_DOMAIN: domain that serves Shopify cart/checkout for the customer.
+// Defaults to STORE_DOMAIN (the *.myshopify.com store) — this is what works out
+// of the box. Override with SHOPIFY_PUBLIC_DOMAIN ONLY if Shopify is configured
+// to serve a custom subdomain (e.g. shop.airplanestore.fr). Do NOT set this to
+// the same domain as the Next.js site (e.g. airplanestore.fr) — Vercel doesn't
+// serve /cart or /checkouts paths and the redirect will land on a 404.
+const PUBLIC_DOMAIN = process.env.SHOPIFY_PUBLIC_DOMAIN ?? STORE_DOMAIN;
 
 export const DISCOUNT_CODE = "TAKEOFF10";
 
 // ─── Cart permalink fallback (no token needed) ────────────────────────────────
-// Goes directly to Shopify checkout page
+// Goes directly to the Shopify-hosted cart page. Shopify will then forward to
+// /checkouts/cn/... once the customer clicks "Checkout".
 export function checkoutUrl(
   items: { variantId: string; quantity: number }[],
   discount?: string | null,
