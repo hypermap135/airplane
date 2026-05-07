@@ -57,9 +57,9 @@ export default function HeroSection() {
 
   const marqueeItems = [
     "★ LED intégré", "Résine coulée", "Peinture main", "Livraison 7–15j",
-    "Retour 30j", "+2 000 clients", "4.9 / 5",
+    "Retour 30j", "+2 000 clients", "4.8 / 5",
     "★ LED intégré", "Résine coulée", "Peinture main", "Livraison 7–15j",
-    "Retour 30j", "+2 000 clients", "4.9 / 5",
+    "Retour 30j", "+2 000 clients", "4.8 / 5",
   ];
 
   return (
@@ -231,7 +231,7 @@ export default function HeroSection() {
                   <span key={i} aria-hidden style={{ color: "#ffffff", fontSize: "0.8rem", opacity: 0.9 }}>★</span>
                 ))}
               </div>
-              <span className="font-black text-white" style={{ fontSize: "0.82rem" }}>4.9</span>
+              <span className="font-black text-white" style={{ fontSize: "0.82rem" }}>4.8</span>
               <span
                 className="font-mono uppercase"
                 style={{ fontSize: "0.55rem", letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)" }}

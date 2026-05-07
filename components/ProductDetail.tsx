@@ -209,7 +209,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                   <span key={i} aria-hidden style={{ color: "#f59e0b", fontSize: "0.95rem" }}>★</span>
                 ))}
               </div>
-              <span className="font-bold text-white text-[0.88rem]">4.9</span>
+              <span className="font-bold text-white text-[0.88rem]">4.8</span>
               <span className="font-mono text-[0.58rem] tracking-[0.12em]" style={{ color: "#565870" }}>
                 · +2 000 avis clients
               </span>

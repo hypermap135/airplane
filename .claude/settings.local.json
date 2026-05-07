@@ -36,7 +36,11 @@
       "Bash(pip3 install *)",
       "Bash(curl -sS -o .tmp/watermark/A350_AF.jpg \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Air_France.jpg\")",
       "Bash(curl -sS -o .tmp/watermark/A350_Turkish.png \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Turkish_Airlines.png\")",
-      "Bash(python3 -c \"from PIL import Image; print\\(Image.open\\('.tmp/watermark/A350_AF.jpg'\\).size\\)\")"
+      "Bash(python3 -c \"from PIL import Image; print\\(Image.open\\('.tmp/watermark/A350_AF.jpg'\\).size\\)\")",
+      "Bash(curl -sI \"https://y823wg-nz.myshopify.com/cart/53357075595604:1\")",
+      "Bash(/images\" lib/products.ts | head -100)",
+      "Bash(grep -nE \"image:|images:|`/images\" lib/products.ts | head -100)",
+      "Bash(grep -oE \"\\(\\\\\\\\\\\\$\\\\{CDN\\\\}/[^\\\\\"\\\\`]+|/images/[^\\\\\"\\\\`]+\\)\")"
     ]
   }
 }

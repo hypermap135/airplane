@@ -16,8 +16,8 @@ const STATS = [
     formatFn: (v: number) => Math.round(v).toLocaleString("fr-FR") + "+",
   },
   {
-    display: "4,9/5",
-    value: 4.9,
+    display: "4,8/5",
+    value: 4.8,
     suffix: "/5",
     label: "Note moyenne",
     decimals: 1,

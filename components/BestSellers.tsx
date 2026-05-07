@@ -123,7 +123,7 @@ export default function BestSellers() {
                   className="font-mono text-[0.62rem] tracking-[0.12em] ml-1"
                   style={{ color: "#565870" }}
                 >
-                  4.9 · +2 000 avis
+                  4.8 · +2 000 avis
                 </span>
               </div>
               <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.08)" }} />

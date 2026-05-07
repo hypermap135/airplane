@@ -76,7 +76,7 @@ export default function Footer() {
             {/* Trust chips */}
             <div className="mt-6 flex flex-col gap-2">
               {[
-                { icon: "★", text: "4.9 / 5 · +2 000 clients" },
+                { icon: "★", text: "4.8 / 5 · +2 000 clients" },
                 { icon: "✦", text: "Livraison France & Europe" },
                 { icon: "◈", text: "Satisfait ou remboursé 30 j" },
               ].map((item) => (
