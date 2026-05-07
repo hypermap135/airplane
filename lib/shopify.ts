@@ -1,7 +1,7 @@
 const STORE_DOMAIN  = process.env.SHOPIFY_STORE_DOMAIN   ?? "y823wg-nz.myshopify.com";
 const TOKEN         = process.env.SHOPIFY_STOREFRONT_TOKEN ?? "";
 const API_VERSION   = process.env.SHOPIFY_API_VERSION      ?? "2024-07";
-const PUBLIC_DOMAIN = process.env.SHOPIFY_PUBLIC_DOMAIN    ?? "airplanestore.fr";
+const PUBLIC_DOMAIN = process.env.SHOPIFY_PUBLIC_DOMAIN    ?? "y823wg-nz.myshopify.com";
 
 export const DISCOUNT_CODE = "TAKEOFF10";
 

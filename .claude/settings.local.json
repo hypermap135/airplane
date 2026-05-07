@@ -23,7 +23,20 @@
       "Bash(unzip -o \"/Users/mac/Downloads/sky-scale-shop \\(2\\).zip\" -d sky-scale-shop)",
       "Bash(node -e \"console.log\\(require\\('./node_modules/lenis/package.json'\\).version\\)\")",
       "Bash(node -e \"console.log\\(require\\('./node_modules/gsap/package.json'\\).version\\)\")",
-      "Bash(git -C \"/Users/mac/airplane\" remote -v)"
+      "Bash(git -C \"/Users/mac/airplane\" remote -v)",
+      "Bash(wait)",
+      "Bash(python3)",
+      "Bash(curl -sS -o .tmp/watermark/D0ABD2B2.png \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/D0ABD2B2-5602-49B7-8742-D92C5EE29B4C.png\")",
+      "Bash(python3 -c \"from PIL import Image; im=Image.open\\('.tmp/watermark/D0ABD2B2.png'\\); print\\(im.size\\)\")",
+      "Bash(curl -sS -o .tmp/watermark/IMG-7236.png \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/IMG-7236.png\")",
+      "Bash(curl -sS -o .tmp/watermark/IMG-7235.png \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/IMG-7235.png\")",
+      "Bash(python3 -c \"from PIL import Image; print\\('7236:',Image.open\\('.tmp/watermark/IMG-7236.png'\\).size\\); print\\('7235:',Image.open\\('.tmp/watermark/IMG-7235.png'\\).size\\)\")",
+      "Bash(python3 scripts/remove_watermark.py .tmp/watermark/B188003A.png .tmp/watermark/B188003A_clean.png --bbox 900,750,1290,890)",
+      "Bash(python3 -c \"import cv2; print\\(cv2.__version__\\)\")",
+      "Bash(pip3 install *)",
+      "Bash(curl -sS -o .tmp/watermark/A350_AF.jpg \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Air_France.jpg\")",
+      "Bash(curl -sS -o .tmp/watermark/A350_Turkish.png \"https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A350_Turkish_Airlines.png\")",
+      "Bash(python3 -c \"from PIL import Image; print\\(Image.open\\('.tmp/watermark/A350_AF.jpg'\\).size\\)\")"
     ]
   }
 }

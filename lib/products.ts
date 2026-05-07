@@ -77,7 +77,7 @@ export const PRODUCTS: Product[] = [
     image: `/images/a320-af.png`,
     images: [
       `/images/a320-af.png`,
-      `${CDN}/Airbus_A320_Air_France.png`,
+      `/images/a320-af-styled.png`,
       `${CDN}/Airbus_A320_nouvelle_Livr_e.png`,
     ],
     bestseller: true,
@@ -142,7 +142,7 @@ export const PRODUCTS: Product[] = [
     image: `${CDN}/031DDDDC-70E9-43CC-B424-BB7BBC77F75B_nobg.png`,
     images: [
       `${CDN}/031DDDDC-70E9-43CC-B424-BB7BBC77F75B_nobg.png`,
-      `${CDN}/B188003A-5D11-4532-9611-A4D0701A63A9.png`,
+      `/images/a321-easyjet-styled.png`,
     ],
     scale: "1/100",
   },
@@ -171,8 +171,8 @@ export const PRODUCTS: Product[] = [
     image: `${CDN}/Airbus_A350_Air_France_cote_gauche_nobg.png`,
     images: [
       `${CDN}/Airbus_A350_Air_France_cote_gauche_nobg.png`,
-      `${CDN}/Airbus_A350_Air_France.jpg`,
-      `${CDN}/Airbus_A350_Turkish_Airlines.png`,
+      `/images/a350-af-styled.png`,
+      `/images/a350-turkish-styled.png`,
     ],
     bestseller: true,
     scale: "1/142",
@@ -276,11 +276,11 @@ export const PRODUCTS: Product[] = [
     price: 89,
     collection: "boeing",
     inStock: true,
-    image: `${CDN}/5EF8FED8-8EAF-4191-934E-A558A9A1D6EF_nobg_v2.png`,
+    image: `/images/b737-ryanair.png`,
     images: [
-      `${CDN}/5EF8FED8-8EAF-4191-934E-A558A9A1D6EF_nobg_v2.png`,
-      `${CDN}/E8277CEB-78E8-48AB-8008-6B62206AA825.png`,
-      `${CDN}/703A5142-90D6-407C-BE6D-978D8C6385FB.png`,
+      `/images/b737-ryanair.png`,
+      `/images/b737-turkish-styled.png`,
+      `/images/b737-flydubai-styled.png`,
     ],
     scale: "1/85",
   },
@@ -297,7 +297,7 @@ export const PRODUCTS: Product[] = [
     images: [
       `${CDN}/4BC16D16-D848-4680-A696-696A31D55734_nobg.png`,
       `${CDN}/5EB799A1-252C-46DA-A84D-7A90C6B9C5F7.png`,
-      `${CDN}/E60D6B2E-4B4D-4EC9-9535-835754C02FAD.png`,
+      `/images/b747-afo-styled.png`,
     ],
     bestseller: true,
     scale: "1/150",
