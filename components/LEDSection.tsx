@@ -142,19 +142,20 @@ export default function LEDSection() {
                 border: "1px solid rgba(255,180,77,0.1)",
               }}
             >
-              {/* Real product photo with LED active */}
+              {/* Real product photo (pre-processed: shadows lifted from
+                  10% → 40% mean luminance, blue LEDs swapped to amber via
+                  HSV recolor — see scripts/brighten_a220_led.py) */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
-                  src="/led/a220-on.jpg"
+                  src="/led/a220-on-bright.jpg"
                   alt="Maquette A220 Air France avec LED cabine activé — éclairage intérieur jaune"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"
                   style={{
-                    /* Warm boost: lift shadows, slightly saturate, push hue toward warm */
-                    filter:
-                      "brightness(1.08) contrast(1.05) saturate(1.18) hue-rotate(-8deg)",
+                    /* Light final polish — most of the work is done in the source */
+                    filter: "saturate(1.05) contrast(1.02)",
                   }}
                   onError={() => setImgError(true)}
                 />
@@ -168,24 +169,13 @@ export default function LEDSection() {
                 />
               )}
 
-              {/* Warm overlay — multiply to deepen shadows in cool zones */}
+              {/* Subtle bottom darken to keep "LED ACTIVE" pill readable */}
               <div
                 aria-hidden
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(20,8,2,0.0) 0%, rgba(8,4,2,0.18) 60%, rgba(4,2,8,0.42) 100%)",
-                  mixBlendMode: "multiply",
-                }}
-              />
-              {/* Warm screen overlay — pushes warm tone over any cool LED */}
-              <div
-                aria-hidden
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(ellipse 65% 45% at 50% 50%, rgba(255,200,100,0.18) 0%, rgba(255,140,40,0.06) 50%, transparent 80%)",
-                  mixBlendMode: "screen",
+                    "linear-gradient(180deg, transparent 60%, rgba(4,2,8,0.35) 100%)",
                 }}
               />
 
