@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,84 +17,49 @@ export default function LEDSection() {
   const sectionRef  = useRef<HTMLElement>(null);
   const imgRef      = useRef<HTMLDivElement>(null);
   const textRef     = useRef<HTMLDivElement>(null);
-  const glowRef     = useRef<HTMLDivElement>(null);
-  const orbRef      = useRef<HTMLDivElement>(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Section entrance — image slides in from left
-        gsap.set(imgRef.current, { opacity: 0, x: -70, scale: 0.93, filter: "blur(14px)" });
+        // One-time entry only — no looped pulse/scale on the photo
+        gsap.set(imgRef.current, { opacity: 0, x: -50, filter: "blur(10px)" });
         gsap.to(imgRef.current, {
           opacity: 1,
           x: 0,
-          scale: 1,
           filter: "blur(0px)",
-          duration: 1.3,
+          duration: 1.2,
           ease: "expo.out",
           scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
         });
 
-        // Text slides in from right
-        gsap.set(textRef.current, { opacity: 0, x: 70, filter: "blur(10px)" });
+        gsap.set(textRef.current, { opacity: 0, x: 50, filter: "blur(8px)" });
         gsap.to(textRef.current, {
           opacity: 1,
           x: 0,
           filter: "blur(0px)",
-          duration: 1.3,
+          duration: 1.2,
           ease: "expo.out",
           scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
         });
 
-        // Orb expands on scroll in
-        gsap.set(orbRef.current, { opacity: 0, scale: 0.4 });
-        gsap.to(orbRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 1.6,
-          ease: "expo.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        });
-
-        // Spec tiles stagger up
-        gsap.set(".led-spec", { opacity: 0, y: 24, scale: 0.88 });
+        gsap.set(".led-spec", { opacity: 0, y: 20, scale: 0.92 });
         gsap.to(".led-spec", {
           opacity: 1,
           y: 0,
           scale: 1,
           stagger: 0.1,
-          duration: 0.75,
+          duration: 0.7,
           ease: "back.out(2.2)",
           scrollTrigger: { trigger: sectionRef.current, start: "top 65%" },
-        });
-
-        // Pulse glow ring on image — continuous
-        gsap.to(glowRef.current, {
-          opacity: 0.9,
-          scale: 1.18,
-          duration: 2.4,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-        });
-
-        // Orb ambient breathe
-        gsap.to(orbRef.current, {
-          opacity: 0.75,
-          scale: 1.08,
-          duration: 3,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          delay: 1.6,
         });
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(
-          [imgRef.current, textRef.current, orbRef.current, ".led-spec"],
+          [imgRef.current, textRef.current, ".led-spec"],
           { opacity: 1, x: 0, y: 0, scale: 1, filter: "none" }
         );
       });
@@ -109,7 +74,7 @@ export default function LEDSection() {
       className="relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(180deg, #06060f 0%, #020415 50%, #06060f 100%)",
+          "linear-gradient(180deg, #06060f 0%, #0a0604 50%, #06060f 100%)",
       }}
     >
       {/* Chapter marker divider */}
@@ -123,7 +88,7 @@ export default function LEDSection() {
         />
         <div
           className="font-mono text-[0.6rem] tracking-[0.35em] uppercase px-5"
-          style={{ color: "rgba(255,180,77,0.65)", whiteSpace: "nowrap" }}
+          style={{ color: "rgba(255,180,77,0.7)", whiteSpace: "nowrap" }}
         >
           LED Cockpit Intégré
         </div>
@@ -133,9 +98,8 @@ export default function LEDSection() {
         />
       </div>
 
-      {/* Ambient orb — warm cabin glow (yellow/amber) */}
+      {/* Static warm ambient orb (no pulse) */}
       <div
-        ref={orbRef}
         aria-hidden
         className="absolute pointer-events-none"
         style={{
@@ -143,7 +107,7 @@ export default function LEDSection() {
           height: 600,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(255,180,77,0.35) 0%, rgba(255,140,40,0.12) 40%, transparent 70%)",
+            "radial-gradient(circle, rgba(255,180,77,0.25) 0%, rgba(255,140,40,0.08) 40%, transparent 70%)",
           top: "50%",
           left: "25%",
           transform: "translate(-50%, -50%)",
@@ -151,189 +115,89 @@ export default function LEDSection() {
         }}
       />
 
-      {/* Subtle grid */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(58,142,255,0.016) 1px, transparent 1px), linear-gradient(90deg, rgba(58,142,255,0.016) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
-
       <div className="relative py-24 md:py-36">
         <div className="grid gap-14 lg:grid-cols-2 items-center w-full px-6 md:px-12 lg:px-16 max-w-none mx-auto xl:max-w-[1600px]">
 
-          {/* ── Image (full-bleed left) ── */}
+          {/* ── Image ── */}
           <div ref={imgRef} className="relative order-2 lg:order-1">
-            {/* Outer pulsing glow ring — warm amber */}
+            {/* Static warm glow ring around the frame (no pulse) */}
             <div
-              ref={glowRef}
               aria-hidden
-              className="absolute -inset-4 pointer-events-none"
+              className="absolute -inset-3 pointer-events-none"
               style={{
                 borderRadius: "2rem",
                 boxShadow:
-                  "0 0 80px rgba(255,180,77,0.55), 0 0 160px rgba(255,140,40,0.25)",
-                opacity: 0.55,
+                  "0 0 60px rgba(255,180,77,0.35), 0 0 120px rgba(255,140,40,0.18)",
+                opacity: 0.7,
               }}
             />
 
-            {/* Frame — pure SVG illustration, no photo, no blue */}
+            {/* Frame */}
             <div
-              className="relative overflow-hidden w-full flex items-center justify-center"
+              className="relative overflow-hidden w-full"
               style={{
                 borderRadius: "1.75rem",
                 aspectRatio: "1/1",
-                background:
-                  "radial-gradient(ellipse 70% 55% at 50% 50%, #1a0e02 0%, #0a0604 50%, #050302 100%)",
+                background: "#0a0604",
+                border: "1px solid rgba(255,180,77,0.1)",
               }}
             >
-              {/* Warm ambient halo behind plane */}
+              {/* Real product photo with LED active */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {!imgError ? (
+                <img
+                  src="/led/a220-on.jpg"
+                  alt="Maquette A220 Air France avec LED cabine activé — éclairage intérieur jaune"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  style={{
+                    /* Warm boost: lift shadows, slightly saturate, push hue toward warm */
+                    filter:
+                      "brightness(1.08) contrast(1.05) saturate(1.18) hue-rotate(-8deg)",
+                  }}
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse 80% 70% at 50% 55%, rgba(60,30,8,0.9) 0%, rgba(8,4,2,0.98) 100%)",
+                  }}
+                />
+              )}
+
+              {/* Warm overlay — multiply to deepen shadows in cool zones */}
               <div
                 aria-hidden
-                className="absolute pointer-events-none"
+                className="absolute inset-0 pointer-events-none"
                 style={{
-                  width: "70%",
-                  height: "30%",
-                  borderRadius: "50%",
                   background:
-                    "radial-gradient(ellipse 100% 100%, rgba(255,180,77,0.28) 0%, rgba(255,140,40,0.10) 50%, transparent 80%)",
-                  filter: "blur(20px)",
-                  animation: "ledHalo 3.5s ease-in-out infinite",
+                    "linear-gradient(180deg, rgba(20,8,2,0.0) 0%, rgba(8,4,2,0.18) 60%, rgba(4,2,8,0.42) 100%)",
+                  mixBlendMode: "multiply",
+                }}
+              />
+              {/* Warm screen overlay — pushes warm tone over any cool LED */}
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 65% 45% at 50% 50%, rgba(255,200,100,0.18) 0%, rgba(255,140,40,0.06) 50%, transparent 80%)",
+                  mixBlendMode: "screen",
                 }}
               />
 
-              {/* Airplane silhouette + lit windows (side view) */}
-              <svg
-                viewBox="0 0 800 220"
-                className="relative w-[88%] h-auto"
-                style={{
-                  filter: "drop-shadow(0 0 30px rgba(255,180,77,0.45))",
-                }}
-                aria-label="Avion avec LED cabine allumée"
-              >
-                <defs>
-                  <linearGradient id="led-fuselage" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#1c1c24" />
-                    <stop offset="50%" stopColor="#0e0e14" />
-                    <stop offset="100%" stopColor="#08080c" />
-                  </linearGradient>
-                  <linearGradient id="led-wing" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#14141c" />
-                    <stop offset="100%" stopColor="#06060a" />
-                  </linearGradient>
-                  <radialGradient id="led-window-glow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#fff4c2" stopOpacity="1" />
-                    <stop offset="40%" stopColor="#ffd966" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#ff9b3d" stopOpacity="0.4" />
-                  </radialGradient>
-                </defs>
-
-                {/* Tail vertical fin */}
-                <path
-                  d="M 60 110 L 50 50 Q 50 45 56 45 L 90 45 Q 96 45 96 50 L 110 110 Z"
-                  fill="url(#led-fuselage)"
-                />
-
-                {/* Horizontal stabilizer */}
-                <path
-                  d="M 70 100 L 30 95 L 30 110 L 70 115 Z"
-                  fill="url(#led-wing)"
-                />
-
-                {/* Wing under fuselage */}
-                <path
-                  d="M 320 130 L 360 175 L 530 175 L 580 130 Z"
-                  fill="url(#led-wing)"
-                />
-                <path
-                  d="M 370 175 L 365 195 L 380 195 L 385 175 Z M 480 175 L 475 195 L 490 195 L 495 175 Z"
-                  fill="#0a0a10"
-                />
-
-                {/* Fuselage body — long rounded shape */}
-                <path
-                  d="M 100 100
-                     L 690 100
-                     Q 740 100 760 115
-                     Q 770 122 762 130
-                     Q 740 140 690 140
-                     L 100 140
-                     Q 90 140 90 130
-                     L 90 110
-                     Q 90 100 100 100 Z"
-                  fill="url(#led-fuselage)"
-                  stroke="rgba(255,180,77,0.08)"
-                  strokeWidth="0.5"
-                />
-
-                {/* Cockpit nose — slightly darker tip with cockpit window hint */}
-                <path
-                  d="M 690 105 L 745 115 Q 752 120 745 125 L 690 135 Z"
-                  fill="#050508"
-                />
-                <ellipse cx="710" cy="118" rx="6" ry="3" fill="#ffd966" opacity="0.35" />
-
-                {/* Engine under wing */}
-                <ellipse cx="430" cy="150" rx="22" ry="9" fill="#0a0a10" />
-                <ellipse cx="430" cy="150" rx="22" ry="9" fill="none" stroke="rgba(255,180,77,0.12)" strokeWidth="0.5" />
-
-                {/* Cabin windows — row of glowing yellow */}
-                {Array.from({ length: 32 }).map((_, i) => {
-                  const x = 130 + i * 17;
-                  return (
-                    <g key={i}>
-                      {/* Outer halo */}
-                      <ellipse
-                        cx={x + 5}
-                        cy={120}
-                        rx="6"
-                        ry="4"
-                        fill="url(#led-window-glow)"
-                        opacity={0.6 + (i % 3) * 0.15}
-                      >
-                        <animate
-                          attributeName="opacity"
-                          values={`${0.55 + (i % 3) * 0.1};${0.85 + (i % 3) * 0.05};${0.55 + (i % 3) * 0.1}`}
-                          dur={`${3 + (i % 4) * 0.4}s`}
-                          repeatCount="indefinite"
-                        />
-                      </ellipse>
-                      {/* Crisp window rectangle */}
-                      <rect
-                        x={x + 2}
-                        y={117}
-                        width="6"
-                        height="6"
-                        rx="1.5"
-                        fill="#fff2b8"
-                      />
-                    </g>
-                  );
-                })}
-
-                {/* Cargo door / detail line */}
-                <line
-                  x1="120"
-                  y1="135"
-                  x2="680"
-                  y2="135"
-                  stroke="rgba(255,180,77,0.05)"
-                  strokeWidth="0.5"
-                />
-              </svg>
-
-              {/* LED active badge — amber, no animation noise */}
+              {/* LED active badge — static (only the dot blinks subtly) */}
               <div
                 className="absolute bottom-5 left-5 flex items-center gap-2.5 px-3.5 py-2"
                 style={{
                   borderRadius: 999,
-                  background: "rgba(20,10,2,0.82)",
-                  border: "1px solid rgba(255,180,77,0.45)",
+                  background: "rgba(20,10,2,0.85)",
+                  border: "1px solid rgba(255,180,77,0.5)",
                   backdropFilter: "blur(14px)",
-                  boxShadow: "0 0 12px rgba(255,140,40,0.18)",
+                  boxShadow: "0 0 12px rgba(255,140,40,0.2)",
                 }}
               >
                 <span
