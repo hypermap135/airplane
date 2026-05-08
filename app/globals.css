@@ -378,14 +378,19 @@ body {
 @keyframes ledPulse {
   0%, 100% {
     background:
-      radial-gradient(ellipse 70% 50% at 50% 60%, rgba(58,142,255,0.35) 0%, transparent 70%),
-      linear-gradient(180deg, rgba(6,6,18,0.5) 0%, rgba(6,6,18,0.88) 100%);
+      radial-gradient(ellipse 70% 50% at 50% 55%, rgba(255,180,77,0.32) 0%, rgba(255,140,40,0.12) 40%, transparent 75%),
+      linear-gradient(180deg, rgba(8,4,2,0.25) 0%, rgba(4,2,8,0.55) 100%);
   }
   50% {
     background:
-      radial-gradient(ellipse 90% 65% at 50% 55%, rgba(58,142,255,0.65) 0%, transparent 65%),
-      linear-gradient(180deg, rgba(6,6,18,0.4) 0%, rgba(6,6,18,0.82) 100%);
+      radial-gradient(ellipse 90% 65% at 50% 55%, rgba(255,200,100,0.5) 0%, rgba(255,140,40,0.18) 40%, transparent 70%),
+      linear-gradient(180deg, rgba(8,4,2,0.18) 0%, rgba(4,2,8,0.5) 100%);
   }
+}
+
+@keyframes ledHalo {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.06); }
 }
 
 /* ─── Reduce motion ───────────────────────────────────── */
