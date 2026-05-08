@@ -142,20 +142,19 @@ export default function LEDSection() {
                 border: "1px solid rgba(255,180,77,0.1)",
               }}
             >
-              {/* Real product photo (pre-processed: shadows lifted from
-                  10% → 40% mean luminance, blue LEDs swapped to amber via
-                  HSV recolor — see scripts/brighten_a220_led.py) */}
+              {/* Real product photo from Shopify (well-lit studio shot) */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
-                  src="/led/a220-on-bright.jpg"
-                  alt="Maquette A220 Air France avec LED cabine activé — éclairage intérieur jaune"
+                  src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_AIR_FRANCE.jpg"
+                  alt="Maquette A380 Air France avec LED cabine — éclairage intérieur jaune"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"
                   style={{
-                    /* Light final polish — most of the work is done in the source */
-                    filter: "saturate(1.05) contrast(1.02)",
+                    /* Subtle warm grading: shift cool tones toward amber */
+                    filter:
+                      "brightness(0.85) contrast(1.05) saturate(1.1) sepia(0.18) hue-rotate(-12deg)",
                   }}
                   onError={() => setImgError(true)}
                 />
@@ -169,13 +168,53 @@ export default function LEDSection() {
                 />
               )}
 
-              {/* Subtle bottom darken to keep "LED ACTIVE" pill readable */}
+              {/* Warm cabin glow halo behind plane area */}
               <div
                 aria-hidden
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(180deg, transparent 60%, rgba(4,2,8,0.35) 100%)",
+                    "radial-gradient(ellipse 55% 35% at 50% 50%, rgba(255,200,100,0.20) 0%, rgba(255,140,40,0.08) 50%, transparent 80%)",
+                  mixBlendMode: "screen",
+                }}
+              />
+
+              {/* Cabin window LED dots — overlaid yellow lit windows along
+                  the fuselage horizontal line.
+                  Positioned roughly along the photo's airplane fuselage. */}
+              <svg
+                aria-hidden
+                viewBox="0 0 100 100"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <radialGradient id="led-dot" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#fff8d6" stopOpacity="1" />
+                    <stop offset="40%" stopColor="#ffd966" stopOpacity="0.95" />
+                    <stop offset="100%" stopColor="#ff9b3d" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+                {Array.from({ length: 24 }).map((_, i) => {
+                  const x = 22 + i * 2.4;
+                  return (
+                    <g key={i}>
+                      {/* halo */}
+                      <circle cx={x} cy={50.5} r="1.4" fill="url(#led-dot)" opacity="0.85" />
+                      {/* crisp center */}
+                      <rect x={x - 0.35} y={50} width="0.7" height="1" fill="#fff4c0" rx="0.1" />
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Bottom darken to keep "LED ACTIVE" pill readable */}
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(180deg, transparent 65%, rgba(4,2,8,0.45) 100%)",
                 }}
               />
 
