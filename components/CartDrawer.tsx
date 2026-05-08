@@ -129,10 +129,17 @@ export default function CartDrawer() {
                 <img
                   src={product.image}
                   alt={product.title}
-                  className="w-full h-full object-contain"
                   referrerPolicy="no-referrer"
                   loading="eager"
-                  style={{ padding: "8%", transform: "scale(1.1) translateY(-4%)" }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    padding: "10%",
+                    display: "block",
+                  }}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display = "none";
                   }}
