@@ -19,7 +19,7 @@ const FEATURES = [
     num: "02",
     title: "Le cockpit s'éveille.",
     body: "Un interrupteur sous le socle. Le fuselage s'allume, le cockpit aussi — vingt secondes qui transforment une maquette en sculpture lumineuse.",
-    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_Emirates_nobg.png",
+    image: "/images/a380-emirates.png",
     imageAlt: "A380 — éclairage LED intégré",
     imageLeft: false,
   },
