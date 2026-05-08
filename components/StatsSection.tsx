@@ -8,12 +8,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const STATS = [
   {
-    display: "2 000+",
-    value: 2000,
-    suffix: "+",
+    display: "1 847",
+    value: 1847,
+    suffix: "",
     label: "Passionnés",
     decimals: 0,
-    formatFn: (v: number) => Math.round(v).toLocaleString("fr-FR") + "+",
+    formatFn: (v: number) => Math.round(v).toLocaleString("fr-FR"),
   },
   {
     display: "4,8/5",

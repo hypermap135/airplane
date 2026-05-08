@@ -211,7 +211,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
               <span className="font-bold text-white text-[0.88rem]">4.8</span>
               <span className="font-mono text-[0.58rem] tracking-[0.12em]" style={{ color: "#565870" }}>
-                · +2 000 avis clients
+                · 1 847 avis clients
               </span>
             </div>
 

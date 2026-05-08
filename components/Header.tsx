@@ -110,27 +110,31 @@ export default function Header() {
             style={{ textDecoration: "none" }}
           >
             <svg
-              width="22"
-              height="22"
+              width="26"
+              height="26"
               viewBox="0 0 32 32"
               fill="none"
               aria-hidden
               style={{
-                transition: "filter 0.3s ease",
+                transition: "filter 0.3s ease, transform 0.4s ease",
               }}
-              className="group-hover:[filter:drop-shadow(0_0_6px_rgba(58,142,255,0.55))]"
+              className="group-hover:[filter:drop-shadow(0_0_8px_rgba(58,142,255,0.55))] group-hover:rotate-[8deg]"
             >
               <defs>
                 <linearGradient id="hdr-chrome" x1="0" x2="1" y1="0" y2="1">
                   <stop offset="0%" stopColor="#FFFFFF" />
-                  <stop offset="100%" stopColor="#9ea8b8" />
+                  <stop offset="55%" stopColor="#cfd6e2" />
+                  <stop offset="100%" stopColor="#3a8eff" />
                 </linearGradient>
               </defs>
+              {/* Top-down jet airliner silhouette */}
               <path
-                d="M16 3 L19 14 L29 16 L19 18 L16 29 L13 18 L3 16 L13 14 Z"
+                d="M16 3 L17.4 4.6 L17.4 11 L29 16 L29 17.6 L17.4 14.6 L17.4 22.6 L21.6 25.2 L21.6 26.8 L16 25.4 L10.4 26.8 L10.4 25.2 L14.6 22.6 L14.6 14.6 L3 17.6 L3 16 L14.6 11 L14.6 4.6 Z"
                 fill="url(#hdr-chrome)"
-                opacity="0.95"
+                opacity="0.96"
               />
+              {/* Cockpit window detail */}
+              <ellipse cx="16" cy="6.5" rx="0.9" ry="1.3" fill="rgba(58,142,255,0.5)" />
             </svg>
             <span
               className="font-black tracking-[0.2em] uppercase text-white transition-all duration-300"

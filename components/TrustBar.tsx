@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const ITEMS = [
   {
     label: "4.8/5",
-    sub: "2 000+ avis",
+    sub: "1 847 avis",
     Icon: () => (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path

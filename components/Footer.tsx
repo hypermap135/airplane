@@ -54,15 +54,17 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="inline-flex items-center gap-2.5 mb-5 group">
-              <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden>
-                <path d="M16 3 L19 14 L29 16 L19 18 L16 29 L13 18 L3 16 L13 14 Z"
-                  fill="url(#foot-chrome)" opacity="0.9" />
+              <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden>
                 <defs>
                   <linearGradient id="foot-chrome" x1="0" x2="1" y1="0" y2="1">
                     <stop offset="0%" stopColor="#FFFFFF" />
-                    <stop offset="100%" stopColor="#9ea8b8" />
+                    <stop offset="55%" stopColor="#cfd6e2" />
+                    <stop offset="100%" stopColor="#3a8eff" />
                   </linearGradient>
                 </defs>
+                <path d="M16 3 L17.4 4.6 L17.4 11 L29 16 L29 17.6 L17.4 14.6 L17.4 22.6 L21.6 25.2 L21.6 26.8 L16 25.4 L10.4 26.8 L10.4 25.2 L14.6 22.6 L14.6 14.6 L3 17.6 L3 16 L14.6 11 L14.6 4.6 Z"
+                  fill="url(#foot-chrome)" opacity="0.92" />
+                <ellipse cx="16" cy="6.5" rx="0.9" ry="1.3" fill="rgba(58,142,255,0.5)" />
               </svg>
               <span className="font-black text-[0.85rem] tracking-[0.18em] uppercase text-white">
                 AIRPLANESTORE
@@ -76,7 +78,7 @@ export default function Footer() {
             {/* Trust chips */}
             <div className="mt-6 flex flex-col gap-2">
               {[
-                { icon: "★", text: "4.8 / 5 · +2 000 clients" },
+                { icon: "★", text: "4.8 / 5 · 1 847 clients" },
                 { icon: "✦", text: "Livraison France & Europe" },
                 { icon: "◈", text: "Satisfait ou remboursé 30 j" },
               ].map((item) => (

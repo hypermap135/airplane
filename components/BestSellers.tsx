@@ -111,7 +111,7 @@ export default function BestSellers() {
                 className="text-[0.88rem] leading-relaxed"
                 style={{ color: "#565870", maxWidth: 420 }}
               >
-                Sélectionnés parmi +2 000 commandes. Pilotes, collectionneurs, passionnés — c&apos;est ce qu&apos;ils ont choisi en premier.
+                Sélectionnés parmi 1 847 commandes. Pilotes, collectionneurs, passionnés — c&apos;est ce qu&apos;ils ont choisi en premier.
               </p>
             </div>
             <div className="hidden md:flex items-center gap-4">
@@ -123,7 +123,7 @@ export default function BestSellers() {
                   className="font-mono text-[0.62rem] tracking-[0.12em] ml-1"
                   style={{ color: "#565870" }}
                 >
-                  4.8 · +2 000 avis
+                  4.8 · 1 847 avis
                 </span>
               </div>
               <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.08)" }} />

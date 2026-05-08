@@ -60,7 +60,7 @@ export default function HeroV1FlightDeck() {
       />
 
       {/* Top status rail */}
-      <div className="absolute top-20 left-0 right-0 z-20 hero-fade-up">
+      <div className="absolute top-32 left-0 right-0 z-20 hero-fade-up">
         <div className="mx-auto max-w-7xl px-5 md:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="relative h-1.5 w-1.5 rounded-full bg-[#3a8eff]">
