@@ -109,12 +109,12 @@ export default function LEDSection() {
                 background: "#000",
               }}
             >
-              {/* Photo de la collection avec LED allumées */}
+              {/* Photo A320 Air France avec LED cabine allumées */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
-                  src="/led/a220-on-bright.jpg"
-                  alt="Maquette A220 Air France avec LED cabine activé"
+                  src="/led/a320-led-on.jpg"
+                  alt="Maquette A320 Air France avec LED cabine activé — éclairage intérieur jaune chaud"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"

@@ -92,9 +92,9 @@ export const PRODUCTS: Product[] = [
     price: 89,
     collection: "airbus",
     inStock: true,
-    image: `${CDN}/CD86650C-845D-487B-9A81-2CA67C80A28A_nobg.png`,
+    image: `/images/a320-new-livery-af.png`,
     images: [
-      `${CDN}/CD86650C-845D-487B-9A81-2CA67C80A28A_nobg.png`,
+      `/images/a320-new-livery-af.png`,
       `${CDN}/6FEC6314-FD59-470D-A4EC-8720B8E532BC.png`,
       `${CDN}/D0ABD2B2-5602-49B7-8742-D92C5EE29B4C.png`,
     ],
