@@ -124,7 +124,7 @@ export default function LEDSection() {
         />
         <div
           className="font-mono text-[0.6rem] tracking-[0.35em] uppercase px-5"
-          style={{ color: "rgba(58,142,255,0.55)", whiteSpace: "nowrap" }}
+          style={{ color: "rgba(255,180,77,0.65)", whiteSpace: "nowrap" }}
         >
           LED Cockpit Intégré
         </div>
@@ -134,7 +134,7 @@ export default function LEDSection() {
         />
       </div>
 
-      {/* Ambient orb behind the visual */}
+      {/* Ambient orb — warm cabin glow (yellow/amber) */}
       <div
         ref={orbRef}
         aria-hidden
@@ -144,11 +144,11 @@ export default function LEDSection() {
           height: 600,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(20,60,180,0.4) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(255,180,77,0.35) 0%, rgba(255,140,40,0.12) 40%, transparent 70%)",
           top: "50%",
           left: "25%",
           transform: "translate(-50%, -50%)",
-          filter: "blur(40px)",
+          filter: "blur(50px)",
         }}
       />
 
@@ -168,7 +168,7 @@ export default function LEDSection() {
 
           {/* ── Image (full-bleed left) ── */}
           <div ref={imgRef} className="relative order-2 lg:order-1">
-            {/* Outer pulsing glow ring */}
+            {/* Outer pulsing glow ring — warm amber */}
             <div
               ref={glowRef}
               aria-hidden
@@ -176,8 +176,8 @@ export default function LEDSection() {
               style={{
                 borderRadius: "2rem",
                 boxShadow:
-                  "0 0 80px rgba(58,142,255,0.4), 0 0 160px rgba(20,60,180,0.2)",
-                opacity: 0.45,
+                  "0 0 80px rgba(255,180,77,0.55), 0 0 160px rgba(255,140,40,0.25)",
+                opacity: 0.55,
               }}
             />
 
@@ -186,12 +186,12 @@ export default function LEDSection() {
               className="relative overflow-hidden w-full"
               style={{ borderRadius: "1.75rem", aspectRatio: "1/1" }}
             >
-              {/* Airplane image */}
+              {/* Airplane image — A220 Air France LED active */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
-                  src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_AIR_FRANCE.jpg"
-                  alt="Maquette A380 Air France éclairée LED"
+                  src="/led/a220-on.jpg"
+                  alt="Maquette A220 Air France avec LED cabine activé — éclairage intérieur jaune"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"
@@ -234,39 +234,51 @@ export default function LEDSection() {
                 </div>
               )}
 
-              {/* LED pulse overlay */}
+              {/* LED pulse overlay — warm amber cabin glow */}
               <div
                 aria-hidden
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background:
-                    "radial-gradient(ellipse 70% 50% at 50% 60%, rgba(58,142,255,0.45) 0%, transparent 70%), linear-gradient(180deg, rgba(2,4,21,0.45) 0%, rgba(2,4,21,0.85) 100%)",
+                    "radial-gradient(ellipse 70% 50% at 50% 55%, rgba(255,180,77,0.32) 0%, rgba(255,140,40,0.12) 40%, transparent 75%), linear-gradient(180deg, rgba(8,4,2,0.25) 0%, rgba(4,2,8,0.55) 100%)",
                   animation: "ledPulse 2.4s ease-in-out infinite",
+                  mixBlendMode: "screen",
+                }}
+              />
+              {/* Subtle window-row glow sheen on top of fuselage area */}
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 60% 8% at 50% 50%, rgba(255,200,100,0.28) 0%, transparent 80%)",
+                  filter: "blur(2px)",
                 }}
               />
 
-              {/* LED active badge */}
+              {/* LED active badge — amber */}
               <div
                 className="absolute bottom-5 left-5 flex items-center gap-2.5 px-3.5 py-2"
                 style={{
                   borderRadius: 999,
-                  background: "rgba(2,4,21,0.8)",
-                  border: "1px solid rgba(58,142,255,0.38)",
+                  background: "rgba(20,10,2,0.82)",
+                  border: "1px solid rgba(255,180,77,0.45)",
                   backdropFilter: "blur(14px)",
+                  boxShadow: "0 0 12px rgba(255,140,40,0.18)",
                 }}
               >
                 <span
                   aria-hidden
                   className="w-2 h-2 rounded-full"
                   style={{
-                    background: "#3a8eff",
-                    boxShadow: "0 0 8px rgba(58,142,255,0.9)",
+                    background: "#ffb84d",
+                    boxShadow: "0 0 10px rgba(255,184,77,0.95)",
                     animation: "blink 1.4s ease-in-out infinite",
                   }}
                 />
                 <span
                   className="font-mono text-[0.65rem] tracking-[0.2em] uppercase"
-                  style={{ color: "rgba(100,170,255,0.9)" }}
+                  style={{ color: "rgba(255,210,140,0.92)" }}
                 >
                   LED ACTIVE
                 </span>
@@ -281,12 +293,12 @@ export default function LEDSection() {
                 style={{
                   width: 24,
                   height: 1,
-                  background: "rgba(58,142,255,0.6)",
+                  background: "rgba(255,180,77,0.7)",
                 }}
               />
               <span
                 className="font-mono text-[0.63rem] tracking-[0.28em] uppercase"
-                style={{ color: "rgba(58,142,255,0.6)" }}
+                style={{ color: "rgba(255,180,77,0.75)" }}
               >
                 Système LED intégré
               </span>
@@ -314,7 +326,7 @@ export default function LEDSection() {
               <span
                 style={{
                   background:
-                    "linear-gradient(135deg, #3a8eff 0%, #7ab8ff 100%)",
+                    "linear-gradient(135deg, #ffb84d 0%, #ffd966 50%, #ff9b3d 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -366,7 +378,7 @@ export default function LEDSection() {
               style={{
                 height: 1,
                 background:
-                  "linear-gradient(to right, rgba(58,142,255,0.4) 0%, transparent 70%)",
+                  "linear-gradient(to right, rgba(255,180,77,0.5) 0%, transparent 70%)",
                 marginBottom: "1.5rem",
               }}
             />
