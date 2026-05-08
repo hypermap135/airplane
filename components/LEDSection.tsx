@@ -142,81 +142,23 @@ export default function LEDSection() {
                 border: "1px solid rgba(255,180,77,0.1)",
               }}
             >
-              {/* Real product photo from Shopify (well-lit studio shot) */}
+              {/* Real product photo from collection — minimal treatment */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
                   src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_AIR_FRANCE.jpg"
-                  alt="Maquette A380 Air France avec LED cabine — éclairage intérieur jaune"
+                  alt="Maquette A380 Air France"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"
-                  style={{
-                    /* Subtle warm grading: shift cool tones toward amber */
-                    filter:
-                      "brightness(0.85) contrast(1.05) saturate(1.1) sepia(0.18) hue-rotate(-12deg)",
-                  }}
                   onError={() => setImgError(true)}
                 />
               ) : (
                 <div
                   className="absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse 80% 70% at 50% 55%, rgba(60,30,8,0.9) 0%, rgba(8,4,2,0.98) 100%)",
-                  }}
+                  style={{ background: "#0a0604" }}
                 />
               )}
-
-              {/* Warm cabin glow halo behind plane area */}
-              <div
-                aria-hidden
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(ellipse 55% 35% at 50% 50%, rgba(255,200,100,0.20) 0%, rgba(255,140,40,0.08) 50%, transparent 80%)",
-                  mixBlendMode: "screen",
-                }}
-              />
-
-              {/* Cabin window LED dots — overlaid yellow lit windows along
-                  the fuselage horizontal line.
-                  Positioned roughly along the photo's airplane fuselage. */}
-              <svg
-                aria-hidden
-                viewBox="0 0 100 100"
-                className="absolute inset-0 w-full h-full pointer-events-none"
-                preserveAspectRatio="none"
-              >
-                <defs>
-                  <radialGradient id="led-dot" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#fff8d6" stopOpacity="1" />
-                    <stop offset="40%" stopColor="#ffd966" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#ff9b3d" stopOpacity="0" />
-                  </radialGradient>
-                </defs>
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const x = 22 + i * 2.4;
-                  return (
-                    <g key={i}>
-                      {/* halo */}
-                      <circle cx={x} cy={50.5} r="1.4" fill="url(#led-dot)" opacity="0.85" />
-                      {/* crisp center */}
-                      <rect x={x - 0.35} y={50} width="0.7" height="1" fill="#fff4c0" rx="0.1" />
-                    </g>
-                  );
-                })}
-              </svg>
-
-              {/* Bottom darken to keep "LED ACTIVE" pill readable */}
-              <div
-                aria-hidden
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(180deg, transparent 65%, rgba(4,2,8,0.45) 100%)",
-                }}
-              />
 
               {/* LED active badge — static (only the dot blinks subtly) */}
               <div
