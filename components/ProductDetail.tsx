@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, related, type Product } from "@/lib/products";
+import { trackMeta } from "@/lib/meta";
 import ProductCard from "./ProductCard";
 
 const SPECS: { label: string; value: string }[] = [
@@ -31,11 +32,32 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   const GRAVURE_VARIANT_ID = "53749941698900";
 
+  // Fire ViewContent on mount (Meta DPA matching)
+  useEffect(() => {
+    trackMeta("ViewContent", {
+      content_ids: [product.id],
+      content_name: product.title,
+      content_type: "product",
+      content_category: product.collection,
+      currency: "EUR",
+      value: product.price,
+    });
+  }, [product.id, product.title, product.collection, product.price]);
+
   const onAdd = () => {
     if (!product.inStock) return;
     add(product.variantId, 1);
     if (gravure) add(GRAVURE_VARIANT_ID, 1);
     setOpen(true);
+    trackMeta("AddToCart", {
+      content_ids: [product.id],
+      content_name: product.title,
+      content_type: "product",
+      contents: [{ id: product.id, quantity: 1, item_price: product.price }],
+      currency: "EUR",
+      value: product.price + (gravure ? 15 : 0),
+      num_items: gravure ? 2 : 1,
+    });
   };
 
   const handleThumbError = useCallback((idx: number) => {

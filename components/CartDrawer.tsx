@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice } from "@/lib/products";
 import { checkoutUrl, DISCOUNT_CODE } from "@/lib/shopify";
+import { trackMeta } from "@/lib/meta";
 
 const FREE_SHIPPING_THRESHOLD = 100;
 
@@ -24,6 +25,21 @@ export default function CartDrawer() {
   const onCheckout = async () => {
     if (entries.length === 0 || loading) return;
     setLoading(true);
+
+    // Fire InitiateCheckout for Meta optimization
+    trackMeta("InitiateCheckout", {
+      content_ids: entries.map((e) => e.product.id),
+      content_type: "product",
+      contents: entries.map((e) => ({
+        id: e.product.id,
+        quantity: e.quantity,
+        item_price: e.product.price,
+      })),
+      currency: "EUR",
+      value: total,
+      num_items: entries.reduce((sum, e) => sum + e.quantity, 0),
+    });
+
     try {
       const items = entries.map((e) => ({ variantId: e.product.variantId, quantity: e.quantity }));
       const appliedDiscount = promoApplied ? promo.trim().toUpperCase() : undefined;

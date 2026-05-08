@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, type Product } from "@/lib/products";
+import { trackMeta } from "@/lib/meta";
 import { useState } from "react";
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -16,6 +17,15 @@ export default function ProductCard({ product }: { product: Product }) {
     if (!product.inStock || product.variantId === "0") return;
     add(product.variantId, 1);
     setOpen(true);
+    trackMeta("AddToCart", {
+      content_ids: [product.id],
+      content_name: product.title,
+      content_type: "product",
+      contents: [{ id: product.id, quantity: 1, item_price: product.price }],
+      currency: "EUR",
+      value: product.price,
+      num_items: 1,
+    });
   };
 
   return (

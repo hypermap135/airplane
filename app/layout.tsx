@@ -7,6 +7,8 @@ import CartDrawer from "@/components/CartDrawer";
 import ScrollProgress from "@/components/ScrollProgress";
 import SmoothScroll from "@/components/SmoothScroll";
 
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-space", display: "swap" });
 const mono  = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400","500","700"], variable: "--font-mono", display: "swap" });
@@ -32,6 +34,20 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${inter.variable} ${space.variable} ${mono.variable}`}>
+      <head>
+        {/* Meta Pixel — fires only if NEXT_PUBLIC_META_PIXEL_ID is set */}
+        {META_PIXEL_ID && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init','${META_PIXEL_ID}');
+                fbq('track','PageView');
+              `,
+            }}
+          />
+        )}
+      </head>
       <body className="font-sans antialiased">
         {/* Aggressive cache bust: unregister all SWs + clear caches + force
             reload once per build. The build-stamp localStorage key forces
