@@ -13,7 +13,6 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 
 export const runtime = "edge";
 
@@ -29,11 +28,6 @@ type ClientPayload = {
   params: Record<string, unknown>;
   utm?: Record<string, string>;
 };
-
-function sha256(s: string): string {
-  // edge runtime: use Web Crypto via node:crypto polyfill
-  return crypto.createHash("sha256").update(s.trim().toLowerCase()).digest("hex");
-}
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!PIXEL_ID || !ACCESS_TOKEN) {
@@ -109,5 +103,3 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-// Silence unused crypto warning in edge runtime
-void sha256;
