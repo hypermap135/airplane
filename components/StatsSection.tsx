@@ -57,24 +57,33 @@ export default function StatsSection() {
           scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
         });
 
-        /* Animated counters */
+        /* Animated counters — start from 70% of target so we never show
+           a jarring "0,0/5" before the rating animates up */
         STATS.forEach((stat, i) => {
           const el = document.querySelector<HTMLElement>(`.sv-${i}`);
           if (!el) return;
-          const obj = { val: 0 };
+          const startVal = stat.value * 0.7;
+          // Make sure the element starts at the formatted start value,
+          // not at the JSX default (so animation looks coherent).
+          el.textContent = stat.formatFn(startVal);
+          const obj = { val: startVal };
           gsap.to(obj, {
             val: stat.value,
-            duration: 2.2,
+            duration: 1.6,
             ease: "power2.out",
-            delay: i * 0.1,
+            delay: i * 0.08,
             snap: { val: stat.decimals === 0 ? 1 : 0 },
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 80%",
+              start: "top 85%",
               toggleActions: "play none none none",
             },
             onUpdate() {
               el.textContent = stat.formatFn(obj.val);
+            },
+            onComplete() {
+              // Lock final value to avoid any rounding quirks
+              el.textContent = stat.formatFn(stat.value);
             },
           });
         });

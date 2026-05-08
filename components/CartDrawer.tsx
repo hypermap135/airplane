@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useCart, useCartDrawer } from "@/lib/cart";
@@ -119,8 +118,25 @@ export default function CartDrawer() {
               key={product.variantId}
               className="flex gap-4 border border-ink-border rounded-xl p-3 bg-ink-600/50"
             >
-              <div className="relative h-20 w-20 shrink-0 rounded-lg overflow-hidden bg-ink-500">
-                <Image src={product.image} alt={product.title} fill sizes="80px" className="object-cover" />
+              <div
+                className="relative h-20 w-20 shrink-0 rounded-lg overflow-hidden"
+                style={{
+                  background: "linear-gradient(145deg, #0d0d22, #060610)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-full object-contain"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  style={{ padding: "8%", transform: "scale(1.1) translateY(-4%)" }}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3">
