@@ -31,7 +31,7 @@ const DEFAULT_ITEMS: FAQItem[] = [
   },
   {
     q: "Est-ce une copie bon marché fabriquée en Chine ?",
-    a: "Absolument pas. Nos maquettes sont fabriquées en résine haute densité, peintes à la main, et contrôlées pièce par pièce avant expédition. Elles ne peuvent pas être comparées aux reproductions plastique que l'on trouve sur les marketplaces. C'est pour cela que plus de 2 000 clients — dont de nombreux pilotes et collectionneurs — nous font confiance.",
+    a: "Absolument pas. Nos maquettes sont fabriquées en résine haute densité, peintes à la main, et contrôlées pièce par pièce avant expédition. Elles ne peuvent pas être comparées aux reproductions plastique que l'on trouve sur les marketplaces. C'est pour cela que 1 847 clients — dont de nombreux pilotes et collectionneurs — nous font confiance.",
   },
 ];
 
