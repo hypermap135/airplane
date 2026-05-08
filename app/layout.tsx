@@ -33,13 +33,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${inter.variable} ${space.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
-        {/* Unregister old Shopify service worker if any */}
+        {/* Aggressive cache bust: unregister all SWs + clear caches + force
+            reload once per build. The build-stamp localStorage key forces
+            stale clients to refresh their assets after each deploy. */}
         <script dangerouslySetInnerHTML={{ __html: `
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(regs) {
-              regs.forEach(function(r) { r.unregister(); });
-            });
-          }
+          (function() {
+            var BUILD = '2026-05-08-b';
+            try {
+              var stored = localStorage.getItem('asfr_build');
+              var hadSW = false;
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(regs) {
+                  if (regs.length > 0) hadSW = true;
+                  regs.forEach(function(r) { r.unregister(); });
+                });
+              }
+              if ('caches' in window) {
+                caches.keys().then(function(names) {
+                  return Promise.all(names.map(function(n) { return caches.delete(n); }));
+                });
+              }
+              if (stored !== BUILD) {
+                localStorage.setItem('asfr_build', BUILD);
+                if (stored !== null) {
+                  // Force one-time reload to pick up new chunks/images
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 100);
+                }
+              }
+            } catch(e) {}
+          })();
         `}} />
         <SmoothScroll>
           <ScrollProgress />
