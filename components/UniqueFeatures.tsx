@@ -11,8 +11,8 @@ const FEATURES = [
     num: "01",
     title: "Indestructible. Pour toujours.",
     body: "Résine coulée sous pression — immuable. 47 cm de présence sur votre bureau, votre étagère, votre salon. Dix ans, vingt ans — exactement la même pièce.",
-    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A320_Air_France_nobg.png",
-    imageAlt: "Maquette avion résine — détail structure",
+    image: "/images/a320-new-livery-af.png",
+    imageAlt: "A320 Air France new livery — résine premium, fond noir studio",
     imageLeft: true,
   },
   {
