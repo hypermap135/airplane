@@ -258,8 +258,8 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/Airbus_A380_Emirates_nobg_v3.png`,
-    images: [`${CDN}/Airbus_A380_Emirates_nobg_v3.png`],
+    image: `/images/a380-emirates.png`,
+    images: [`/images/a380-emirates.png`],
     scale: "1/160",
   },
 
