@@ -72,10 +72,7 @@ export default function LEDSection() {
     <section
       ref={sectionRef}
       className="relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #06060f 0%, #0a0604 50%, #06060f 100%)",
-      }}
+      style={{ background: "#000" }}
     >
       {/* Chapter marker divider */}
       <div
@@ -98,56 +95,26 @@ export default function LEDSection() {
         />
       </div>
 
-      {/* Static warm ambient orb (no pulse) */}
-      <div
-        aria-hidden
-        className="absolute pointer-events-none"
-        style={{
-          width: 600,
-          height: 600,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(255,180,77,0.25) 0%, rgba(255,140,40,0.08) 40%, transparent 70%)",
-          top: "50%",
-          left: "25%",
-          transform: "translate(-50%, -50%)",
-          filter: "blur(50px)",
-        }}
-      />
-
       <div className="relative py-24 md:py-36">
         <div className="grid gap-14 lg:grid-cols-2 items-center w-full px-6 md:px-12 lg:px-16 max-w-none mx-auto xl:max-w-[1600px]">
 
           {/* ── Image ── */}
           <div ref={imgRef} className="relative order-2 lg:order-1">
-            {/* Static warm glow ring around the frame (no pulse) */}
-            <div
-              aria-hidden
-              className="absolute -inset-3 pointer-events-none"
-              style={{
-                borderRadius: "2rem",
-                boxShadow:
-                  "0 0 60px rgba(255,180,77,0.35), 0 0 120px rgba(255,140,40,0.18)",
-                opacity: 0.7,
-              }}
-            />
-
-            {/* Frame */}
+            {/* Frame: pure black, photo dedans, c'est tout */}
             <div
               className="relative overflow-hidden w-full"
               style={{
                 borderRadius: "1.75rem",
                 aspectRatio: "1/1",
-                background: "#0a0604",
-                border: "1px solid rgba(255,180,77,0.1)",
+                background: "#000",
               }}
             >
-              {/* Real product photo from collection — minimal treatment */}
+              {/* Photo de la collection avec LED allumées */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {!imgError ? (
                 <img
-                  src="https://cdn.shopify.com/s/files/1/0921/9312/8788/files/Airbus_A380_AIR_FRANCE.jpg"
-                  alt="Maquette A380 Air France"
+                  src="/led/a220-on-bright.jpg"
+                  alt="Maquette A220 Air France avec LED cabine activé"
                   className="absolute inset-0 w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="eager"
