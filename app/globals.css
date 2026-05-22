@@ -445,9 +445,13 @@ body {
 }
 .clip-reveal > * { display: block; }
 
-/* ── Smooth image loading ── */
+/* ── Image loading ──
+   Images are visible by default. The previous opacity:0 + .loaded-class
+   mechanism caused images to stay permanently invisible whenever the JS
+   onLoad handler missed its timing (cached images, hydration races, or
+   imgs with loading="" but no .loaded wiring). Visibility must never
+   depend on JS — keep it CSS-only and safe. */
 img { transition: opacity 0.35s ease; }
-img[loading]:not(.loaded) { opacity: 0; }
 img.loaded { opacity: 1; }
 
 /* ── Font display headings ── */

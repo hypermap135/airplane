@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             stale clients to refresh their assets after each deploy. */}
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
-            var BUILD = '2026-05-08-b';
+            var BUILD = '2026-05-08-c';
             try {
               var stored = localStorage.getItem('asfr_build');
               var hadSW = false;
