@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -34,31 +35,26 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${inter.variable} ${space.variable} ${mono.variable}`}>
-      <head>
-        {/* Meta Pixel — fires only if NEXT_PUBLIC_META_PIXEL_ID is set */}
-        {META_PIXEL_ID && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init','${META_PIXEL_ID}');
-                fbq('track','PageView');
-              `,
-            }}
-          />
-        )}
-      </head>
       <body className="font-sans antialiased">
         {/* Unregister any stale Shopify service worker. No cache clearing,
-            no reload — Next.js already busts caches via hashed filenames.
-            (The previous auto-reload caused a flash of unstyled content.) */}
-        <script dangerouslySetInnerHTML={{ __html: `
+            no reload — Next.js already busts caches via hashed filenames. */}
+        <Script id="sw-cleanup" strategy="afterInteractive">{`
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(regs) {
               regs.forEach(function(r) { r.unregister(); });
             }).catch(function(){});
           }
-        `}} />
+        `}</Script>
+
+        {/* Meta Pixel — loads after interactive, only if env var is set */}
+        {META_PIXEL_ID && (
+          <Script id="meta-pixel" strategy="afterInteractive">{`
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init','${META_PIXEL_ID}');
+            fbq('track','PageView');
+          `}</Script>
+        )}
+
         <SmoothScroll>
           <ScrollProgress />
           <Header />
