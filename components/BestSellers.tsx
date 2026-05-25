@@ -14,8 +14,11 @@ export default function BestSellers() {
   const headingRef = useRef<HTMLDivElement>(null);
   const ctaRef     = useRef<HTMLDivElement>(null);
 
-  // Show bestsellers first, then other in-stock products
-  const products = sortForDisplay(PRODUCTS.filter((p) => p.inStock && p.collection !== "accessoires")).slice(0, 8);
+  // Notre sélection — only the 3 hand-picked bestsellers (gold-framed).
+  // All other products live in <CollectionExplorer /> below.
+  const products = sortForDisplay(
+    PRODUCTS.filter((p) => p.inStock && p.bestseller),
+  );
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -92,7 +95,7 @@ export default function BestSellers() {
               className="font-mono text-[0.6rem] tracking-[0.3em] uppercase"
               style={{ color: "rgba(58,142,255,0.65)" }}
             >
-              Sélection · Bestsellers
+              Notre sélection · Bestsellers
             </span>
           </div>
 
@@ -105,13 +108,13 @@ export default function BestSellers() {
                   letterSpacing: "-0.02em",
                 }}
               >
-                Les plus aimés.
+                Notre sélection.
               </h2>
               <p
                 className="text-[0.88rem] leading-relaxed"
                 style={{ color: "#565870", maxWidth: 420 }}
               >
-                Sélectionnés parmi 1 847 commandes. Pilotes, collectionneurs, passionnés — c&apos;est ce qu&apos;ils ont choisi en premier.
+                Trois icônes — choisies pour leur présence sur l&apos;étagère et leur impact dans la collection. Le reste de la flotte juste en dessous.
               </p>
             </div>
             <div className="hidden md:flex items-center gap-4">
@@ -137,8 +140,8 @@ export default function BestSellers() {
           </div>
         </div>
 
-        {/* Products grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+        {/* Products grid — 3 hand-picked bestsellers, gold-framed */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-6xl mx-auto">
           {products.map((p) => (
             <div
               key={p.id}
@@ -149,11 +152,14 @@ export default function BestSellers() {
           ))}
         </div>
 
-        {/* CTAs */}
-        <div ref={ctaRef} className="mt-12 flex flex-wrap items-center justify-center gap-4">
-          <Link href="/collections/all" className="btn-chrome">
-            Voir toute la collection →
-          </Link>
+        {/* Subtle scroll cue to invite users into the full collection below */}
+        <div ref={ctaRef} className="mt-10 flex flex-col items-center justify-center gap-2">
+          <span
+            className="font-mono text-[0.6rem] tracking-[0.3em] uppercase"
+            style={{ color: "rgba(58,142,255,0.55)" }}
+          >
+            ↓ Explorer toute la flotte
+          </span>
           <Link href="/collections/packs" className="btn-ghost">
             Packs & offres
           </Link>

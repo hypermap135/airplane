@@ -3,7 +3,7 @@ import TrustBar from "@/components/TrustBar";
 import StatsSection from "@/components/StatsSection";
 import CustomModelBanner from "@/components/CustomModelBanner";
 import BestSellers from "@/components/BestSellers";
-import ProductShowcase from "@/components/ProductShowcase";
+import CollectionExplorer from "@/components/CollectionExplorer";
 import HeroV2BoardingPass from "@/components/HeroV2BoardingPass";
 import UniqueFeatures from "@/components/UniqueFeatures";
 import LEDSection from "@/components/LEDSection";
@@ -20,8 +20,10 @@ export default function HomePage() {
       <StatsSection />
       {/* Banner "Maquette sur mesure" — teaser juste au-dessus des bestsellers */}
       <CustomModelBanner />
+      {/* Notre sélection — 3 bestsellers gold-framed */}
       <BestSellers />
-      <ProductShowcase />
+      {/* Toute la flotte — explorer inline avec chips de catégorie */}
+      <CollectionExplorer />
       {/* Boarding Pass — bloc standalone entre les produits et les features */}
       <HeroV2BoardingPass />
       <UniqueFeatures />
