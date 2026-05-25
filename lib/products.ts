@@ -355,9 +355,9 @@ export const PRODUCTS: Product[] = [
     price: 89,
     collection: "boeing",
     inStock: true,
-    image: `${CDN}/7B58CC55-7CD7-4BD4-ADD9-E57E9F11E454_nobg.png`,
+    image: `/images/b787-af.png`,
     images: [
-      `${CDN}/7B58CC55-7CD7-4BD4-ADD9-E57E9F11E454_nobg.png`,
+      `/images/b787-af.png`,
       `${CDN}/3F025660-25C7-422C-A7A0-B6C007CA2C42.png`,
       `${CDN}/CBDFF9B5-964E-49BE-BA66-88261109488F.png`,
     ],
