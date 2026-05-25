@@ -426,9 +426,9 @@ export const PRODUCTS: Product[] = [
     price: 89,
     collection: "concorde",
     inStock: true,
-    image: `${CDN}/DF8AE5B5-7A2D-4A02-B2BD-118AAF5D58AD_nobg.png`,
+    image: `/images/concorde-af-50.png`,
     images: [
-      `${CDN}/DF8AE5B5-7A2D-4A02-B2BD-118AAF5D58AD_nobg.png`,
+      `/images/concorde-af-50.png`,
       `${CDN}/51AA0205-B8D3-436A-A8C3-3EC854A7E05E.png`,
       `${CDN}/EADAEF26-88AC-4AB3-8A47-4135892B980D.png`,
     ],
@@ -443,9 +443,9 @@ export const PRODUCTS: Product[] = [
     price: 89,
     collection: "concorde",
     inStock: true,
-    image: `${CDN}/9A131FF0-EAB2-4176-9236-7B2761E44FB5_nobg_v2.png`,
+    image: `/images/concorde-ba-50.png`,
     images: [
-      `${CDN}/9A131FF0-EAB2-4176-9236-7B2761E44FB5_nobg_v2.png`,
+      `/images/concorde-ba-50.png`,
       `${CDN}/9909E902-39B4-4FB1-94DD-D125FF9C516D.png`,
       `${CDN}/PHOTO-2024-11-20-14-31-56_1.jpg`,
     ],
