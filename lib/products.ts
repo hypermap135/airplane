@@ -62,7 +62,7 @@ export const PRODUCTS: Product[] = [
       `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_12.jpg`,
       `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_13.jpg`,
     ],
-    bestseller: true,
+    bestseller: false,
     scale: "1/100",
   },
   {
@@ -80,7 +80,7 @@ export const PRODUCTS: Product[] = [
       `/images/a320-af-styled.png`,
       `${CDN}/Airbus_A320_nouvelle_Livr_e.png`,
     ],
-    bestseller: true,
+    bestseller: false,
     scale: "1/85",
   },
   {
@@ -174,7 +174,7 @@ export const PRODUCTS: Product[] = [
       `/images/a350-af-styled.png`,
       `/images/a350-turkish-styled.png`,
     ],
-    bestseller: true,
+    bestseller: false,
     scale: "1/142",
   },
   {
@@ -330,7 +330,7 @@ export const PRODUCTS: Product[] = [
       `${CDN}/F59AA5BE-6A56-4A85-BBFA-C0D853DB46E4.png`,
       `${CDN}/77243CA8-261E-4B68-B7C1-533B08FEF3BA.png`,
     ],
-    bestseller: true,
+    bestseller: false,
     scale: "1/157",
   },
   {
@@ -361,7 +361,7 @@ export const PRODUCTS: Product[] = [
       `${CDN}/3F025660-25C7-422C-A7A0-B6C007CA2C42.png`,
       `${CDN}/CBDFF9B5-964E-49BE-BA66-88261109488F.png`,
     ],
-    bestseller: true,
+    bestseller: false,
     scale: "1/130",
   },
   {
