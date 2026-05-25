@@ -6,7 +6,18 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STATS = [
+type Stat = {
+  display: string;
+  value: number;
+  suffix: string;
+  label: string;
+  decimals: number;
+  formatFn: (v: number) => string;
+  /** When true, the value is rendered statically — no count-up animation. */
+  staticValue?: boolean;
+};
+
+const STATS: Stat[] = [
   {
     display: "1 847",
     value: 1847,
@@ -22,6 +33,7 @@ const STATS = [
     label: "Note moyenne",
     decimals: 1,
     formatFn: (v: number) => v.toFixed(1).replace(".", ",") + "/5",
+    staticValue: true, // ★ rating stays at 4,8/5 — no counter animation
   },
   {
     display: "26",
@@ -58,13 +70,19 @@ export default function StatsSection() {
         });
 
         /* Animated counters — start from 70% of target so we never show
-           a jarring "0,0/5" before the rating animates up */
+           a jarring "0" before the value animates up.
+           Stats with staticValue:true are rendered as-is (no counter). */
         STATS.forEach((stat, i) => {
           const el = document.querySelector<HTMLElement>(`.sv-${i}`);
           if (!el) return;
+
+          // Static value → pin the formatted value and skip the count-up.
+          if (stat.staticValue) {
+            el.textContent = stat.formatFn(stat.value);
+            return;
+          }
+
           const startVal = stat.value * 0.7;
-          // Make sure the element starts at the formatted start value,
-          // not at the JSX default (so animation looks coherent).
           el.textContent = stat.formatFn(startVal);
           const obj = { val: startVal };
           gsap.to(obj, {

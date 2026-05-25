@@ -66,7 +66,7 @@ export default function HeroV1FlightDeck() {
             <span className="relative h-1.5 w-1.5 rounded-full bg-[#3a8eff]">
               <span className="absolute inset-0 rounded-full bg-[#3a8eff] animate-ping opacity-70" />
             </span>
-            <span className="hud text-white/55">SYS · ATELIER PARIS</span>
+            <span className="hud text-white/55">SYS · FAIT EN FRANCE</span>
           </div>
           <LiveClock />
         </div>
@@ -89,7 +89,7 @@ export default function HeroV1FlightDeck() {
           </h1>
 
           <p className="mt-8 max-w-md text-base md:text-lg text-white/70 leading-relaxed hero-fade-up-delayed">
-            Atelier parisien. Résine monobloc, finition main, LED intégré.
+            Fait en France. Résine monobloc, finition main, LED intégré.
             Livraison France &amp; Europe.
           </p>
 

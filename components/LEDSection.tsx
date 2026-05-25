@@ -211,7 +211,7 @@ export default function LEDSection() {
               className="leading-[1.75] mb-8"
               style={{ color: "#6a7080", maxWidth: 440, fontSize: "1.02rem" }}
             >
-              Un interrupteur sous le socle. Le fuselage s&apos;allume, le cockpit
+              L&apos;interrupteur est sous l&apos;avion. Le fuselage s&apos;allume, le cockpit
               aussi — vingt secondes, précisément. Batterie lithium rechargeable
               par USB. Câble de charge inclus.
             </p>
@@ -271,7 +271,7 @@ export default function LEDSection() {
               className="font-mono text-[0.63rem] tracking-[0.2em] uppercase"
               style={{ color: "#3a4055" }}
             >
-              Câble de charge inclus · Interrupteur sous le socle
+              Câble de charge inclus · Interrupteur sous l&apos;avion
             </p>
           </div>
         </div>

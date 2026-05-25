@@ -62,7 +62,7 @@ export const PRODUCTS: Product[] = [
       `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_12.jpg`,
       `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_13.jpg`,
     ],
-    bestseller: false,
+    bestseller: true,
     scale: "1/100",
   },
   {

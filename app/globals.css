@@ -477,3 +477,94 @@ img.loaded { opacity: 1; }
   }
   @keyframes heroFloat { 0%, 100% { transform: translateY(0px) rotate(-1deg); } }
 }
+
+/* ─── Bestseller gold animated frame ──────────────────
+   Rotating conic-gradient ring around bestseller product cards.
+   Uses @property for smooth angle animation. */
+@property --gold-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes goldRotate {
+  to { --gold-angle: 360deg; }
+}
+
+@keyframes goldHalo {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 0.95; }
+}
+
+.gold-frame {
+  position: relative;
+  border-radius: 1.4rem;
+  isolation: isolate;
+}
+
+/* The rotating gold ring */
+.gold-frame::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--gold-angle, 0deg),
+    rgba(184, 140, 58, 0.0)  0deg,
+    rgba(243, 210, 122, 0.95) 60deg,
+    rgba(255, 233, 163, 1)    100deg,
+    rgba(243, 210, 122, 0.95) 140deg,
+    rgba(184, 140, 58, 0.25)  220deg,
+    rgba(201, 161, 74, 0.5)   300deg,
+    rgba(184, 140, 58, 0.0)   360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: goldRotate 5s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Soft pulsing gold halo behind */
+.gold-frame::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 1.7rem;
+  background: radial-gradient(closest-side, rgba(243, 210, 122, 0.22), transparent 72%);
+  filter: blur(12px);
+  pointer-events: none;
+  z-index: -1;
+  animation: goldHalo 3.5s ease-in-out infinite;
+}
+
+/* On hover: brighter halo, faster ring */
+.gold-frame:hover::before {
+  animation-duration: 2.5s;
+}
+.gold-frame:hover::after {
+  background: radial-gradient(closest-side, rgba(255, 230, 150, 0.42), transparent 70%);
+  filter: blur(16px);
+}
+
+/* Fallback for browsers without @property support */
+@supports not (background: paint(something)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .gold-frame::before {
+      animation: none;
+      background: conic-gradient(
+        from 45deg,
+        #c9a14a, #ffe9a3, #f3d27a, #c9a14a, #b88c3a, #c9a14a
+      );
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-frame::before { animation: none; }
+  .gold-frame::after  { animation: none; opacity: 0.5; }
+}

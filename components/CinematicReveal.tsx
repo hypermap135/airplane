@@ -188,7 +188,7 @@ export default function CinematicReveal() {
               opacity: 0,
             }}
           >
-            Résine coulée sous pression
+            Résine monobloc
           </div>
 
           {/* Headline */}

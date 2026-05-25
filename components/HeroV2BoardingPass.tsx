@@ -19,7 +19,7 @@ const TICKER = [
   "LED INTÉGRÉ",
   "TRAIN AMOVIBLE",
   "LIVRAISON FRANCE & EUROPE",
-  "ATELIER PARIS",
+  "FAIT EN FRANCE",
 ];
 
 export default function HeroV2BoardingPass() {
@@ -167,7 +167,7 @@ function BoardingPass() {
           <div className="mt-8">
             <div className="hud text-white/40">DE</div>
             <div className="mt-1 chrome-text display text-2xl md:text-3xl">PARIS</div>
-            <div className="hud text-white/50 mt-1">ATELIER · CDG</div>
+            <div className="hud text-white/50 mt-1">FAIT EN FRANCE</div>
           </div>
           <div className="mt-6">
             <div className="hud text-white/40">À</div>

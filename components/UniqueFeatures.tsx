@@ -10,7 +10,7 @@ const FEATURES = [
   {
     num: "01",
     title: "Indestructible. Pour toujours.",
-    body: "Résine coulée sous pression — immuable. 47 cm de présence sur votre bureau, votre étagère, votre salon. Dix ans, vingt ans — exactement la même pièce.",
+    body: "Résine monobloc — immuable. 47 cm de présence sur votre bureau, votre étagère, votre salon. Dix ans, vingt ans — exactement la même pièce.",
     image: "/images/a320-new-livery-af.png",
     imageAlt: "A320 Air France new livery — résine premium, fond noir studio",
     imageLeft: true,
@@ -18,7 +18,7 @@ const FEATURES = [
   {
     num: "02",
     title: "Le cockpit s'éveille.",
-    body: "Un interrupteur sous le socle. Le fuselage s'allume, le cockpit aussi — vingt secondes qui transforment une maquette en sculpture lumineuse.",
+    body: "L'interrupteur est sous l'avion. Le fuselage s'allume, le cockpit aussi — vingt secondes qui transforment une maquette en sculpture lumineuse.",
     image: "/images/a380-emirates.png",
     imageAlt: "A380 — éclairage LED intégré",
     imageLeft: false,

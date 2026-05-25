@@ -56,9 +56,9 @@ export default function HeroSection() {
   }, []);
 
   const marqueeItems = [
-    "★ LED intégré", "Résine coulée", "Peinture main", "Livraison 7–15j",
+    "★ LED intégré", "Résine monobloc", "Peinture main", "Livraison 7–15j",
     "Retour 30j", "1 847 clients", "4.8 / 5",
-    "★ LED intégré", "Résine coulée", "Peinture main", "Livraison 7–15j",
+    "★ LED intégré", "Résine monobloc", "Peinture main", "Livraison 7–15j",
     "Retour 30j", "1 847 clients", "4.8 / 5",
   ];
 
@@ -180,8 +180,8 @@ export default function HeroSection() {
                 color: "rgba(200,210,230,0.75)",
               }}
             >
-              47 cm de présence sur votre bureau. Résine coulée sous
-              pression, peinture main, LED intégré. Chaque pièce est unique.
+              47 cm de présence sur votre bureau. Résine monobloc,
+              peinture main, LED intégré. Chaque pièce est unique.
             </p>
           </div>
 

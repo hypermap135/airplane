@@ -140,7 +140,10 @@ export default function BestSellers() {
         {/* Products grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {products.map((p) => (
-            <div key={p.id} className="bseller-card">
+            <div
+              key={p.id}
+              className={`bseller-card ${p.bestseller ? "gold-frame" : ""}`}
+            >
               <ProductCard product={p} />
             </div>
           ))}

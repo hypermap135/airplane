@@ -7,7 +7,7 @@ const LINES = [
   "L'aviation est une passion.",
   "Une passion mérite une sculpture.",
   "Pas une maquette en plastique.",
-  "Une pièce de résine coulée sous pression.",
+  "Une pièce de résine monobloc.",
   "Peinte à la main.",
   "Avec une LED sous le cockpit.",
   "Pour ceux qui savent.",
