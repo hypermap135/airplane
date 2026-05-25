@@ -1,6 +1,7 @@
 import HeroV1FlightDeck from "@/components/HeroV1FlightDeck";
 import TrustBar from "@/components/TrustBar";
 import StatsSection from "@/components/StatsSection";
+import CustomModelBanner from "@/components/CustomModelBanner";
 import BestSellers from "@/components/BestSellers";
 import ProductShowcase from "@/components/ProductShowcase";
 import HeroV2BoardingPass from "@/components/HeroV2BoardingPass";
@@ -17,6 +18,8 @@ export default function HomePage() {
       <HeroV1FlightDeck />
       <TrustBar />
       <StatsSection />
+      {/* Banner "Maquette sur mesure" — teaser juste au-dessus des bestsellers */}
+      <CustomModelBanner />
       <BestSellers />
       <ProductShowcase />
       {/* Boarding Pass — bloc standalone entre les produits et les features */}

@@ -11,7 +11,7 @@ const DEFAULT_ITEMS: FAQItem[] = [
   },
   {
     q: "Comment fonctionne l'éclairage LED ?",
-    a: "Un interrupteur discret est placé sous l'avion. Une pression allume le fuselage et le cockpit pendant environ 20 secondes — puis l'éclairage s'éteint automatiquement pour préserver la durée de vie de la batterie lithium. Recharge par USB (câble fourni), temps de charge ~1h.",
+    a: "L'éclairage s'active de deux façons : un tap sur le fuselage, ou un clap des mains à proximité de l'avion. Le fuselage et le cockpit s'allument pendant environ 20 secondes — puis l'éclairage s'éteint automatiquement pour préserver la durée de vie de la batterie lithium. Recharge par USB (câble fourni), temps de charge ~1h.",
   },
   {
     q: "Quelle est votre politique de retour ?",

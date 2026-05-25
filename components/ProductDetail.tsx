@@ -14,8 +14,8 @@ const SPECS: { label: string; value: string }[] = [
   { label: "Poids",               value: "~1,3 kg" },
   { label: "Socle",               value: "Bois massif inclus" },
   { label: "Train d'atterrissage",value: "Amovible" },
-  { label: "Éclairage",           value: "LED ~20 s · auto-off" },
-  { label: "Batterie",            value: "75 mAh · USB ~1h" },
+  { label: "Activation LED",      value: "Tap ou clap · ~20 s" },
+  { label: "Batterie",            value: "75 mAh · USB ~1h · auto-off" },
 ];
 
 export default function ProductDetail({ product }: { product: Product }) {

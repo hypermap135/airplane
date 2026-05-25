@@ -18,7 +18,7 @@ const FEATURES = [
   {
     num: "02",
     title: "Le cockpit s'éveille.",
-    body: "L'interrupteur est sous l'avion. Le fuselage s'allume, le cockpit aussi — vingt secondes de show, puis extinction automatique pour préserver la durée de vie de la batterie. Une sculpture lumineuse à la demande.",
+    body: "Un tap sur le fuselage ou un clap des mains — le fuselage s'allume, le cockpit aussi. Vingt secondes de show, puis extinction automatique pour préserver la durée de vie de la batterie. Une sculpture lumineuse à la demande.",
     image: "/images/a380-emirates.png",
     imageAlt: "A380 — éclairage LED intégré",
     imageLeft: false,
