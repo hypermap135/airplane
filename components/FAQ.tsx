@@ -11,7 +11,7 @@ const DEFAULT_ITEMS: FAQItem[] = [
   },
   {
     q: "Comment fonctionne l'éclairage LED ?",
-    a: "Un interrupteur discret est placé sous la maquette. Une pression l'allume pendant environ 20 secondes. La batterie lithium se recharge par USB (câble fourni), temps de charge ~1h.",
+    a: "Un interrupteur discret est placé sous l'avion. Une pression allume le fuselage et le cockpit pendant environ 20 secondes — puis l'éclairage s'éteint automatiquement pour préserver la durée de vie de la batterie lithium. Recharge par USB (câble fourni), temps de charge ~1h.",
   },
   {
     q: "Quelle est votre politique de retour ?",

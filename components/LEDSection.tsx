@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const SPECS = [
-  { label: "Durée", value: "~20s" },
+  { label: "Auto-off", value: "20s" },
   { label: "Batterie", value: "75 mAh" },
   { label: "Charge", value: "~1h USB" },
   { label: "Zones LED", value: "Fuselage + Cockpit" },
@@ -212,8 +212,9 @@ export default function LEDSection() {
               style={{ color: "#6a7080", maxWidth: 440, fontSize: "1.02rem" }}
             >
               L&apos;interrupteur est sous l&apos;avion. Le fuselage s&apos;allume, le cockpit
-              aussi — vingt secondes, précisément. Batterie lithium rechargeable
-              par USB. Câble de charge inclus.
+              aussi — vingt secondes précisément, puis l&apos;éclairage s&apos;éteint
+              automatiquement pour préserver la durée de vie de la batterie.
+              Lithium rechargeable par USB, câble inclus.
             </p>
 
             {/* Spec tiles */}
@@ -271,7 +272,7 @@ export default function LEDSection() {
               className="font-mono text-[0.63rem] tracking-[0.2em] uppercase"
               style={{ color: "#3a4055" }}
             >
-              Câble de charge inclus · Interrupteur sous l&apos;avion
+              Extinction auto · Interrupteur sous l&apos;avion · Câble USB inclus
             </p>
           </div>
         </div>
