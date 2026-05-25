@@ -43,8 +43,8 @@ export default function ProductCard({ product }: { product: Product }) {
             <img
               src={product.image}
               alt={product.title}
-              className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ padding: "5%", transform: "scale(1.08) translateY(-6%)" }}
+              className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              style={{ padding: "8%" }}
               loading="eager"
               onLoad={(e) => e.currentTarget.classList.add("loaded")}
               ref={(el) => {
@@ -61,9 +61,10 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Gradient overlay — image fades to dark at bottom */}
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(to top, #080810 0%, rgba(8,8,16,0.75) 45%, rgba(8,8,16,0.15) 70%, transparent 90%)" }} />
+          {/* Soft bottom-only vignette — keeps text legibility against image
+             without eating the bottom third of the plane. */}
+          <div className="absolute inset-x-0 bottom-0 pointer-events-none h-1/4"
+            style={{ background: "linear-gradient(to top, rgba(8,8,16,0.55) 0%, transparent 100%)" }} />
 
           {/* Bestseller badge */}
           {product.bestseller && (
