@@ -404,9 +404,9 @@ export const PRODUCTS: Product[] = [
     price: 89,
     collection: "jet",
     inStock: true,
-    image: `${CDN}/D056EBB6-7CF5-4F52-9B3E-DD90854A7885_nobg_v2.png`,
+    image: `/images/gulfstream-g650.png`,
     images: [
-      `${CDN}/D056EBB6-7CF5-4F52-9B3E-DD90854A7885_nobg_v2.png`,
+      `/images/gulfstream-g650.png`,
       `${CDN}/E34D3EBD-5CFE-4A70-B0A1-E8323877B55D.png`,
       `${CDN}/89D9E034-C710-45BE-AF1B-C1125A52A890.png`,
     ],
