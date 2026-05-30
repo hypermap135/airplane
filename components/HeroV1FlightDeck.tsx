@@ -24,7 +24,10 @@ const MODELS = [
 
 export default function HeroV1FlightDeck() {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden bg-[#08080f]">
+    <section
+      data-nosnippet
+      className="relative min-h-[100svh] overflow-hidden bg-[#08080f]"
+    >
       {/* Grid backdrop */}
       <div
         aria-hidden

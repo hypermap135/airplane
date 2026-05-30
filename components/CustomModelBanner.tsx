@@ -47,6 +47,9 @@ export default function CustomModelBanner() {
   return (
     <section
       ref={sectionRef}
+      // data-nosnippet → tells Google to ignore this block when picking
+      // the SERP description, so it falls back to our meta description.
+      data-nosnippet
       className="relative overflow-hidden"
       style={{ background: "#010108" }}
     >

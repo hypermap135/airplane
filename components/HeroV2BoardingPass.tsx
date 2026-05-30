@@ -24,7 +24,10 @@ const TICKER = [
 
 export default function HeroV2BoardingPass() {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden bg-[#0a0a14]">
+    <section
+      data-nosnippet
+      className="relative min-h-[100svh] overflow-hidden bg-[#0a0a14]"
+    >
       {/* Animated cloud gradient */}
       <motion.div
         aria-hidden
