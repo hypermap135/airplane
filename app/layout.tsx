@@ -142,10 +142,11 @@ const ORG_LD = {
     { "@type": "Country", name: "Luxembourg" },
     { "@type": "Place",   name: "Europe" },
   ],
-  address: {
-    "@type": "PostalAddress",
-    addressCountry: "FR",
-  },
+  // Note: `address` PostalAddress is intentionally omitted — this is a
+  // pure online store with no physical showroom. areaServed alone is
+  // enough for Google to know where we ship; declaring an empty/partial
+  // PostalAddress would just trigger "field missing (optional)" warnings
+  // in Rich Results test without any SEO benefit.
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.8",
