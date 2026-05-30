@@ -11,6 +11,7 @@ import PersonalizationSection from "@/components/PersonalizationSection";
 import ManifestoSection from "@/components/ManifestoSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import CTASection from "@/components/CTASection";
+import SEOFooter from "@/components/SEOFooter";
 
 export default function HomePage() {
   return (
@@ -32,6 +33,9 @@ export default function HomePage() {
       <ManifestoSection />
       <ReviewsSection />
       <CTASection />
+      {/* SEO footer — keyword-rich paragraph + internal-link mesh.
+          Renders server-side so it's in the initial HTML for crawlers. */}
+      <SEOFooter />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import CatalogueGrid from "@/components/CatalogueGrid";
 import SectionHeading from "@/components/SectionHeading";
-import { COLLECTIONS, byCollection, type Collection } from "@/lib/products";
+import { COLLECTIONS, byCollection, type Collection, type Product } from "@/lib/products";
 
 const SUBTITLES: Record<Collection, string> = {
   airbus:      "A220, A320, A321, A350, A380 — toute la famille Airbus en résine monobloc.",
@@ -63,6 +63,25 @@ function collectionBreadcrumbLd(slug: Collection, label: string) {
   };
 }
 
+/** ItemList of products — lets Google render a carousel of products
+ *  directly in the SERP for category queries (e.g. "maquette airbus"). */
+function collectionItemListLd(slug: Collection, label: string, products: Product[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `Maquettes ${label} — AirplaneStore`,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: products.length,
+    url: `${BASE}/collections/${slug}`,
+    itemListElement: products.map((p, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      url: `${BASE}/products/${p.handle}`,
+      name: p.title,
+    })),
+  };
+}
+
 export default function CollectionPage({ params }: { params: { collection: string } }) {
   const match = COLLECTIONS.find((c) => c.slug === params.collection);
   if (!match) notFound();
@@ -76,6 +95,12 @@ export default function CollectionPage({ params }: { params: { collection: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(collectionBreadcrumbLd(match.slug, match.label)),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionItemListLd(match.slug, match.label, products)),
         }}
       />
 

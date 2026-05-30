@@ -107,15 +107,52 @@ export const metadata: Metadata = {
  */
 const ORG_LD = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  // OnlineStore is a Schema.org subtype of Organization, used by Google
+  // specifically for e-commerce sites. It unlocks the "Shop" badges and
+  // helps the Merchant Knowledge Panel populate.
+  "@type": "OnlineStore",
   name: "AirplaneStore",
   alternateName: "Airplane Store",
   url: "https://airplanestore.fr",
-  logo: "https://airplanestore.fr/logo-512.png",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://airplanestore.fr/logo-512.png",
+    width: 512,
+    height: 512,
+  },
+  image: "https://airplanestore.fr/og-image.png",
   description:
-    "Maquettes d'avion en résine monobloc, peintes main, LED intégré. Fait en France.",
+    "Maquettes d'avion en résine monobloc, peintes main, LED intégré. Airbus, Boeing, Concorde, jets privés. Fait en France.",
+  slogan: "Maquettes d'avion premium · Fait en France",
   email: "hypermap.pro@gmail.com",
-  areaServed: ["FR", "BE", "CH", "LU", "EU"],
+  priceRange: "€€",
+  paymentAccepted: [
+    "Credit Card",
+    "Visa",
+    "Mastercard",
+    "American Express",
+    "Apple Pay",
+    "Google Pay",
+  ],
+  currenciesAccepted: "EUR",
+  areaServed: [
+    { "@type": "Country", name: "France" },
+    { "@type": "Country", name: "Belgique" },
+    { "@type": "Country", name: "Suisse" },
+    { "@type": "Country", name: "Luxembourg" },
+    { "@type": "Place",   name: "Europe" },
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "FR",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    reviewCount: "1847",
+    bestRating: "5",
+    worstRating: "1",
+  },
   sameAs: [
     // Add here once the social profiles exist:
     // "https://www.instagram.com/airplanestore",

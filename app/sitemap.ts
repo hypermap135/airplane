@@ -32,18 +32,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const productPages: MetadataRoute.Sitemap = PRODUCTS.map((p) => ({
-    url: `${BASE}/products/${p.handle}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    // In-stock + bestseller get the highest product priority, then in-stock,
-    // then coming-soon, then everything else.
-    priority: !p.inStock
-      ? 0.5
-      : p.bestseller
-        ? 0.9
-        : 0.7,
-  }));
+  const productPages: MetadataRoute.Sitemap = PRODUCTS.map((p) => {
+    const imageUrl = p.image.startsWith("http") ? p.image : `${BASE}${p.image}`;
+    return {
+      url: `${BASE}/products/${p.handle}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      // In-stock + bestseller get the highest product priority, then in-stock,
+      // then coming-soon, then everything else.
+      priority: !p.inStock
+        ? 0.5
+        : p.bestseller
+          ? 0.9
+          : 0.7,
+      // Image sitemap extension — Google indexes these for Google Images
+      // and uses them when picking SERP thumbnails for product results.
+      images: [imageUrl],
+    };
+  });
 
   return [...staticPages, ...collectionPages, ...productPages];
 }
