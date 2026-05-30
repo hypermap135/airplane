@@ -28,12 +28,38 @@ export function generateStaticParams() {
   return COLLECTIONS.map((c) => ({ collection: c.slug }));
 }
 
+const BASE = "https://airplanestore.fr";
+
 export function generateMetadata({ params }: { params: { collection: string } }) {
   const match = COLLECTIONS.find((c) => c.slug === params.collection);
   if (!match) return { title: "Collection" };
   return {
     title: `${match.label} — Maquettes d'avion en résine`,
     description: SUBTITLES[match.slug],
+    alternates: { canonical: `/collections/${match.slug}` },
+    openGraph: {
+      title: `${match.label} — Maquettes d'avion en résine premium`,
+      description: SUBTITLES[match.slug],
+      url: `${BASE}/collections/${match.slug}`,
+      type: "website",
+    },
+  };
+}
+
+/** JSON-LD breadcrumb for the collection page. */
+function collectionBreadcrumbLd(slug: Collection, label: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Accueil", item: BASE },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: label,
+        item: `${BASE}/collections/${slug}`,
+      },
+    ],
   };
 }
 
@@ -46,6 +72,12 @@ export default function CollectionPage({ params }: { params: { collection: strin
 
   return (
     <div style={{ background: "#030308", minHeight: "100vh" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionBreadcrumbLd(match.slug, match.label)),
+        }}
+      />
 
       {/* ── Hero stripe ─────────────────────────────────────────────── */}
       <div
