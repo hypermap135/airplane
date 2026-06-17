@@ -101,17 +101,20 @@ export const PRODUCTS: Product[] = [
     scale: "1/85",
   },
   {
-    id: "a320-wizzair",
+    id: "a320-neo-transavia",
     variantId: "0",
-    handle: "airbus-a320-wizzair",
-    title: "Airbus A320 Wizzair",
-    subtitle: "Livrée rose iconique — Wizz Air",
+    handle: "airbus-a320-neo-transavia",
+    title: "Airbus A320 Néo Transavia",
+    subtitle: "Livrée Transavia — A320 Néo, échelle 1/100",
     price: 99,
     collection: "airbus",
+    // Awaiting real Transavia photo from the client (uploaded via Notion).
+    // Keep as coming-soon until the photo lands; otherwise the product card
+    // would show an Air France livery for a Transavia title.
     inStock: false,
     comingSoon: true,
     image: `${CDN}/Airbus_A320_Air_France_nobg.png`,
-    scale: "1/85",
+    scale: "1/100",
   },
   {
     id: "a320-qatar-psg",
