@@ -145,7 +145,7 @@ export const PRODUCTS: Product[] = [
     image: `/images/a321-af.png`,
     images: [
       `/images/a321-af.png`,
-      `/images/a321-easyjet-styled.png`,
+      `/images/a321-easyjet.png`,
     ],
     scale: "1/100",
   },
@@ -159,7 +159,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `/images/a321-easyjet-styled.png`,
+    image: `/images/a321-easyjet.png`,
     scale: "1/100",
   },
   {
