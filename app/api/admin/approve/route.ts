@@ -1,14 +1,21 @@
 /**
  * POST /api/admin/approve
  *
- * Body: { handle: string }
+ * Body: { handle: string, previewSlug?: string }
  *
- * Promotes .tmp/preview/{handle}.png to public/images/{handle}.png so
- * the product card on the live site uses the new photo on next deploy.
+ * Promotes .tmp/preview/{previewSlug ?? handle}.png to
+ * public/images/{handle}.png (the canonical product image) so the live
+ * card uses the new photo on next deploy.
  *
- * Also dumps a JSON file `.tmp/approved.json` listing every approved
- * handle in this session — the dev (Claude or human) reads it when
- * batching commits + a single Vercel deploy at the end.
+ * Logs the handle to .tmp/approved.json — the batch deploy endpoint then
+ * uses that list to rewrite products.ts and trigger Vercel.
+ *
+ * Multi-view gallery (profile / 3quarter-front / etc.):
+ *   - The view's preview lives at .tmp/preview/{handle}--{view}.png
+ *   - When the operator validates a non-profile view, it overwrites the
+ *     canonical {handle}.png so it becomes the product's main image.
+ *     (Future iteration: also append to a gallery JSON for multi-image
+ *     product pages.)
  *
  * Local dev only.
  */
@@ -41,12 +48,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { handle } = await req.json();
+  const { handle, previewSlug } = await req.json();
   if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
     return NextResponse.json({ error: "invalid handle" }, { status: 400 });
   }
 
-  const src = path.join(process.cwd(), ".tmp", "preview", `${handle}.png`);
+  // previewSlug may include "--{view}" — sanitize the same way.
+  const slug = (previewSlug && /^[a-z0-9-]+$/i.test(previewSlug)) ? previewSlug : handle;
+
+  const src = path.join(process.cwd(), ".tmp", "preview", `${slug}.png`);
   const destDir = path.join(process.cwd(), "public", "images");
   await mkdir(destDir, { recursive: true });
   const dest = path.join(destDir, `${handle}.png`);
@@ -55,7 +65,7 @@ export async function POST(req: NextRequest) {
     await stat(src);
   } catch {
     return NextResponse.json(
-      { error: `preview not found for ${handle}. Process it first.` },
+      { error: `preview not found for ${slug}. Process it first.` },
       { status: 404 },
     );
   }
@@ -66,8 +76,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     publicPath: `/images/${handle}.png`,
-    message:
-      "Image promoted to public/images/. " +
-      "Don't forget to update lib/products.ts and deploy.",
+    sourceSlug: slug,
   });
 }
