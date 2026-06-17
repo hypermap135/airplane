@@ -140,14 +140,17 @@ export default function BestSellers() {
           </div>
         </div>
 
-        {/* Products grid — 3 hand-picked bestsellers, gold-framed */}
+        {/* Products grid — 3 hand-picked bestsellers, gold-framed.
+            priority=true on these because they're above the fold on the home,
+            so the Next.js optimizer preloads them and the LCP image hits
+            the AVIF/WebP fast path. */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-6xl mx-auto">
           {products.map((p) => (
             <div
               key={p.id}
               className={`bseller-card ${p.bestseller ? "gold-frame" : ""}`}
             >
-              <ProductCard product={p} />
+              <ProductCard product={p} priority />
             </div>
           ))}
         </div>

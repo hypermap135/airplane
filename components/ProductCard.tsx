@@ -1,13 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
 import { useState } from "react";
 
-export default function ProductCard({ product }: { product: Product }) {
+/**
+ * `priority` should be true ONLY for cards rendered above the fold on the
+ * landing page (e.g. the first 3-4 bestsellers). Setting it on every card
+ * defeats the purpose — the browser tries to load everything at once and
+ * the LCP gets worse, not better.
+ */
+export default function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: Product;
+  priority?: boolean;
+}) {
   const { add }      = useCart();
   const { setOpen }  = useCartDrawer();
   const [imgError, setImgError] = useState(false);
@@ -39,17 +52,19 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* ── Image block ── */}
         <div className="relative overflow-hidden" style={{ aspectRatio: "1/1", background: "#080810" }}>
           {!imgError ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={product.image}
               alt={product.title}
-              className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              fill
+              // 4 cols on desktop, 3 on md, 2 on mobile — pick the smallest
+              // srcset entry that covers each viewport. Vercel's image
+              // optimizer turns these into AVIF/WebP automatically.
+              sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 48vw"
+              quality={82}
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
+              className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
               style={{ padding: "8%" }}
-              loading="eager"
-              onLoad={(e) => e.currentTarget.classList.add("loaded")}
-              ref={(el) => {
-                if (el && el.complete && el.naturalWidth > 0) el.classList.add("loaded");
-              }}
               onError={() => setImgError(true)}
             />
           ) : (
