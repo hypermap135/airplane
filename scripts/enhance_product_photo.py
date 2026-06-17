@@ -134,6 +134,55 @@ def remove_background(image_bytes: bytes) -> bytes:
     return remove(image_bytes)
 
 
+def frame_to_reference(
+    image_bytes: bytes,
+    canvas: int = 1400,
+    top_pct: float = 0.12,
+    bottom_pct: float = 0.15,
+) -> bytes:
+    """Frame the cut-out plane to match the A320 New Livery AF reference:
+      - Canvas 1400×1400 square (RGBA, transparent background)
+      - Plane stretched so it fills 100% of the width when possible
+        (or the available height — whichever hits the limit first)
+      - Top margin ~12%, bottom margin ~15% (asymmetric: more air below
+        so the wooden base / shadow has room to breathe)
+      - Plane horizontally centered
+
+    These ratios were measured directly from a320-new-livery-af.png:
+      bbox.width  = 100% of canvas width
+      bbox.height = 72.5% of canvas height
+      top margin  = 12.1%
+      bot margin  = 15.4%
+    """
+    from io import BytesIO
+    from PIL import Image
+    img = Image.open(BytesIO(image_bytes)).convert("RGBA")
+    bbox = img.getbbox()
+    if not bbox:
+        return image_bytes  # fully transparent — nothing to frame
+    plane = img.crop(bbox)
+    pw, ph = plane.size
+
+    target_plane_h = int(canvas * (1 - top_pct - bottom_pct))
+    scale_by_w = canvas / pw
+    scale_by_h = target_plane_h / ph
+    scale = min(scale_by_w, scale_by_h)  # don't overflow either axis
+    new_pw = max(1, int(round(pw * scale)))
+    new_ph = max(1, int(round(ph * scale)))
+    plane_scaled = plane.resize((new_pw, new_ph), Image.LANCZOS)
+
+    out = Image.new("RGBA", (canvas, canvas), (0, 0, 0, 0))
+    off_x = (canvas - new_pw) // 2
+    # Center the plane vertically within the [top_pct .. 1-bottom_pct] band
+    plane_band_top = int(canvas * top_pct)
+    off_y = plane_band_top + (target_plane_h - new_ph) // 2
+    out.paste(plane_scaled, (off_x, off_y), plane_scaled)
+
+    buf = BytesIO()
+    out.save(buf, format="PNG", optimize=True)
+    return buf.getvalue()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("input",  type=Path, help="Source image (PNG/JPG/WEBP/HEIC)")
@@ -147,6 +196,11 @@ def main() -> int:
         "--no-rembg",
         action="store_true",
         help="Skip rembg step and keep Gemini's grey-studio background",
+    )
+    parser.add_argument(
+        "--no-frame",
+        action="store_true",
+        help="Skip the final reference framing (skip if --no-rembg too)",
     )
     args = parser.parse_args()
 
@@ -166,11 +220,21 @@ def main() -> int:
         print(f"▶ Skipping rembg (--no-rembg). Final: {args.output}")
         return 0
 
-    print(f"▶ Step 2/2 — rembg (alpha matte)")
-    final_bytes = remove_background(gemini_bytes)
+    print(f"▶ Step 2/3 — rembg (alpha matte)")
+    rembg_bytes = remove_background(gemini_bytes)
+    print(f"  ✓ {len(rembg_bytes) // 1024} KB transparent (raw bbox)")
+
+    if args.no_frame:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_bytes(rembg_bytes)
+        print(f"▶ Skipping framing (--no-frame). Final: {args.output}")
+        return 0
+
+    print(f"▶ Step 3/3 — frame to reference (1400×1400, width 100%, top 12% / bot 15%)")
+    final_bytes = frame_to_reference(rembg_bytes)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(final_bytes)
-    print(f"  ✓ {len(final_bytes) // 1024} KB transparent PNG")
+    print(f"  ✓ {len(final_bytes) // 1024} KB final (matches A320 NL reference)")
     print(f"▶ Done. Saved → {args.output}")
     return 0
 
