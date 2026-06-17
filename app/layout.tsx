@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import CartDrawer from "@/components/CartDrawer";
-import ScrollProgress from "@/components/ScrollProgress";
-import SmoothScroll from "@/components/SmoothScroll";
+import SiteChrome from "@/components/SiteChrome";
 
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
 
@@ -216,13 +212,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}</Script>
         )}
 
-        <SmoothScroll>
-          <ScrollProgress />
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <CartDrawer />
-        </SmoothScroll>
+        {/* Public chrome (header / footer / cart drawer / smooth scroll)
+            renders everywhere EXCEPT /admin/* — see SiteChrome. */}
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

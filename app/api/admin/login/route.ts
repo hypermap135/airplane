@@ -39,9 +39,13 @@ export async function POST(req: Request) {
   }
 
   const res = NextResponse.json({ ok: true });
+  // secure=true blocks the cookie on plain HTTP (localhost), so the
+  // browser silently drops Set-Cookie and the next request still looks
+  // unauthenticated → "connexion ne marche pas". Only require HTTPS in prod.
+  const isProd = process.env.NODE_ENV === "production";
   res.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: true,
+    secure: isProd,
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_MAX_AGE,
