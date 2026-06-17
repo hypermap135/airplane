@@ -52,7 +52,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     comingSoon: false,
-    image: `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_7_nobg.png`,
+    image: `/images/airbus-a220-air-france.png`,
     images: [
       `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_7_nobg.png`,
       `${CDN}/WhatsApp_Image_2026-04-23_at_18.23.27_8.jpg`,
@@ -74,7 +74,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "airbus",
     inStock: true,
-    image: `/images/a320-af.png`,
+    image: `/images/a320-neo.png`,
     images: [
       `/images/a320-af.png`,
       `/images/a320-af-styled.png`,
@@ -125,7 +125,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "airbus",
     inStock: true,
-    image: `${CDN}/IMG-7237_nobg.png`,
+    image: `/images/copie-airbus-a320-echelle-1-85-finition-premium.png`,
     images: [
       `${CDN}/IMG-7237_nobg.png`,
       `${CDN}/IMG-7236.png`,
@@ -171,7 +171,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "airbus",
     inStock: true,
-    image: `${CDN}/Airbus_A350_Air_France_cote_gauche_nobg.png`,
+    image: `/images/maquette-avion-maquette-airbus-a350-airfrance.png`,
     images: [
       `${CDN}/Airbus_A350_Air_France_cote_gauche_nobg.png`,
       `/images/a350-af-styled.png`,
@@ -190,7 +190,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/Airbus_A350_Air_France_cote_gauche_nobg.png`,
+    image: `/images/airbus-a350-singapore.png`,
     scale: "1/142",
   },
   {
@@ -216,7 +216,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/Airbus_A350_Air_France_cote_gauche_nobg.png`,
+    image: `/images/airbus-a350-emirates.png`,
     scale: "1/142",
   },
   {
@@ -228,7 +228,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "airbus",
     inStock: true,
-    image: `${CDN}/Airbus_A380_AIR_FRANCE_nobg.png`,
+    image: `/images/maquette-avion-maquette-airbus-a380.png`,
     images: [
       `${CDN}/Airbus_A380_AIR_FRANCE_nobg.png`,
       `${CDN}/Airbus_A380_Singapore_Airlines_nobg.png`,
@@ -247,7 +247,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/Airbus_A380_Singapore_Airlines_nobg.png`,
+    image: `/images/airbus-a380-singapore.png`,
     images: [`${CDN}/Airbus_A380_Singapore_Airlines_nobg.png`],
     scale: "1/160",
   },
@@ -261,7 +261,7 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: false,
     comingSoon: true,
-    image: `/images/a380-emirates.png`,
+    image: `/images/airbus-a380-emirates.png`,
     images: [`/images/a380-emirates.png`],
     scale: "1/160",
   },
@@ -279,7 +279,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "boeing",
     inStock: true,
-    image: `/images/b737-ryanair.png`,
+    image: `/images/boeing-737-ryannair.png`,
     images: [
       `/images/b737-ryanair.png`,
       `/images/b737-turkish-styled.png`,
@@ -296,7 +296,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "boeing",
     inStock: true,
-    image: `${CDN}/4BC16D16-D848-4680-A696-696A31D55734_nobg.png`,
+    image: `/images/maquette-avion-maquette-boeing-747.png`,
     images: [
       `${CDN}/4BC16D16-D848-4680-A696-696A31D55734_nobg.png`,
       `${CDN}/5EB799A1-252C-46DA-A84D-7A90C6B9C5F7.png`,
@@ -315,7 +315,7 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: false,
     comingSoon: true,
-    image: `/images/b747-afo-styled.png`,
+    image: `/images/boeing-747-air-force-one.png`,
     scale: "1/150",
   },
   {
@@ -327,7 +327,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "boeing",
     inStock: true,
-    image: `${CDN}/B17227E2-BB4C-4D08-A770-B39827FB907C_nobg_v2.png`,
+    image: `/images/boeing-777.png`,
     images: [
       `${CDN}/B17227E2-BB4C-4D08-A770-B39827FB907C_nobg_v2.png`,
       `${CDN}/F59AA5BE-6A56-4A85-BBFA-C0D853DB46E4.png`,
@@ -346,7 +346,7 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/B17227E2-BB4C-4D08-A770-B39827FB907C_nobg_v2.png`,
+    image: `/images/boeing-777-qatar.png`,
     scale: "1/157",
   },
   {
@@ -358,7 +358,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "boeing",
     inStock: true,
-    image: `/images/b787-af.png`,
+    image: `/images/boeing-787.png`,
     images: [
       `/images/b787-af.png`,
       `${CDN}/3F025660-25C7-422C-A7A0-B6C007CA2C42.png`,
@@ -377,7 +377,7 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/7B58CC55-7CD7-4BD4-ADD9-E57E9F11E454_nobg.png`,
+    image: `/images/boeing-787-lufthansa-100th.png`,
     scale: "1/130",
   },
   {
@@ -390,7 +390,7 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/7B58CC55-7CD7-4BD4-ADD9-E57E9F11E454_nobg.png`,
+    image: `/images/boeing-787-etihad-manchester-city.png`,
     scale: "1/130",
   },
 
@@ -407,7 +407,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "jet",
     inStock: true,
-    image: `/images/gulfstream-g650.png`,
+    image: `/images/jet-prive.png`,
     images: [
       `/images/gulfstream-g650.png`,
       `${CDN}/E34D3EBD-5CFE-4A70-B0A1-E8323877B55D.png`,
@@ -429,7 +429,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "concorde",
     inStock: true,
-    image: `/images/concorde-af-50.png`,
+    image: `/images/concorde-airfrance.png`,
     images: [
       `/images/concorde-af-50.png`,
       `${CDN}/51AA0205-B8D3-436A-A8C3-3EC854A7E05E.png`,
@@ -446,7 +446,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "concorde",
     inStock: true,
-    image: `/images/concorde-ba-50.png`,
+    image: `/images/concorde-british.png`,
     images: [
       `/images/concorde-ba-50.png`,
       `${CDN}/9909E902-39B4-4FB1-94DD-D125FF9C516D.png`,
@@ -464,7 +464,7 @@ export const PRODUCTS: Product[] = [
     collection: "concorde",
     inStock: true,
     comingSoon: false,
-    image: `${CDN}/DF8AE5B5-7A2D-4A02-B2BD-118AAF5D58AD_nobg.png`,
+    image: `/images/concorde-airfrance-30cm.png`,
     scale: "1/200",
   },
 
@@ -500,7 +500,7 @@ export const PRODUCTS: Product[] = [
     compareAt: 267,
     collection: "packs",
     inStock: true,
-    image: `${CDN}/0DD70AD8-A997-4B31-8A95-0DBBA2C32358_nobg.png`,
+    image: `/images/pack-trio-airbus-premium-a320-a350-a380.png`,
     images: [
       `${CDN}/0DD70AD8-A997-4B31-8A95-0DBBA2C32358_nobg.png`,
       `${CDN}/63D5AD62-E1FF-48B8-B7FD-F1AADA6987A0.png`,
