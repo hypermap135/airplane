@@ -7,3 +7,7 @@ out
 .vercel
 next-env.d.ts
 .tmp/
+
+# Python bytecode generated when scripts/*.py is imported as a module
+__pycache__/
+*.pyc
