@@ -10,7 +10,7 @@ type ProductRow = {
   inStock: boolean;
 };
 
-type ViewKey = "profile" | "3quarter-front" | "3quarter-rear" | "top" | "shelf";
+type ViewKey = "profile" | "3quarter-front" | "3quarter-rear" | "top" | "shelf" | "desk";
 
 const VIEWS: { key: ViewKey; label: string }[] = [
   { key: "profile",         label: "Profil" },
@@ -18,6 +18,7 @@ const VIEWS: { key: ViewKey; label: string }[] = [
   { key: "3quarter-rear",   label: "3/4 arrière" },
   { key: "top",             label: "Dessus" },
   { key: "shelf",           label: "Sur étagère" },
+  { key: "desk",            label: "Sur un bureau" },
 ];
 
 type ViewState = {

@@ -76,6 +76,26 @@ const VIEWS: Record<string, ViewSpec> = {
       "product photography. Square 1:1 format. NO transparency, NO checker pattern, " +
       "NO added text, NO new branding.",
   },
+  desk: {
+    label: "Sur un bureau",
+    customPrompt: () =>
+      "Re-render this airplane model staged on a modern workspace desk. SCENE: " +
+      "place the airplane (on its wooden display stand) on a clean matte DARK " +
+      "WALNUT WOOD DESK SURFACE that fills the lower half of the frame. " +
+      "In the deep blurry background (heavy bokeh, f/2.0): a hint of a closed " +
+      "leather notebook, a small brass lamp on the right out of focus, and a " +
+      "neutral charcoal wall — premium executive office vibe. " +
+      "Soft natural daylight from the upper-left (window-style), warm contact " +
+      "shadow under the wooden stand. " +
+      "The plane fills ~65% of the frame, slightly elevated viewing angle (~15°), " +
+      "3/4 front-side composition with the nose pointing slightly to the right. " +
+      "PRESERVE the airplane EXACTLY as in the source: same livery, same colors, " +
+      "same registration, same shape — do not modify anything on the aircraft. " +
+      "REMOVE all watermarks, URLs, gold glyphs, stray text. Upscale CEO desk " +
+      "decoration vibe. Sharp focus on the airplane, blurred background. Square " +
+      "1:1 format. NO transparency, NO checker pattern, NO added text, NO new " +
+      "branding, NO computer screens or visible text in the background.",
+  },
 };
 
 function buildPromptForView(view: string): string {
@@ -222,7 +242,7 @@ export async function POST(req: NextRequest) {
   // would strip the staged background and lose the whole point.
   const script = path.join(process.cwd(), "scripts", "enhance_product_photo.py");
   const prompt = buildPromptForView(viewKey);
-  const SCENIC_VIEWS = new Set(["shelf"]);
+  const SCENIC_VIEWS = new Set(["shelf", "desk"]);
   const args = [script, source, dest, "--prompt", prompt];
   if (SCENIC_VIEWS.has(viewKey)) {
     args.push("--no-rembg", "--no-frame");
