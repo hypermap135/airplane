@@ -57,9 +57,9 @@ export default function HeroSection() {
 
   const marqueeItems = [
     "★ LED intégré", "Résine monobloc", "Peinture main", "Livraison 7–15j",
-    "Retour 30j", "1 847 clients", "4.8 / 5",
+    "Retour 30j", "347 clients", "4.8 / 5",
     "★ LED intégré", "Résine monobloc", "Peinture main", "Livraison 7–15j",
-    "Retour 30j", "1 847 clients", "4.8 / 5",
+    "Retour 30j", "347 clients", "4.8 / 5",
   ];
 
   return (
@@ -236,7 +236,7 @@ export default function HeroSection() {
                 className="font-mono uppercase"
                 style={{ fontSize: "0.55rem", letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)" }}
               >
-                · 1 847 clients · Retour 30 j
+                · 347 clients · Retour 30 j
               </span>
             </div>
           </div>
@@ -266,7 +266,7 @@ export default function HeroSection() {
             className="font-mono uppercase"
             style={{ fontSize: "0.57rem", letterSpacing: "0.22em", color: "rgba(100,165,255,0.88)" }}
           >
-            Bestseller · 1 847 vendus
+            Bestseller · 347 vendus
           </span>
         </div>
 

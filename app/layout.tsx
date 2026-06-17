@@ -150,7 +150,7 @@ const ORG_LD = {
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.8",
-    reviewCount: "1847",
+    reviewCount: "347",
     bestRating: "5",
     worstRating: "1",
   },

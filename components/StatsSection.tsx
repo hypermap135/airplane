@@ -19,8 +19,8 @@ type Stat = {
 
 const STATS: Stat[] = [
   {
-    display: "1 847",
-    value: 1847,
+    display: "347",
+    value: 347,
     suffix: "",
     label: "Passionnés",
     decimals: 0,

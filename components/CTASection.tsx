@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 const TRUST_ITEMS = [
   { icon: "🚚", label: "Livraison offerte dès 100€" },
   { icon: "🔄", label: "Retour 30j" },
-  { icon: "⭐", label: "4.8/5 · 1 847 clients" },
+  { icon: "⭐", label: "4.8/5 · 347 clients" },
 ];
 
 /* Subtle plane silhouette — side profile, generic wide-body */
