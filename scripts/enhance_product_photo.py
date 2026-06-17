@@ -156,11 +156,21 @@ def frame_to_reference(
     """
     from io import BytesIO
     from PIL import Image
+    import numpy as np
     img = Image.open(BytesIO(image_bytes)).convert("RGBA")
-    bbox = img.getbbox()
-    if not bbox:
-        return image_bytes  # fully transparent — nothing to frame
-    plane = img.crop(bbox)
+
+    # Use a STRICT bbox (alpha > 32) so semi-transparent anti-aliased
+    # edges don't inflate the bounding box. PIL's getbbox() treats any
+    # non-zero pixel as content, which makes the framing too small in
+    # the canvas (lots of empty halo around the plane).
+    arr = np.array(img)
+    opaque = arr[..., 3] > 32
+    if not opaque.any():
+        return image_bytes
+    ys, xs = np.where(opaque)
+    x1, x2 = int(xs.min()), int(xs.max()) + 1
+    y1, y2 = int(ys.min()), int(ys.max()) + 1
+    plane = img.crop((x1, y1, x2, y2))
     pw, ph = plane.size
 
     target_plane_h = int(canvas * (1 - top_pct - bottom_pct))
