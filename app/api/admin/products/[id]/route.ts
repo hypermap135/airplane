@@ -1,0 +1,115 @@
+import { NextResponse } from "next/server";
+import { PRODUCTS, COLLECTIONS } from "@/lib/products";
+import {
+  patchProductOverride,
+  type ProductOverride,
+} from "@/lib/products-store";
+
+export const runtime = "nodejs";
+
+const ALLOWED_FIELDS: ReadonlySet<keyof ProductOverride> = new Set([
+  "title",
+  "subtitle",
+  "price",
+  "compareAt",
+  "inStock",
+  "comingSoon",
+  "bestseller",
+  "image",
+  "images",
+  "scale",
+  "collection",
+  "hidden",
+]);
+
+const VALID_COLLECTIONS = new Set(COLLECTIONS.map((c) => c.slug));
+
+function coerceField(
+  key: keyof ProductOverride,
+  v: unknown,
+): ProductOverride[keyof ProductOverride] | null | undefined {
+  // null means "clear this override field"
+  if (v === null) return null;
+  switch (key) {
+    case "title":
+    case "subtitle":
+    case "image":
+    case "scale":
+      return typeof v === "string" ? v.slice(0, 500) : undefined;
+    case "price":
+      return typeof v === "number" && Number.isFinite(v) && v >= 0
+        ? v
+        : undefined;
+    case "compareAt":
+      return typeof v === "number" && Number.isFinite(v) && v >= 0
+        ? v
+        : v === null
+          ? null
+          : undefined;
+    case "inStock":
+    case "comingSoon":
+    case "bestseller":
+    case "hidden":
+      return typeof v === "boolean" ? v : undefined;
+    case "images":
+      return Array.isArray(v) && v.every((x) => typeof x === "string")
+        ? (v as string[]).slice(0, 12)
+        : undefined;
+    case "collection":
+      return typeof v === "string" && VALID_COLLECTIONS.has(v as never)
+        ? (v as ProductOverride["collection"])
+        : undefined;
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * PATCH /api/admin/products/[id]
+ *   body: ProductOverride
+ *
+ * Stores override fields in the Vercel Blob overrides JSON and revalidates.
+ */
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  if (!PRODUCTS.find((p) => p.id === id)) {
+    return NextResponse.json({ error: "unknown_product" }, { status: 404 });
+  }
+
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+
+  const patch: ProductOverride = {};
+  for (const [k, v] of Object.entries(body as Record<string, unknown>)) {
+    if (!ALLOWED_FIELDS.has(k as keyof ProductOverride)) continue;
+    const coerced = coerceField(k as keyof ProductOverride, v);
+    if (coerced === undefined) continue; // skip invalid
+    // null = clear → store as null in the patch so the merger knows to drop it
+    (patch as Record<string, unknown>)[k] = coerced;
+  }
+
+  if (Object.keys(patch).length === 0) {
+    return NextResponse.json({ error: "no_valid_fields" }, { status: 400 });
+  }
+
+  try {
+    await patchProductOverride(id, patch);
+  } catch (err) {
+    console.error("[admin] patch failed:", err);
+    return NextResponse.json(
+      { error: "blob_write_failed", detail: String(err) },
+      { status: 500 },
+    );
+  }
+  return NextResponse.json({ ok: true, id, applied: patch });
+}

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import CatalogueGrid from "@/components/CatalogueGrid";
 import SectionHeading from "@/components/SectionHeading";
-import { COLLECTIONS, byCollection, type Collection, type Product } from "@/lib/products";
+import { COLLECTIONS, type Collection, type Product } from "@/lib/products";
+import { getProducts } from "@/lib/products-store";
 
 const SUBTITLES: Record<Collection, string> = {
   airbus:      "A220, A320, A321, A350, A380 — toute la famille Airbus en résine monobloc.",
@@ -82,11 +83,12 @@ function collectionItemListLd(slug: Collection, label: string, products: Product
   };
 }
 
-export default function CollectionPage({ params }: { params: { collection: string } }) {
+export default async function CollectionPage({ params }: { params: { collection: string } }) {
   const match = COLLECTIONS.find((c) => c.slug === params.collection);
   if (!match) notFound();
 
-  const products = byCollection(match.slug);
+  const all = await getProducts();
+  const products = all.filter((p) => p.collection === match.slug);
   const theme = HERO_THEMES[match.slug];
 
   return (

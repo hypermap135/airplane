@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProductDetail from "@/components/ProductDetail";
-import { PRODUCTS, getProduct, type Product } from "@/lib/products";
+import { PRODUCTS, type Product } from "@/lib/products";
+import { getProductByHandle } from "@/lib/products-store";
 
 const BASE = "https://airplanestore.fr";
 
@@ -9,12 +10,12 @@ export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ handle: p.handle }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { handle: string };
-}): Metadata {
-  const product = getProduct(params.handle);
+}): Promise<Metadata> {
+  const product = await getProductByHandle(params.handle);
   if (!product) return { title: "Produit" };
 
   // Rich description for Google snippets — includes price + key selling
@@ -134,12 +135,12 @@ function breadcrumbLd(product: Product) {
   };
 }
 
-export default function ProductPage({
+export default async function ProductPage({
   params,
 }: {
   params: { handle: string };
 }) {
-  const product = getProduct(params.handle);
+  const product = await getProductByHandle(params.handle);
   if (!product) notFound();
 
   return (

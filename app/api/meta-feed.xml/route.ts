@@ -11,10 +11,12 @@
  */
 
 import { NextResponse } from "next/server";
-import { PRODUCTS, formatPrice } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
+import { getProducts } from "@/lib/products-store";
 
-export const runtime = "edge";
-export const revalidate = 3600; // cache 1h at the edge
+// Node runtime (not edge) so we can import @vercel/blob inside products-store.
+export const runtime = "nodejs";
+export const revalidate = 3600; // cache 1h
 
 const SITE = "https://airplanestore.fr";
 
@@ -49,6 +51,7 @@ function brandFromCollection(collection: string): string {
 }
 
 export async function GET(): Promise<NextResponse> {
+  const PRODUCTS = await getProducts();
   const items = PRODUCTS
     // Skip pure placeholders without a real variantId
     .filter((p) => p.variantId !== "0" || p.comingSoon)

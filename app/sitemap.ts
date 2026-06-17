@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { PRODUCTS, COLLECTIONS } from "@/lib/products";
+import { COLLECTIONS } from "@/lib/products";
+import { getProducts } from "@/lib/products-store";
 
 const BASE = "https://airplanestore.fr";
 
@@ -13,8 +14,9 @@ const BASE = "https://airplanestore.fr";
  * lastModified uses the build time so Google sees a fresh stamp every
  * deploy; changeFrequency / priority hint relative importance.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const PRODUCTS = await getProducts();
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${BASE}/`,           lastModified: now, changeFrequency: "weekly",  priority: 1.0 },

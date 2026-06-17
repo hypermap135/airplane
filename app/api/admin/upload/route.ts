@@ -1,51 +1,73 @@
-/**
- * POST /api/admin/upload
- *
- * Receives one source image (multipart/form-data) from the admin photo
- * picker UI and saves it under .tmp/uploads/{handle}.{ext} so the next
- * pipeline call can find it. Local dev only — Vercel's serverless
- * filesystem is read-only, so this route returns 501 in production.
- */
-
-import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-export async function POST(req: NextRequest) {
-  if (process.env.VERCEL) {
+const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
+const ALLOWED_MIME = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+]);
+
+/**
+ * POST /api/admin/upload
+ *   multipart/form-data with `file` field, optional `folder` field.
+ * Returns { url } pointing to the uploaded image in Vercel Blob.
+ *
+ * Used by the admin product editor when the shopkeeper drops a new photo
+ * onto a product. The returned URL is then written to the override store
+ * via PATCH /api/admin/products/[id].
+ */
+export async function POST(req: Request) {
+  const form = await req.formData().catch(() => null);
+  if (!form) {
+    return NextResponse.json({ error: "invalid_form" }, { status: 400 });
+  }
+  const file = form.get("file");
+  const folder = (form.get("folder") as string | null) ?? "products";
+
+  if (!(file instanceof Blob)) {
+    return NextResponse.json({ error: "missing_file" }, { status: 400 });
+  }
+  if (file.size === 0) {
+    return NextResponse.json({ error: "empty_file" }, { status: 400 });
+  }
+  if (file.size > MAX_BYTES) {
     return NextResponse.json(
-      { error: "Admin pipeline is local-only. Run `npm run dev` on your Mac." },
-      { status: 501 },
+      { error: "file_too_large", limit: MAX_BYTES },
+      { status: 413 },
+    );
+  }
+  const mime = file.type || "application/octet-stream";
+  if (!ALLOWED_MIME.has(mime)) {
+    return NextResponse.json(
+      { error: "unsupported_mime", got: mime },
+      { status: 415 },
     );
   }
 
-  const form = await req.formData();
-  const file = form.get("file") as File | null;
-  const handle = (form.get("handle") as string | null)?.trim();
+  const ext = mime.split("/")[1] ?? "bin";
+  const rawName =
+    file instanceof File && file.name ? file.name : `upload.${ext}`;
+  const safeName = rawName.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 80);
+  const stamp = Math.floor(Math.random() * 1e9).toString(36);
+  const pathname = `${folder}/${stamp}-${safeName}`;
 
-  if (!file || !handle) {
-    return NextResponse.json({ error: "file + handle required" }, { status: 400 });
+  try {
+    const { put } = await import("@vercel/blob");
+    const blob = await put(pathname, file, {
+      access: "public",
+      contentType: mime,
+      addRandomSuffix: false,
+    });
+    return NextResponse.json({ url: blob.url, pathname: blob.pathname });
+  } catch (err) {
+    console.error("[admin/upload] put failed:", err);
+    return NextResponse.json(
+      { error: "blob_put_failed", detail: String(err) },
+      { status: 500 },
+    );
   }
-
-  // Sanitize handle (only letters / digits / dash)
-  if (!/^[a-z0-9-]+$/i.test(handle)) {
-    return NextResponse.json({ error: "invalid handle" }, { status: 400 });
-  }
-
-  const ext = (file.name.split(".").pop() || "png").toLowerCase();
-  const safeExt = ["png", "jpg", "jpeg", "webp", "heic"].includes(ext) ? ext : "png";
-
-  const uploadsDir = path.join(process.cwd(), ".tmp", "uploads");
-  await mkdir(uploadsDir, { recursive: true });
-  const dest = path.join(uploadsDir, `${handle}.${safeExt}`);
-  const bytes = Buffer.from(await file.arrayBuffer());
-  await writeFile(dest, bytes);
-
-  return NextResponse.json({
-    ok: true,
-    path: dest.replace(process.cwd(), ""),
-    size_kb: Math.round(bytes.length / 1024),
-  });
 }
