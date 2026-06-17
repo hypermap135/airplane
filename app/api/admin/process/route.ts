@@ -13,8 +13,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { spawn } from "child_process";
-import { readdir, mkdir, stat } from "fs/promises";
+import { readdir, mkdir, stat, writeFile, copyFile } from "fs/promises";
 import path from "path";
+import { PRODUCTS } from "@/lib/products";
 
 export const runtime = "nodejs";
 export const maxDuration = 180; // Gemini round-trip can take 30-90s
@@ -30,6 +31,56 @@ async function findUpload(handle: string): Promise<string | null> {
   }
 }
 
+/**
+ * Pull the product's CURRENT image (either CDN Shopify URL or a local
+ * /public/ path) into .tmp/current/{handle}.ext so the Python pipeline
+ * can read it as a regular local file. Returns either the local path or
+ * a string starting with "error: ..." for the caller to surface.
+ */
+async function stageCurrentImage(handle: string): Promise<string> {
+  const product = PRODUCTS.find((p) => p.handle === handle);
+  if (!product) return `error: product ${handle} not found`;
+
+  const img = product.image;
+  const ext = (img.split(".").pop() || "png").toLowerCase().split("?")[0];
+  const safeExt = ["png", "jpg", "jpeg", "webp"].includes(ext) ? ext : "png";
+
+  const tmpDir = path.join(process.cwd(), ".tmp", "current");
+  try {
+    await mkdir(tmpDir, { recursive: true });
+  } catch (e) {
+    return `error: mkdir failed (${(e as Error).message})`;
+  }
+  const dest = path.join(tmpDir, `${handle}.${safeExt}`);
+
+  if (img.startsWith("http")) {
+    try {
+      // Some CDNs (Shopify included) return 403 to fetches without UA
+      const res = await fetch(img, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AirplaneStoreAdmin/1.0",
+        },
+      });
+      if (!res.ok) return `error: ${img} → HTTP ${res.status}`;
+      const buf = Buffer.from(await res.arrayBuffer());
+      await writeFile(dest, buf);
+    } catch (e) {
+      return `error: fetch failed (${(e as Error).message}) for ${img}`;
+    }
+  } else if (img.startsWith("/")) {
+    const src = path.join(process.cwd(), "public", img.replace(/^\//, ""));
+    try {
+      await copyFile(src, dest);
+    } catch (e) {
+      return `error: local copy failed (${(e as Error).message}) for ${src}`;
+    }
+  } else {
+    return `error: unsupported image URL format "${img}"`;
+  }
+  return dest;
+}
+
 export async function POST(req: NextRequest) {
   if (process.env.VERCEL) {
     return NextResponse.json(
@@ -38,15 +89,24 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { handle, sourcePath } = await req.json();
+  const { handle, sourcePath, useCurrent } = await req.json();
   if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
     return NextResponse.json({ error: "invalid handle" }, { status: 400 });
   }
 
-  // Prefer an explicit sourcePath (from the folder-scan flow). Fall back
-  // to the upload flow only when no path is given.
+  // Source resolution priority:
+  //   1. useCurrent: true  →  pull the product's current image
+  //                           (Shopify CDN URL or local public/ file)
+  //   2. sourcePath given  →  use that file directly
+  //   3. otherwise         →  fall back to legacy .tmp/uploads/{handle}.*
   let source: string | null = null;
-  if (sourcePath && typeof sourcePath === "string") {
+  if (useCurrent) {
+    const staged = await stageCurrentImage(handle);
+    if (staged.startsWith("error:")) {
+      return NextResponse.json({ error: staged }, { status: 502 });
+    }
+    source = staged;
+  } else if (sourcePath && typeof sourcePath === "string") {
     try {
       const s = await stat(sourcePath);
       if (s.isFile()) source = sourcePath;
@@ -61,7 +121,7 @@ export async function POST(req: NextRequest) {
   }
   if (!source) {
     return NextResponse.json(
-      { error: `no source for ${handle}. Pick a file from the folder or upload one.` },
+      { error: `no source for ${handle}. Use 'Améliorer photo actuelle' or pick a file.` },
       { status: 404 },
     );
   }

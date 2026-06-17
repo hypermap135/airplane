@@ -245,8 +245,8 @@ function ProductRowCard({
   disabled: boolean;
   onUpdate: (patch: Partial<RowState>) => void;
 }) {
-  async function handleProcess() {
-    if (!rowState.sourcePath) return;
+  async function handleProcess(opts: { useCurrent?: boolean } = {}) {
+    if (!opts.useCurrent && !rowState.sourcePath) return;
     onUpdate({ processing: true, error: undefined });
     try {
       const res = await fetch("/api/admin/process", {
@@ -254,7 +254,9 @@ function ProductRowCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           handle: product.handle,
-          sourcePath: rowState.sourcePath,
+          ...(opts.useCurrent
+            ? { useCurrent: true }
+            : { sourcePath: rowState.sourcePath }),
         }),
       });
       const data = await res.json();
@@ -371,7 +373,20 @@ function ProductRowCard({
         {/* Action buttons */}
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={handleProcess}
+            onClick={() => handleProcess({ useCurrent: true })}
+            disabled={disabled || rowState.processing}
+            className="text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
+            style={{
+              background: "rgba(255,180,77,0.16)",
+              border: "1px solid rgba(255,180,77,0.4)",
+              color: "rgba(255,210,160,1)",
+            }}
+            title="Récupère l'image actuelle du site et la repasse au pipeline"
+          >
+            {rowState.processing ? "⚙️…" : "♻️ Améliorer photo actuelle"}
+          </button>
+          <button
+            onClick={() => handleProcess()}
             disabled={disabled || !rowState.sourcePath || rowState.processing}
             className="text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
             style={{
@@ -379,7 +394,7 @@ function ProductRowCard({
               border: "1px solid rgba(120,180,255,0.4)",
             }}
           >
-            {rowState.processing ? "⚙️ Pipeline…" : "✨ Lancer pipeline"}
+            {rowState.processing ? "⚙️…" : "✨ Pipeline (fichier choisi)"}
           </button>
           <button
             onClick={handleApprove}
