@@ -38,15 +38,30 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { handle } = await req.json();
+  const { handle, sourcePath } = await req.json();
   if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
     return NextResponse.json({ error: "invalid handle" }, { status: 400 });
   }
 
-  const source = await findUpload(handle);
+  // Prefer an explicit sourcePath (from the folder-scan flow). Fall back
+  // to the upload flow only when no path is given.
+  let source: string | null = null;
+  if (sourcePath && typeof sourcePath === "string") {
+    try {
+      const s = await stat(sourcePath);
+      if (s.isFile()) source = sourcePath;
+    } catch {
+      return NextResponse.json(
+        { error: `sourcePath not readable: ${sourcePath}` },
+        { status: 404 },
+      );
+    }
+  } else {
+    source = await findUpload(handle);
+  }
   if (!source) {
     return NextResponse.json(
-      { error: `no upload found for ${handle}. Upload first.` },
+      { error: `no source for ${handle}. Pick a file from the folder or upload one.` },
       { status: 404 },
     );
   }
