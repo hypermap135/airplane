@@ -10,15 +10,14 @@ type ProductRow = {
   inStock: boolean;
 };
 
-type ViewKey = "profile" | "3quarter-front" | "3quarter-rear" | "front" | "top" | "cockpit";
+type ViewKey = "profile" | "3quarter-front" | "3quarter-rear" | "top" | "shelf";
 
 const VIEWS: { key: ViewKey; label: string }[] = [
   { key: "profile",         label: "Profil" },
   { key: "3quarter-front",  label: "3/4 avant" },
   { key: "3quarter-rear",   label: "3/4 arrière" },
-  { key: "front",           label: "Face" },
   { key: "top",             label: "Dessus" },
-  { key: "cockpit",         label: "Cockpit" },
+  { key: "shelf",           label: "Sur étagère" },
 ];
 
 type ViewState = {

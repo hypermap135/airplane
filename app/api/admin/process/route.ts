@@ -27,38 +27,61 @@ export const maxDuration = 180; // Gemini round-trip can take 30-90s
  * model, but with a strong source photo it does a reasonable job of
  * re-rendering the same livery from a hinted angle.
  */
-const VIEWS: Record<
-  string,
-  { label: string; angleClause: string }
-> = {
+type ViewSpec = {
+  label: string;
+  /** Custom prompt builder when the view needs a non-standard background
+   *  (e.g. shelf scene). Falls back to the standard light-grey studio. */
+  customPrompt?: (planeContext: string) => string;
+  /** Angle/composition clause used by the standard light-grey prompt. */
+  angleClause?: string;
+};
+
+const VIEWS: Record<string, ViewSpec> = {
   profile: {
     label: "Profil",
-    angleClause: "Pure side profile view, plane facing right, both wings visible from the side.",
+    angleClause:
+      "Pure side profile view, plane facing right, both wings visible from the side.",
   },
   "3quarter-front": {
     label: "3/4 avant",
-    angleClause: "Three-quarter front view: the airplane angled ~30° toward the camera, nose pointing slightly to the right, cockpit windows clearly visible.",
+    angleClause:
+      "Three-quarter front view: the airplane angled ~30° toward the camera, nose pointing slightly to the right, cockpit windows clearly visible.",
   },
   "3quarter-rear": {
     label: "3/4 arrière",
-    angleClause: "Three-quarter rear view: the airplane angled ~30° away from the camera, tail fin and engines prominent.",
-  },
-  front: {
-    label: "Face",
-    angleClause: "Direct front view: nose-on, both wings symmetrical, engines visible head-on.",
+    angleClause:
+      "Three-quarter rear view: the airplane angled ~30° away from the camera, tail fin and engines prominent.",
   },
   top: {
     label: "Dessus",
-    angleClause: "Top-down view, fuselage running horizontally across the frame, both wings fully spread.",
+    angleClause:
+      "Top-down view, fuselage running horizontally across the frame, both wings fully spread.",
   },
-  cockpit: {
-    label: "Cockpit (zoom)",
-    angleClause: "Tight close-up on the cockpit and forward fuselage, showing windshield detail, livery markings near the nose, and airline logo crisply.",
+  shelf: {
+    label: "Sur étagère",
+    customPrompt: () =>
+      "Re-render this airplane model in a premium showroom scene. SCENE: place the " +
+      "airplane (on its wooden display stand) on a single FLOATING DARK WALNUT SHELF " +
+      "(matte finish, ~4 cm thick, clean straight edges) mounted against a deep " +
+      "matte BLACK wall (#080810). The shelf is centered horizontally and runs " +
+      "across the lower third of the frame. A single soft warm key-light from the " +
+      "upper-left illuminates the airplane, casting a subtle shadow on the shelf. " +
+      "The plane fills ~70% of the frame, slightly elevated viewing angle (~15°) " +
+      "so we see the top of the wings, 3/4 front-side composition with the nose " +
+      "pointing slightly to the right. " +
+      "PRESERVE the airplane EXACTLY as in the source: same livery, same colors, " +
+      "same registration, same shape — do not modify anything on the aircraft. " +
+      "REMOVE all watermarks, URLs, gold glyphs, stray text. Premium museum / " +
+      "luxury boutique presentation. Sharp focus, high resolution, professional " +
+      "product photography. Square 1:1 format. NO transparency, NO checker pattern, " +
+      "NO added text, NO new branding.",
   },
 };
 
 function buildPromptForView(view: string): string {
-  const angle = VIEWS[view]?.angleClause ?? VIEWS.profile.angleClause;
+  const spec = VIEWS[view] ?? VIEWS.profile;
+  if (spec.customPrompt) return spec.customPrompt("");
+  const angle = spec.angleClause ?? VIEWS.profile.angleClause!;
   return (
     "Edit this product photo of an airplane model on a wooden display stand. " +
     "CRITICAL REQUIREMENTS: " +
@@ -195,14 +218,17 @@ export async function POST(req: NextRequest) {
       : path.join(previewDir, `${handle}--${viewKey}.png`);
 
   // Spawn the Python pipeline with a view-specific prompt.
+  // Scenic views (shelf, ...) keep the Gemini render verbatim — rembg
+  // would strip the staged background and lose the whole point.
   const script = path.join(process.cwd(), "scripts", "enhance_product_photo.py");
   const prompt = buildPromptForView(viewKey);
+  const SCENIC_VIEWS = new Set(["shelf"]);
+  const args = [script, source, dest, "--prompt", prompt];
+  if (SCENIC_VIEWS.has(viewKey)) {
+    args.push("--no-rembg", "--no-frame");
+  }
   return new Promise<NextResponse>((resolve) => {
-    const proc = spawn(
-      "python3",
-      [script, source, dest, "--prompt", prompt],
-      { cwd: process.cwd() },
-    );
+    const proc = spawn("python3", args, { cwd: process.cwd() });
     let stdout = "";
     let stderr = "";
     proc.stdout.on("data", (d) => (stdout += d.toString()));
