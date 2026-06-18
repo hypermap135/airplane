@@ -481,7 +481,17 @@ function ProductCard({
   onUpdateView: (view: ViewKey, patch: Partial<ViewState>) => void;
 }) {
   const referenceInput = useRef<HTMLInputElement>(null);
+  const step2Ref = useRef<HTMLDivElement>(null);
   const baseState = rowState.views[BASE_VIEW] ?? {};
+
+  // The instant baseValidated flips to true, scroll Step 2 into view AND
+  // pulse a "✓ Modèle validé — angles en cours" banner so the operator
+  // can see the click registered without scrolling.
+  useEffect(() => {
+    if (rowState.baseValidated && step2Ref.current) {
+      step2Ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [rowState.baseValidated]);
 
   /** Run the pipeline for one view. Optionally use the reference photo. */
   async function runPipeline(view: ViewKey, opts: { useReference?: boolean } = {}) {
@@ -752,12 +762,34 @@ function ProductCard({
 
       {/* Step 2 — 5 ADDITIONAL ANGLES (locked until step 1 validated) */}
       {rowState.baseValidated && (
-        <div className="px-5 pb-5 border-t border-white/5 pt-5">
+        <div
+          ref={step2Ref}
+          className="px-5 pb-5 border-t border-white/5 pt-5"
+        >
           <StepLabel
             n={2}
             label={`5 angles supplémentaires (${validatedCount - 1}/5 validés)`}
             done={validatedCount === 6}
           />
+
+          {/* Confirmation banner — proves the click registered */}
+          {validatedCount === 1 && ADDITIONAL_VIEWS.some((v) => rowState.views[v.key]?.processing) && (
+            <div
+              className="mt-3 px-4 py-3 rounded-lg flex items-center gap-2"
+              style={{
+                background: "rgba(34,197,94,0.1)",
+                border: "1px solid rgba(94,220,140,0.4)",
+                animation: "pulse 1.8s ease-in-out infinite",
+              }}
+            >
+              <span className="text-emerald-300 text-[0.85rem] font-semibold">
+                ✓ Modèle de base validé
+              </span>
+              <span className="text-white/55 text-[0.78rem]">
+                — les 5 angles sont en cours de génération (~30-60s par vue)
+              </span>
+            </div>
+          )}
 
           <button
             onClick={generateAllAngles}
@@ -768,7 +800,7 @@ function ProductCard({
               border: "1px solid rgba(120,180,255,0.4)",
             }}
           >
-            🔄 Générer les 5 angles
+            🔄 Re-générer les 5 angles
           </button>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-4">
