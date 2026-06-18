@@ -97,6 +97,7 @@ export default function PhotoAdmin({
   const [state, setState] = useState<Record<string, RowState>>({});
 
   useEffect(() => {
+    // 1. Pull the problematic list so the chip + flag are restored
     fetch("/api/admin/problematic")
       .then((r) => r.json())
       .then((data) => {
@@ -109,6 +110,32 @@ export default function PhotoAdmin({
               problematic: true,
             };
           });
+          return next;
+        });
+      })
+      .catch(() => {});
+
+    // 2. Hydrate ANY preview that already exists on disk. Without this,
+    //    a page refresh wipes the "version" memory of every preview and
+    //    the ✅ Valider button disappears even though the file is still
+    //    served by /api/admin/preview/{slug}.
+    fetch("/api/admin/preview-status")
+      .then((r) => r.json())
+      .then((data) => {
+        const map = (data?.handles ?? {}) as Record<string, string[]>;
+        setState((s) => {
+          const next = { ...s };
+          for (const [handle, views] of Object.entries(map)) {
+            const row = next[handle] ?? { views: {} };
+            const merged = { ...row, views: { ...row.views } };
+            for (const v of views) {
+              merged.views[v as ViewKey] = {
+                ...(merged.views[v as ViewKey] ?? {}),
+                version: 1, // any positive number triggers preview display
+              };
+            }
+            next[handle] = merged;
+          }
           return next;
         });
       })
