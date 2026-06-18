@@ -206,11 +206,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { handle, sourcePath, useCurrent, view, useReference } = await req.json();
+  const { handle, sourcePath, useCurrent, view, useReference, extraPrompt } =
+    await req.json();
   if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
     return NextResponse.json({ error: "invalid handle" }, { status: 400 });
   }
   const viewKey = view && VIEWS[view] ? view : "profile";
+  // Optional free-form instruction from the operator (e.g. "garde les bandes
+  // tricolores rouge/bleu sur le fuselage"). Truncated + light cleanup to
+  // avoid prompt-injection or unbounded payloads.
+  const cleanExtra =
+    typeof extraPrompt === "string"
+      ? extraPrompt.trim().slice(0, 500).replace(/[ -]/g, " ")
+      : "";
 
   // Optionally include a reference image (.tmp/references/{handle}.*)
   // that the operator dropped from the photos studio. When present, the
@@ -285,6 +293,15 @@ export async function POST(req: NextRequest) {
       "exactly (colors, wordmark placement, decals, window line) while keeping " +
       "IMAGE 1's airframe shape, scale, and wooden display stand. " +
       "Then apply the rest of the standard rules: " +
+      prompt;
+  }
+  if (cleanExtra) {
+    // Operator's free-form instruction wins over the generic livery rules
+    // — surface it at the very top so Gemini sees it before the
+    // boilerplate. Translated to a clear English directive.
+    prompt =
+      `ADDITIONAL OPERATOR INSTRUCTION (highest priority — apply this even if ` +
+      `it contradicts the rules below): ${cleanExtra}\n\n` +
       prompt;
   }
   const SCENIC_VIEWS = new Set(["shelf", "desk"]);

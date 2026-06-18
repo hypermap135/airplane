@@ -483,6 +483,12 @@ function ProductCard({
   const referenceInput = useRef<HTMLInputElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
   const baseState = rowState.views[BASE_VIEW] ?? {};
+  // Free-form prompt instructions per view (e.g. "garde les bandes rouges").
+  // Kept local to the card — not persisted; if the operator refreshes
+  // they re-type. That's fine: it's a tool, not a setting.
+  const [extraPromptByView, setExtraPromptByView] = useState<
+    Partial<Record<ViewKey, string>>
+  >({});
 
   // The instant baseValidated flips to true, scroll Step 2 into view AND
   // pulse a "✓ Modèle validé — angles en cours" banner so the operator
@@ -493,8 +499,12 @@ function ProductCard({
     }
   }, [rowState.baseValidated]);
 
-  /** Run the pipeline for one view. Optionally use the reference photo. */
-  async function runPipeline(view: ViewKey, opts: { useReference?: boolean } = {}) {
+  /** Run the pipeline for one view. Optionally use the reference photo
+   *  and / or any free-form prompt instruction typed by the operator. */
+  async function runPipeline(
+    view: ViewKey,
+    opts: { useReference?: boolean; extraPrompt?: string } = {},
+  ) {
     onUpdateView(view, { processing: true, error: undefined });
     try {
       const res = await fetch("/api/admin/process", {
@@ -505,6 +515,7 @@ function ProductCard({
           view,
           useCurrent: true,
           useReference: !!opts.useReference,
+          extraPrompt: opts.extraPrompt || extraPromptByView[view] || "",
         }),
       });
       const data = await res.json();
@@ -670,35 +681,62 @@ function ProductCard({
 
         <div className="grid md:grid-cols-[260px_1fr] gap-5 mt-3">
           <ImagePane label="ACTUEL" src={product.currentImage} />
-          <ImagePane
-            label="MODÈLE DE BASE"
-            src={
-              baseState.version
-                ? `/api/admin/preview/${product.handle}?v=${baseState.version}`
-                : null
-            }
-            placeholder={
-              baseState.processing
-                ? "⚙️ Génération…"
-                : "Clique sur 'Générer modèle de base' ↓"
-            }
-            validated={baseState.validated}
-            // Action bar (Valider / Re-générer) shows up as soon as a preview
-            // is available, so the operator never has to scroll to find the
-            // green button.
-            onValidate={
-              baseState.version ? () => validateView(BASE_VIEW) : undefined
-            }
-            onRegenerate={
-              baseState.version
-                ? () =>
-                    runPipeline(BASE_VIEW, {
-                      useReference: rowState.referenceUploaded,
-                    })
-                : undefined
-            }
-            disabled={disabled || baseState.processing}
-          />
+          <div>
+            <ImagePane
+              label="MODÈLE DE BASE"
+              src={
+                baseState.version
+                  ? `/api/admin/preview/${product.handle}?v=${baseState.version}`
+                  : null
+              }
+              placeholder={
+                baseState.processing
+                  ? "⚙️ Génération…"
+                  : "Clique sur 'Générer modèle de base' ↓"
+              }
+              validated={baseState.validated}
+              onValidate={
+                baseState.version ? () => validateView(BASE_VIEW) : undefined
+              }
+              onRegenerate={
+                baseState.version
+                  ? () =>
+                      runPipeline(BASE_VIEW, {
+                        useReference: rowState.referenceUploaded,
+                      })
+                  : undefined
+              }
+              disabled={disabled || baseState.processing}
+            />
+            {/* Operator instruction — appears once a preview exists so the
+                operator can refine the next regeneration with a directive
+                like "garde les bandes rouge/bleu sur le ventre". */}
+            {baseState.version && (
+              <div className="mt-2.5">
+                <input
+                  type="text"
+                  value={extraPromptByView[BASE_VIEW] ?? ""}
+                  onChange={(e) =>
+                    setExtraPromptByView((m) => ({
+                      ...m,
+                      [BASE_VIEW]: e.target.value,
+                    }))
+                  }
+                  placeholder='💬 Précise pour la prochaine régénération… (ex: "livrée Air France tricolore, bandes rouge et bleu sur le ventre")'
+                  disabled={disabled}
+                  className="w-full px-3 py-2 rounded-lg text-[0.8rem] outline-none"
+                  style={{
+                    background: "rgba(0,0,0,0.35)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    color: "rgba(255,255,255,0.9)",
+                  }}
+                />
+                <p className="mt-1 font-mono text-[0.6rem] text-white/35">
+                  Tape ta consigne ici puis clique 🔄 sur la card image — elle est envoyée à Gemini en priorité.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mt-4">
@@ -809,21 +847,47 @@ function ProductCard({
               const slug =
                 key === "profile" ? product.handle : `${product.handle}--${key}`;
               return (
-                <ViewTile
-                  key={key}
-                  label={label}
-                  src={
-                    v.version ? `/api/admin/preview/${slug}?v=${v.version}` : null
-                  }
-                  processing={!!v.processing}
-                  validated={!!v.validated}
-                  error={v.error}
-                  onValidate={() => validateView(key)}
-                  onRegenerate={() =>
-                    runPipeline(key, { useReference: rowState.referenceUploaded })
-                  }
-                  disabled={disabled}
-                />
+                <div key={key}>
+                  <ViewTile
+                    label={label}
+                    src={
+                      v.version ? `/api/admin/preview/${slug}?v=${v.version}` : null
+                    }
+                    processing={!!v.processing}
+                    validated={!!v.validated}
+                    error={v.error}
+                    onValidate={() => validateView(key)}
+                    onRegenerate={() =>
+                      runPipeline(key, {
+                        useReference: rowState.referenceUploaded,
+                      })
+                    }
+                    disabled={disabled}
+                  />
+                  {/* Per-tile prompt nudge — short input, same idea as the
+                      base model: typed text is forwarded as extraPrompt
+                      on the next 🔄 click. */}
+                  {v.version && (
+                    <input
+                      type="text"
+                      value={extraPromptByView[key] ?? ""}
+                      onChange={(e) =>
+                        setExtraPromptByView((m) => ({
+                          ...m,
+                          [key]: e.target.value,
+                        }))
+                      }
+                      placeholder="💬 Consigne pour 🔄"
+                      disabled={disabled}
+                      className="mt-2 w-full px-2.5 py-1.5 rounded-md text-[0.7rem] outline-none"
+                      style={{
+                        background: "rgba(0,0,0,0.35)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        color: "rgba(255,255,255,0.85)",
+                      }}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>
