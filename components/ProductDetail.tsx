@@ -8,7 +8,9 @@ import { formatPrice, related, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
 import ProductCard from "./ProductCard";
 
-const SPECS: { label: string; value: string }[] = [
+/** Default spec sheet used when a product hasn't overridden its own.
+ *  Editable per-product via /admin/[handle]. */
+const DEFAULT_SPECS: { label: string; value: string }[] = [
   { label: "Matière",             value: "Résine monobloc" },
   { label: "Longueur",            value: "~47 cm" },
   { label: "Poids",               value: "~1,3 kg" },
@@ -223,6 +225,14 @@ export default function ProductDetail({ product }: { product: Product }) {
                 {product.subtitle}
               </p>
             )}
+            {product.description && (
+              <div
+                className="text-[0.95rem] leading-relaxed mb-5 whitespace-pre-wrap"
+                style={{ color: "rgba(255,255,255,0.7)" }}
+              >
+                {product.description}
+              </div>
+            )}
 
             {/* Star rating */}
             <div className="flex items-center gap-2 mb-5">
@@ -411,7 +421,12 @@ export default function ProductDetail({ product }: { product: Product }) {
                 Caractéristiques
               </div>
               <dl style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                {[...SPECS, ...(product.scale ? [{ label: "Échelle", value: product.scale }] : [])].map((s) => (
+                {[
+                  ...((product.specs && product.specs.length > 0)
+                    ? product.specs
+                    : DEFAULT_SPECS),
+                  ...(product.scale ? [{ label: "Échelle", value: product.scale }] : []),
+                ].map((s) => (
                   <div
                     key={s.label}
                     className="flex items-center justify-between py-3 gap-6"

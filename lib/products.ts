@@ -7,6 +7,8 @@ export type Collection =
   | "packs"
   | "accessoires";
 
+export type ProductSpec = { label: string; value: string };
+
 export type Product = {
   id: string;
   variantId: string;
@@ -22,6 +24,12 @@ export type Product = {
   images?: string[];
   bestseller?: boolean;
   scale?: string;
+  /** Per-product spec sheet shown on the product page. When undefined,
+   *  ProductDetail falls back to a shared default. Editable from /admin. */
+  specs?: ProductSpec[];
+  /** Free-form long description editable from /admin. When set, replaces
+   *  the marketing block on the product page. */
+  description?: string;
 };
 
 export const COLLECTIONS: { slug: Collection; label: string }[] = [

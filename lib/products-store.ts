@@ -13,7 +13,7 @@
  */
 
 import { unstable_cache, revalidateTag } from "next/cache";
-import { PRODUCTS, type Product, type Collection } from "@/lib/products";
+import { PRODUCTS, type Product, type ProductSpec, type Collection } from "@/lib/products";
 
 const BLOB_OVERRIDES_KEY = "products-overrides.json";
 const REVALIDATE_SECONDS = 30;
@@ -33,6 +33,8 @@ export type ProductOverride = Partial<{
   scale: string;
   collection: Collection;
   hidden: boolean; // soft-hide a product from the catalogue without deleting it
+  specs: ProductSpec[];
+  description: string;
 }>;
 
 export type OverridesMap = Record<string, ProductOverride>;
@@ -79,6 +81,8 @@ function applyOverride(base: Product, ov: ProductOverride | undefined): Product 
     ...(ov.images !== undefined      ? { images: ov.images } : {}),
     ...(ov.scale !== undefined       ? { scale: ov.scale } : {}),
     ...(ov.collection !== undefined  ? { collection: ov.collection } : {}),
+    ...(ov.specs !== undefined       ? { specs: ov.specs } : {}),
+    ...(ov.description !== undefined ? { description: ov.description } : {}),
   };
 }
 

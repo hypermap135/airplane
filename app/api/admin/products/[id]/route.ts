@@ -20,6 +20,8 @@ const ALLOWED_FIELDS: ReadonlySet<keyof ProductOverride> = new Set([
   "scale",
   "collection",
   "hidden",
+  "specs",
+  "description",
 ]);
 
 const VALID_COLLECTIONS = new Set(COLLECTIONS.map((c) => c.slug));
@@ -59,6 +61,26 @@ function coerceField(
       return typeof v === "string" && VALID_COLLECTIONS.has(v as never)
         ? (v as ProductOverride["collection"])
         : undefined;
+    case "description":
+      return typeof v === "string" ? v.slice(0, 4000) : undefined;
+    case "specs": {
+      if (!Array.isArray(v)) return undefined;
+      const cleaned = v
+        .filter(
+          (s): s is { label: string; value: string } =>
+            !!s &&
+            typeof s === "object" &&
+            typeof (s as { label?: unknown }).label === "string" &&
+            typeof (s as { value?: unknown }).value === "string",
+        )
+        .map((s) => ({
+          label: s.label.slice(0, 60),
+          value: s.value.slice(0, 200),
+        }))
+        .filter((s) => s.label.trim() !== "" || s.value.trim() !== "")
+        .slice(0, 20);
+      return cleaned;
+    }
     default:
       return undefined;
   }

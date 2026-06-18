@@ -1,13 +1,26 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { Product } from "@/lib/products";
+import type { Product, ProductSpec } from "@/lib/products";
 
 type Props = {
   product: Product;
   hidden: boolean;
   collections: { slug: string; label: string }[];
 };
+
+/** Fallback specs shown when the product has no per-product override yet.
+ *  Mirrored from components/ProductDetail.tsx so the editor starts with the
+ *  same baseline the customer sees, instead of an empty form. */
+const DEFAULT_SPECS: ProductSpec[] = [
+  { label: "Matière",             value: "Résine monobloc" },
+  { label: "Longueur",            value: "~47 cm" },
+  { label: "Poids",               value: "~1,3 kg" },
+  { label: "Socle",               value: "Bois massif inclus" },
+  { label: "Train d'atterrissage",value: "Amovible" },
+  { label: "Activation LED",      value: "Tap ou clap · ~20 s" },
+  { label: "Batterie",            value: "75 mAh · USB ~1h · auto-off" },
+];
 
 /**
  * Full product editor used inside /admin/[handle].
@@ -31,6 +44,10 @@ export default function EditForm({ product, hidden, collections }: Props) {
   const [hide, setHide]             = useState(hidden);
   const [image, setImage]           = useState(product.image);
   const [images, setImages]         = useState<string[]>(product.images ?? []);
+  const [specs, setSpecs]           = useState<ProductSpec[]>(
+    product.specs && product.specs.length > 0 ? product.specs : DEFAULT_SPECS,
+  );
+  const [description, setDescription] = useState<string>(product.description ?? "");
 
   const [busy, startTransition]     = useTransition();
   const [savedMsg, setSavedMsg]     = useState<string | null>(null);
@@ -41,9 +58,14 @@ export default function EditForm({ product, hidden, collections }: Props) {
   function buildPatch() {
     const priceNum = Number(price);
     const compareAtNum = compareAt === "" ? null : Number(compareAt);
+    // Drop empty rows before sending so the API doesn't store them.
+    const cleanSpecs = specs
+      .map((s) => ({ label: s.label.trim(), value: s.value.trim() }))
+      .filter((s) => s.label !== "" || s.value !== "");
     return {
       title,
       subtitle,
+      description,
       price: Number.isFinite(priceNum) ? priceNum : 0,
       compareAt: compareAtNum,
       scale,
@@ -54,6 +76,7 @@ export default function EditForm({ product, hidden, collections }: Props) {
       hidden: hide,
       image,
       images,
+      specs: cleanSpecs,
     };
   }
 
@@ -120,6 +143,28 @@ export default function EditForm({ product, hidden, collections }: Props) {
 
   function removeGalleryImage(i: number) {
     setImages(images.filter((_, idx) => idx !== i));
+  }
+
+  /* ── Specs helpers ─────────────────────────────────── */
+  function updateSpec(i: number, field: "label" | "value", v: string) {
+    const next = specs.map((s, idx) => (idx === i ? { ...s, [field]: v } : s));
+    setSpecs(next);
+  }
+  function removeSpec(i: number) {
+    setSpecs(specs.filter((_, idx) => idx !== i));
+  }
+  function addSpec() {
+    setSpecs([...specs, { label: "", value: "" }]);
+  }
+  function moveSpec(i: number, dir: -1 | 1) {
+    const j = i + dir;
+    if (j < 0 || j >= specs.length) return;
+    const next = [...specs];
+    [next[i], next[j]] = [next[j], next[i]];
+    setSpecs(next);
+  }
+  function resetSpecsToDefault() {
+    setSpecs(DEFAULT_SPECS);
   }
 
   function moveGallery(i: number, dir: -1 | 1) {
@@ -189,8 +234,8 @@ export default function EditForm({ product, hidden, collections }: Props) {
         </div>
       </Card>
 
-      {/* ── Title / subtitle ── */}
-      <Card title="Titre et description">
+      {/* ── Title / subtitle / description ── */}
+      <Card title="Titre, sous-titre, description">
         <Label>Titre</Label>
         <input
           type="text"
@@ -198,12 +243,22 @@ export default function EditForm({ product, hidden, collections }: Props) {
           onChange={(e) => setTitle(e.target.value)}
           style={inputStyle}
         />
-        <Label style={{ marginTop: 12 }}>Sous-titre</Label>
+        <Label style={{ marginTop: 12 }}>Sous-titre (court, affiché sous le titre)</Label>
         <textarea
           value={subtitle}
           onChange={(e) => setSubtitle(e.target.value)}
           rows={2}
           style={{ ...inputStyle, resize: "vertical", minHeight: 60 }}
+        />
+        <Label style={{ marginTop: 12 }}>
+          Description longue (optionnel — affichée sur la fiche produit)
+        </Label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={5}
+          placeholder="Histoire de l'avion, détails de la livrée, particularités… (laissez vide pour utiliser la description par défaut)"
+          style={{ ...inputStyle, resize: "vertical", minHeight: 110 }}
         />
       </Card>
 
@@ -272,6 +327,88 @@ export default function EditForm({ product, hidden, collections }: Props) {
           « Masquer du site » retire le produit de toutes les pages publiques sans
           le supprimer. Pratique pour préparer un produit avant publication.
         </p>
+      </Card>
+
+      {/* ── Per-product specs ── */}
+      <Card
+        title={`Caractéristiques (${specs.length})`}
+        action={
+          <button
+            type="button"
+            onClick={resetSpecsToDefault}
+            style={{
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: "0.6rem",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.45)",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.12)",
+              padding: "0.35rem 0.7rem",
+              borderRadius: 6,
+              cursor: "pointer",
+            }}
+          >
+            ↺ Recharger les valeurs par défaut
+          </button>
+        }
+      >
+        <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginBottom: 14 }}>
+          Liste affichée dans le bloc « Caractéristiques » de la fiche produit.
+          Vous pouvez modifier le label (matière, longueur, etc.) et la valeur,
+          réordonner avec les flèches, supprimer ou ajouter des lignes.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {specs.map((s, i) => (
+            <div
+              key={i}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(160px, 30%) 1fr auto",
+                gap: 8,
+                alignItems: "center",
+              }}
+            >
+              <input
+                type="text"
+                value={s.label}
+                onChange={(e) => updateSpec(i, "label", e.target.value)}
+                placeholder="Libellé (ex: Matière)"
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                value={s.value}
+                onChange={(e) => updateSpec(i, "value", e.target.value)}
+                placeholder="Valeur (ex: Résine monobloc)"
+                style={inputStyle}
+              />
+              <div style={{ display: "flex", gap: 4 }}>
+                <MiniBtn onClick={() => moveSpec(i, -1)} disabled={i === 0}>↑</MiniBtn>
+                <MiniBtn onClick={() => moveSpec(i, +1)} disabled={i === specs.length - 1}>↓</MiniBtn>
+                <MiniBtn onClick={() => removeSpec(i)} danger>✕</MiniBtn>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addSpec}
+          style={{
+            marginTop: 12,
+            padding: "0.65rem 1rem",
+            fontSize: "0.78rem",
+            fontWeight: 600,
+            letterSpacing: "0.05em",
+            borderRadius: 999,
+            background: "rgba(58,142,255,0.12)",
+            border: "1px solid rgba(58,142,255,0.4)",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          + Ajouter une caractéristique
+        </button>
       </Card>
 
       {/* ── Gallery ── */}
@@ -407,7 +544,15 @@ const buttonOutline: React.CSSProperties = {
   color: "#fff",
 };
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <section
       style={{
@@ -417,17 +562,27 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
         border: "1px solid rgba(255,255,255,0.06)",
       }}
     >
-      <h2
+      <div
         style={{
-          fontSize: "0.7rem",
-          letterSpacing: "0.24em",
-          textTransform: "uppercase",
-          color: "rgba(58,142,255,0.8)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
           marginBottom: 14,
         }}
       >
-        {title}
-      </h2>
+        <h2
+          style={{
+            fontSize: "0.7rem",
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            color: "rgba(58,142,255,0.8)",
+          }}
+        >
+          {title}
+        </h2>
+        {action}
+      </div>
       {children}
     </section>
   );
