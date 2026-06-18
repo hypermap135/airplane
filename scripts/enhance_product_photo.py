@@ -81,19 +81,34 @@ def detect_mime(path: Path) -> str:
     }.get(path.suffix.lower(), "image/png")
 
 
-def call_gemini(api_key: str, image_path: Path, prompt: str) -> bytes:
-    """POST the image + standard prompt to Gemini and return raw image bytes."""
-    image_b64 = base64.b64encode(image_path.read_bytes()).decode("ascii")
+def call_gemini(
+    api_key: str,
+    image_path: Path,
+    prompt: str,
+    reference_path: Path | None = None,
+) -> bytes:
+    """POST one or two images + prompt to Gemini, return raw image bytes.
+
+    When `reference_path` is given, Gemini receives both images and the
+    prompt should explicitly tell it "image 1 = the airplane model to
+    redraw, image 2 = the visual reference to imitate the livery from".
+    """
+    parts: list = [{"text": prompt}]
+    parts.append({
+        "inlineData": {
+            "mimeType": detect_mime(image_path),
+            "data": base64.b64encode(image_path.read_bytes()).decode("ascii"),
+        }
+    })
+    if reference_path is not None:
+        parts.append({
+            "inlineData": {
+                "mimeType": detect_mime(reference_path),
+                "data": base64.b64encode(reference_path.read_bytes()).decode("ascii"),
+            }
+        })
     body = {
-        "contents": [{
-            "parts": [
-                {"text": prompt},
-                {"inlineData": {
-                    "mimeType": detect_mime(image_path),
-                    "data": image_b64,
-                }},
-            ],
-        }],
+        "contents": [{"parts": parts}],
         "generationConfig": {"responseModalities": ["IMAGE", "TEXT"]},
     }
     req = urllib.request.Request(
@@ -208,6 +223,12 @@ def main() -> int:
         help="Skip rembg step and keep Gemini's grey-studio background",
     )
     parser.add_argument(
+        "--reference",
+        type=Path,
+        default=None,
+        help="Optional second image whose livery/design Gemini should imitate",
+    )
+    parser.add_argument(
         "--no-frame",
         action="store_true",
         help="Skip the final reference framing (skip if --no-rembg too)",
@@ -221,7 +242,11 @@ def main() -> int:
 
     print(f"▶ Step 1/2 — Gemini ({MODEL})")
     print(f"  input:  {args.input} ({args.input.stat().st_size // 1024} KB)")
-    gemini_bytes = call_gemini(key, args.input, args.prompt)
+    if args.reference is not None:
+        if not args.reference.exists():
+            sys.exit(f"ERROR: reference not found: {args.reference}")
+        print(f"  reference: {args.reference} ({args.reference.stat().st_size // 1024} KB)")
+    gemini_bytes = call_gemini(key, args.input, args.prompt, args.reference)
     print(f"  ✓ {len(gemini_bytes) // 1024} KB returned (grey studio)")
 
     if args.no_rembg:

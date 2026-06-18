@@ -1,6 +1,28 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+
+/*
+ * Workflow per product (top → bottom on each card):
+ *
+ *   ┌─ Step 1 — Generate the BASE MODEL ─────────────────────┐
+ *   │ "♻️ Générer modèle de base" (uses the product's       │
+ *   │  current image as Gemini source)                        │
+ *   │ → preview lands → operator decides:                     │
+ *   │     ✅ Valider modèle      → unlocks Step 2             │
+ *   │     🎨 Donner une référence → drag-drop a real photo,   │
+ *   │                                 re-generate the base    │
+ *   │     ⚠️ Photo problématique → flag for client follow-up  │
+ *   └─────────────────────────────────────────────────────────┘
+ *   ┌─ Step 2 — Generate the 5 ADDITIONAL ANGLES ────────────┐
+ *   │ "🔄 Générer 5 angles supplémentaires"                  │
+ *   │ → grid of 5 view tiles, each validatable individually   │
+ *   └─────────────────────────────────────────────────────────┘
+ *   ┌─ Step 3 — PUBLISH ──────────────────────────────────────┐
+ *   │ "🚀 Publier sur le site" — commits + deploys ONLY the  │
+ *   │ images the operator has validated.                      │
+ *   └─────────────────────────────────────────────────────────┘
+ */
 
 type ProductRow = {
   handle: string;
@@ -10,32 +32,46 @@ type ProductRow = {
   inStock: boolean;
 };
 
-type ViewKey = "profile" | "3quarter-front" | "3quarter-rear" | "top" | "shelf" | "desk";
+type ViewKey =
+  | "profile"
+  | "3quarter-front"
+  | "3quarter-rear"
+  | "top"
+  | "shelf"
+  | "desk";
 
-const VIEWS: { key: ViewKey; label: string }[] = [
-  { key: "profile",         label: "Profil" },
-  { key: "3quarter-front",  label: "3/4 avant" },
-  { key: "3quarter-rear",   label: "3/4 arrière" },
-  { key: "top",             label: "Dessus" },
-  { key: "shelf",           label: "Sur étagère" },
-  { key: "desk",            label: "Sur un bureau" },
+const BASE_VIEW: ViewKey = "shelf"; // the model used for "modèle de base"
+const ADDITIONAL_VIEWS: { key: ViewKey; label: string }[] = [
+  { key: "profile",        label: "Profil" },
+  { key: "3quarter-front", label: "3/4 avant" },
+  { key: "3quarter-rear",  label: "3/4 arrière" },
+  { key: "top",            label: "Dessus" },
+  { key: "desk",           label: "Sur un bureau" },
 ];
+const VIEW_LABEL: Record<ViewKey, string> = {
+  profile: "Profil",
+  "3quarter-front": "3/4 avant",
+  "3quarter-rear": "3/4 arrière",
+  top: "Dessus",
+  shelf: "Sur étagère",
+  desk: "Sur un bureau",
+};
 
 type ViewState = {
   processing?: boolean;
   version?: number; // bumped after each pipeline run to bust img cache
-  approved?: boolean;
+  validated?: boolean;
   error?: string;
 };
 
 type RowState = {
-  sourcePath?: string;
+  baseValidated?: boolean;
   problematic?: boolean;
-  // Per-view state: profile / 3quarter-front / etc.
-  views?: Partial<Record<ViewKey, ViewState>>;
+  referenceUploaded?: boolean;
+  publishing?: boolean;
+  published?: { url?: string };
+  views: Partial<Record<ViewKey, ViewState>>;
 };
-
-type FolderFile = { name: string; path: string };
 
 const COLLECTION_LABEL: Record<string, string> = {
   airbus: "Airbus",
@@ -46,21 +82,6 @@ const COLLECTION_LABEL: Record<string, string> = {
   packs: "Packs",
 };
 
-const FOLDER_KEY = "airplanestore.admin.folder";
-const DEFAULT_FOLDER = "~/Downloads";
-
-function matchScore(filename: string, product: ProductRow): number {
-  const fn = filename.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  const handle = product.handle.toLowerCase().replace(/-/g, " ");
-  const title = product.title.toLowerCase().replace(/[^a-z0-9]+/g, " ");
-  let score = 0;
-  if (fn.includes(handle)) score += 100;
-  title.split(" ").filter((w) => w.length > 2).forEach((w) => {
-    if (fn.includes(w)) score += 10;
-  });
-  return score;
-}
-
 export default function PhotoAdmin({
   products,
   disabled,
@@ -69,18 +90,9 @@ export default function PhotoAdmin({
   disabled: boolean;
 }) {
   const [filter, setFilter] = useState<string>("all");
-  const [folder, setFolder] = useState<string>(DEFAULT_FOLDER);
-  const [scanned, setScanned] = useState<FolderFile[] | null>(null);
-  const [scanning, setScanning] = useState(false);
-  const [scanError, setScanError] = useState<string | undefined>();
   const [state, setState] = useState<Record<string, RowState>>({});
-  const [deploying, setDeploying] = useState(false);
-  const [deployResult, setDeployResult] = useState<string | undefined>();
 
   useEffect(() => {
-    const saved = localStorage.getItem(FOLDER_KEY);
-    if (saved) setFolder(saved);
-    // hydrate problematic list
     fetch("/api/admin/problematic")
       .then((r) => r.json())
       .then((data) => {
@@ -88,7 +100,10 @@ export default function PhotoAdmin({
         setState((s) => {
           const next = { ...s };
           (data.items as { handle: string }[]).forEach((it) => {
-            next[it.handle] = { ...next[it.handle], problematic: true };
+            next[it.handle] = {
+              ...(next[it.handle] ?? { views: {} }),
+              problematic: true,
+            };
           });
           return next;
         });
@@ -106,259 +121,121 @@ export default function PhotoAdmin({
     if (filter === "all") return products;
     if (filter === "problematic")
       return products.filter((p) => state[p.handle]?.problematic);
+    if (filter === "published")
+      return products.filter((p) => state[p.handle]?.published);
     return products.filter((p) => p.collection === filter);
   }, [products, filter, state]);
 
   const updateRow = useCallback(
     (handle: string, patch: Partial<RowState>) =>
-      setState((s) => ({ ...s, [handle]: { ...s[handle], ...patch } })),
+      setState((s) => ({
+        ...s,
+        [handle]: { ...(s[handle] ?? { views: {} }), ...patch },
+      })),
     [],
   );
 
   const updateView = useCallback(
     (handle: string, view: ViewKey, patch: Partial<ViewState>) =>
       setState((s) => {
-        const row = s[handle] ?? {};
-        const views = row.views ?? {};
+        const row = s[handle] ?? { views: {} };
         return {
           ...s,
           [handle]: {
             ...row,
-            views: { ...views, [view]: { ...views[view], ...patch } },
+            views: { ...row.views, [view]: { ...row.views[view], ...patch } },
           },
         };
       }),
     [],
   );
 
-  async function handleScan() {
-    setScanning(true);
-    setScanError(undefined);
-    localStorage.setItem(FOLDER_KEY, folder);
-    try {
-      const res = await fetch("/api/admin/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ folder }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "scan failed");
-      setScanned(data.files);
-      const auto: Record<string, RowState> = {};
-      products.forEach((p) => {
-        if (state[p.handle]?.sourcePath) return;
-        const ranked = data.files
-          .map((f: FolderFile) => ({ f, score: matchScore(f.name, p) }))
-          .filter((x: { score: number }) => x.score > 0)
-          .sort((a: { score: number }, b: { score: number }) => b.score - a.score);
-        if (ranked.length > 0) auto[p.handle] = { sourcePath: ranked[0].f.path };
-      });
-      setState((s) => {
-        const merged = { ...s };
-        Object.entries(auto).forEach(([h, v]) => {
-          merged[h] = { ...merged[h], ...v };
-        });
-        return merged;
-      });
-    } catch (e) {
-      setScanError((e as Error).message);
-    } finally {
-      setScanning(false);
-    }
-  }
-
-  async function handleDeploy() {
-    setDeploying(true);
-    setDeployResult(undefined);
-    try {
-      const res = await fetch("/api/admin/deploy", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "deploy failed");
-      setDeployResult(
-        `✅ Déployé ${data.updatedCount} photos. ${data.deployUrl ?? "Live sur airplanestore.fr"}`,
-      );
-    } catch (e) {
-      setDeployResult(`❌ ${(e as Error).message}`);
-    } finally {
-      setDeploying(false);
-    }
-  }
-
-  const approvedCount = useMemo(() => {
-    let n = 0;
-    Object.values(state).forEach((row) => {
-      Object.values(row.views ?? {}).forEach((v) => v?.approved && n++);
-    });
-    return n;
-  }, [state]);
-
   const problematicCount = useMemo(
     () => Object.values(state).filter((s) => s.problematic).length,
+    [state],
+  );
+  const publishedCount = useMemo(
+    () => Object.values(state).filter((s) => s.published).length,
     [state],
   );
 
   return (
     <div>
-      {/* Folder picker */}
-      <div
-        className="mb-6 p-5 rounded-2xl"
-        style={{
-          background: "linear-gradient(145deg, #0c0c18, #07070f)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <p
-          className="font-mono text-[0.62rem] tracking-[0.22em] uppercase mb-3"
-          style={{ color: "rgba(58,142,255,0.7)" }}
-        >
-          📁 Dossier source (optionnel)
-        </p>
-        <div className="flex flex-wrap gap-3 items-center">
-          <input
-            type="text"
-            value={folder}
-            onChange={(e) => setFolder(e.target.value)}
-            placeholder="~/Downloads ou /Users/mac/Pictures/airplanestore"
-            disabled={disabled}
-            className="flex-1 min-w-[280px] px-4 py-2.5 rounded-xl font-mono text-[0.85rem] outline-none"
-            style={{
-              background: "rgba(0,0,0,0.35)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "rgba(255,255,255,0.9)",
-            }}
-          />
-          <button
-            onClick={handleScan}
-            disabled={disabled || scanning}
-            className="font-semibold text-[0.85rem] px-5 py-2.5 rounded-xl disabled:opacity-40 transition"
-            style={{ background: "linear-gradient(135deg, #3a8eff, #1a4aff)", color: "#fff" }}
-          >
-            {scanning ? "⏳" : "🔍 Scanner"}
-          </button>
-          {scanned && (
-            <span className="text-[0.85rem] text-white/55">
-              {scanned.length} fichiers
-            </span>
-          )}
-          <span className="text-[0.78rem] text-white/40 ml-auto">
-            💡 Tu peux aussi cliquer <b>♻️ Améliorer photo actuelle</b> sans rien scanner.
-          </span>
-        </div>
-        {scanError && (
-          <p className="mt-3 text-[0.85rem] text-red-400">⚠️ {scanError}</p>
-        )}
-      </div>
-
-      {/* Category + problematic filter */}
+      {/* Category + status filter */}
       <div className="flex flex-wrap gap-2 mb-8">
-        <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
+        <Chip active={filter === "all"} onClick={() => setFilter("all")}>
           Tout ({products.length})
-        </FilterChip>
+        </Chip>
         {collections.map((c) => {
           const n = products.filter((p) => p.collection === c).length;
           return (
-            <FilterChip key={c} active={filter === c} onClick={() => setFilter(c)}>
+            <Chip key={c} active={filter === c} onClick={() => setFilter(c)}>
               {COLLECTION_LABEL[c] ?? c} ({n})
-            </FilterChip>
+            </Chip>
           );
         })}
         {problematicCount > 0 && (
-          <FilterChip
+          <Chip
             active={filter === "problematic"}
             onClick={() => setFilter("problematic")}
-            variant="warning"
+            tone="warning"
           >
             ⚠️ À redemander ({problematicCount})
-          </FilterChip>
+          </Chip>
+        )}
+        {publishedCount > 0 && (
+          <Chip
+            active={filter === "published"}
+            onClick={() => setFilter("published")}
+            tone="success"
+          >
+            🚀 Publiées ({publishedCount})
+          </Chip>
         )}
       </div>
 
-      {/* Product grid */}
-      <div className="grid grid-cols-1 gap-6">
+      {/* Cards stacked vertically — each card is its own workflow */}
+      <div className="space-y-6">
         {filtered.map((p) => (
-          <ProductRowCard
+          <ProductCard
             key={p.handle}
             product={p}
-            rowState={state[p.handle] ?? {}}
-            scanned={scanned}
+            rowState={state[p.handle] ?? { views: {} }}
             disabled={disabled}
             onUpdate={(patch) => updateRow(p.handle, patch)}
-            onUpdateView={(view, patch) => updateView(p.handle, view, patch)}
+            onUpdateView={(v, patch) => updateView(p.handle, v, patch)}
           />
         ))}
       </div>
-
-      {/* Sticky deploy footer */}
-      {(approvedCount > 0 || deployResult) && (
-        <div
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 max-w-[95vw]"
-          style={{
-            background: "linear-gradient(135deg, #0d1f10, #0a1a0d)",
-            border: "1px solid rgba(34,197,94,0.4)",
-            backdropFilter: "blur(12px)",
-            zIndex: 50,
-          }}
-        >
-          <div>
-            <p className="font-mono text-[0.65rem] tracking-[0.18em] uppercase text-emerald-400 mb-1">
-              {approvedCount} photo{approvedCount > 1 ? "s" : ""} validée{approvedCount > 1 ? "s" : ""}
-            </p>
-            {deployResult ? (
-              <p className="text-[0.78rem] text-white/75 max-w-md break-all">{deployResult}</p>
-            ) : (
-              <p className="text-[0.78rem] text-white/65">Prêtes à publier en prod.</p>
-            )}
-          </div>
-          {approvedCount > 0 && (
-            <button
-              onClick={handleDeploy}
-              disabled={disabled || deploying}
-              className="font-bold text-[0.85rem] px-5 py-2.5 rounded-full disabled:opacity-40 transition"
-              style={{
-                background: "linear-gradient(135deg, #4ade80, #22c55e)",
-                color: "#06060f",
-              }}
-            >
-              {deploying ? "🚀 Déploiement…" : "🚀 Déployer en prod"}
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 }
 
-function FilterChip({
+function Chip({
   active,
   onClick,
   children,
-  variant = "default",
+  tone = "default",
 }: {
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
-  variant?: "default" | "warning";
+  tone?: "default" | "warning" | "success";
 }) {
-  const colors =
-    variant === "warning"
-      ? {
-          bgActive: "rgba(255,170,50,0.18)",
-          borderActive: "rgba(255,180,80,0.55)",
-          textActive: "#ffd28a",
-        }
-      : {
-          bgActive: "rgba(58,142,255,0.18)",
-          borderActive: "rgba(120,180,255,0.55)",
-          textActive: "#fff",
-        };
+  const palettes = {
+    default: { bg: "rgba(58,142,255,0.18)", border: "rgba(120,180,255,0.55)", text: "#fff" },
+    warning: { bg: "rgba(255,170,50,0.18)", border: "rgba(255,180,80,0.55)", text: "#ffd28a" },
+    success: { bg: "rgba(34,197,94,0.18)", border: "rgba(94,220,140,0.55)", text: "#7df09f" },
+  } as const;
+  const p = palettes[tone];
   return (
     <button
       onClick={onClick}
       className="font-mono text-[0.7rem] tracking-[0.18em] uppercase transition-all px-4 py-2 rounded-full"
       style={{
-        background: active ? colors.bgActive : "rgba(255,255,255,0.04)",
-        border: active ? `1px solid ${colors.borderActive}` : "1px solid rgba(255,255,255,0.08)",
-        color: active ? colors.textActive : "rgba(255,255,255,0.55)",
+        background: active ? p.bg : "rgba(255,255,255,0.04)",
+        border: active ? `1px solid ${p.border}` : "1px solid rgba(255,255,255,0.08)",
+        color: active ? p.text : "rgba(255,255,255,0.55)",
       }}
     >
       {children}
@@ -366,23 +243,24 @@ function FilterChip({
   );
 }
 
-function ProductRowCard({
+function ProductCard({
   product,
   rowState,
-  scanned,
   disabled,
   onUpdate,
   onUpdateView,
 }: {
   product: ProductRow;
   rowState: RowState;
-  scanned: FolderFile[] | null;
   disabled: boolean;
   onUpdate: (patch: Partial<RowState>) => void;
   onUpdateView: (view: ViewKey, patch: Partial<ViewState>) => void;
 }) {
-  async function processOne(view: ViewKey, opts: { useCurrent?: boolean } = {}) {
-    if (!opts.useCurrent && !rowState.sourcePath) return;
+  const referenceInput = useRef<HTMLInputElement>(null);
+  const baseState = rowState.views[BASE_VIEW] ?? {};
+
+  /** Run the pipeline for one view. Optionally use the reference photo. */
+  async function runPipeline(view: ViewKey, opts: { useReference?: boolean } = {}) {
     onUpdateView(view, { processing: true, error: undefined });
     try {
       const res = await fetch("/api/admin/process", {
@@ -391,41 +269,47 @@ function ProductRowCard({
         body: JSON.stringify({
           handle: product.handle,
           view,
-          ...(opts.useCurrent
-            ? { useCurrent: true }
-            : { sourcePath: rowState.sourcePath }),
+          useCurrent: true,
+          useReference: !!opts.useReference,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "process failed");
       onUpdateView(view, {
         processing: false,
-        version: (rowState.views?.[view]?.version ?? 0) + 1,
+        version: (rowState.views[view]?.version ?? 0) + 1,
+        validated: false,
       });
     } catch (e) {
       onUpdateView(view, { processing: false, error: (e as Error).message });
     }
   }
 
-  async function generateGallery(opts: { useCurrent?: boolean } = {}) {
-    // Launch all 6 views in parallel — each updates its own preview as
-    // soon as it lands so the operator sees progress incrementally.
-    await Promise.all(VIEWS.map(({ key }) => processOne(key, opts)));
+  async function generateAllAngles() {
+    await Promise.all(
+      ADDITIONAL_VIEWS.map(({ key }) => runPipeline(key, { useReference: rowState.referenceUploaded })),
+    );
   }
 
-  async function handleApprove(view: ViewKey) {
+  async function validateView(view: ViewKey) {
+    onUpdateView(view, { validated: true });
+    if (view === BASE_VIEW) onUpdate({ baseValidated: true });
+  }
+
+  async function uploadReference(file: File) {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("handle", product.handle);
     try {
-      const previewSlug = view === "profile" ? product.handle : `${product.handle}--${view}`;
-      const res = await fetch("/api/admin/approve", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ handle: product.handle, previewSlug }),
-      });
+      const res = await fetch("/api/admin/reference", { method: "POST", body: form });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "approve failed");
-      onUpdateView(view, { approved: true });
+      if (!res.ok) throw new Error(data.error || "reference upload failed");
+      onUpdate({ referenceUploaded: true });
+      // Re-process the base view with the reference immediately
+      await runPipeline(BASE_VIEW, { useReference: true });
     } catch (e) {
-      onUpdateView(view, { error: (e as Error).message });
+      onUpdate({ baseValidated: false });
+      onUpdateView(BASE_VIEW, { error: (e as Error).message });
     }
   }
 
@@ -438,12 +322,36 @@ function ProductRowCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ handle: product.handle, remove: !next }),
       });
-    } catch {
-      // Best-effort — UI state stays in sync.
+    } catch {/* best-effort */}
+  }
+
+  /** Pick the validated views in display order (base view first), copy them
+   *  to public/images, rewrite products.ts, commit + deploy. */
+  async function publishProduct() {
+    const orderedAll: ViewKey[] = [BASE_VIEW, ...ADDITIONAL_VIEWS.map((v) => v.key)];
+    const views = orderedAll.filter(
+      (v) => rowState.views[v]?.validated,
+    );
+    if (views.length === 0) return;
+    onUpdate({ publishing: true });
+    try {
+      const res = await fetch("/api/admin/publish-product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: product.handle, views, deploy: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "publish failed");
+      onUpdate({ publishing: false, published: { url: data.deployUrl } });
+    } catch (e) {
+      onUpdate({ publishing: false });
+      onUpdateView(BASE_VIEW, { error: (e as Error).message });
     }
   }
 
-  const filename = rowState.sourcePath?.split("/").pop();
+  const validatedCount = ADDITIONAL_VIEWS.filter(
+    (v) => rowState.views[v.key]?.validated,
+  ).length + (baseState.validated ? 1 : 0);
 
   return (
     <div
@@ -452,7 +360,9 @@ function ProductRowCard({
         background: "linear-gradient(145deg, #0c0c18, #07070f)",
         border: rowState.problematic
           ? "1px solid rgba(255,170,50,0.55)"
-          : "1px solid rgba(255,255,255,0.06)",
+          : rowState.published
+            ? "1px solid rgba(34,197,94,0.45)"
+            : "1px solid rgba(255,255,255,0.06)",
       }}
     >
       {/* Header */}
@@ -473,6 +383,18 @@ function ProductRowCard({
           </p>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
+          {rowState.published && (
+            <span
+              className="font-mono text-[0.6rem] tracking-[0.18em] uppercase px-2.5 py-1 rounded-full"
+              style={{
+                background: "rgba(34,197,94,0.18)",
+                color: "#7df09f",
+                border: "1px solid rgba(94,220,140,0.45)",
+              }}
+            >
+              🚀 Publié
+            </span>
+          )}
           <button
             onClick={toggleProblematic}
             disabled={disabled}
@@ -487,115 +409,240 @@ function ProductRowCard({
               color: rowState.problematic ? "#ffd28a" : "rgba(255,255,255,0.55)",
             }}
           >
-            {rowState.problematic ? "⚠️ À redemander" : "🏷️ Marquer problématique"}
+            {rowState.problematic ? "⚠️ À redemander" : "🏷️ Problématique"}
           </button>
         </div>
       </div>
 
-      {/* Actuel + sélecteur source */}
-      <div className="px-5 pb-5 grid md:grid-cols-[260px_1fr] gap-5">
-        <div>
+      {/* Step 1 — BASE MODEL */}
+      <div className="px-5 pb-5">
+        <StepLabel n={1} label="Modèle de base" done={!!rowState.baseValidated} />
+
+        <div className="grid md:grid-cols-[260px_1fr] gap-5 mt-3">
           <ImagePane label="ACTUEL" src={product.currentImage} />
-          {/* Source picker / file feedback */}
-          <select
-            value={rowState.sourcePath ?? ""}
-            onChange={(e) => onUpdate({ sourcePath: e.target.value || undefined })}
-            disabled={disabled || !scanned}
-            className="mt-3 w-full px-3 py-2 rounded-lg font-mono text-[0.72rem] outline-none disabled:opacity-40"
+          <ImagePane
+            label="MODÈLE DE BASE"
+            src={
+              baseState.version
+                ? `/api/admin/preview/${product.handle}?v=${baseState.version}`
+                : null
+            }
+            placeholder={
+              baseState.processing
+                ? "⚙️ Génération…"
+                : "Clique sur 'Générer modèle de base' →"
+            }
+            validated={baseState.validated}
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2 mt-4">
+          <button
+            onClick={() => runPipeline(BASE_VIEW, { useReference: rowState.referenceUploaded })}
+            disabled={disabled || baseState.processing}
+            className="text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
             style={{
-              background: rowState.sourcePath
-                ? "rgba(34,197,94,0.08)"
-                : "rgba(0,0,0,0.3)",
-              border: rowState.sourcePath
-                ? "1px solid rgba(34,197,94,0.35)"
-                : "1px solid rgba(255,255,255,0.1)",
-              color: "rgba(255,255,255,0.9)",
+              background: "rgba(255,180,77,0.16)",
+              border: "1px solid rgba(255,180,77,0.4)",
+              color: "rgba(255,210,160,1)",
             }}
           >
-            <option value="">
-              {scanned ? "— Photo source (optionnel) —" : "Scanne un dossier pour choisir une source"}
-            </option>
-            {scanned?.map((f) => (
-              <option key={f.path} value={f.path}>
-                {f.name}
-              </option>
-            ))}
-          </select>
-          {filename && (
-            <p className="mt-1.5 text-[0.7rem] text-white/45 font-mono truncate">
-              📄 {filename}
-            </p>
+            {baseState.processing
+              ? "⚙️…"
+              : baseState.version
+                ? "♻️ Re-générer le modèle"
+                : "♻️ Générer modèle de base"}
+          </button>
+
+          {baseState.version && !baseState.validated && (
+            <button
+              onClick={() => validateView(BASE_VIEW)}
+              disabled={disabled}
+              className="text-[0.78rem] font-bold px-4 py-2 rounded-full disabled:opacity-40 transition"
+              style={{
+                background: "linear-gradient(135deg, #4ade80, #22c55e)",
+                color: "#06060f",
+              }}
+            >
+              ✅ Valider modèle
+            </button>
           )}
 
-          {/* Generate gallery buttons */}
-          <div className="mt-4 space-y-2">
-            <button
-              onClick={() => generateGallery({ useCurrent: true })}
-              disabled={disabled}
-              className="w-full text-[0.78rem] font-semibold px-4 py-2.5 rounded-lg disabled:opacity-40 transition"
-              style={{
-                background: "rgba(255,180,77,0.16)",
-                border: "1px solid rgba(255,180,77,0.4)",
-                color: "rgba(255,210,160,1)",
-              }}
-            >
-              ♻️ Galerie 6 vues (photo actuelle)
-            </button>
-            <button
-              onClick={() => generateGallery()}
-              disabled={disabled || !rowState.sourcePath}
-              className="w-full text-[0.78rem] font-semibold px-4 py-2.5 rounded-lg disabled:opacity-40 transition"
-              style={{
-                background: "rgba(58,142,255,0.18)",
-                border: "1px solid rgba(120,180,255,0.4)",
-              }}
-            >
-              ✨ Galerie 6 vues (fichier choisi)
-            </button>
-          </div>
+          {baseState.version && (
+            <>
+              <input
+                type="file"
+                ref={referenceInput}
+                accept="image/png,image/jpeg,image/webp,image/heic"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadReference(f);
+                }}
+              />
+              <button
+                onClick={() => referenceInput.current?.click()}
+                disabled={disabled || baseState.processing}
+                className="text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
+                style={{
+                  background: rowState.referenceUploaded
+                    ? "rgba(34,197,94,0.12)"
+                    : "rgba(58,142,255,0.18)",
+                  border: rowState.referenceUploaded
+                    ? "1px solid rgba(94,220,140,0.45)"
+                    : "1px solid rgba(120,180,255,0.4)",
+                }}
+              >
+                🎨 {rowState.referenceUploaded ? "Référence chargée — re-cliquer pour changer" : "Donner une photo de référence"}
+              </button>
+            </>
+          )}
         </div>
 
-        {/* 6-view gallery preview */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {VIEWS.map(({ key, label }) => {
-            const vstate = rowState.views?.[key] ?? {};
-            const previewSlug =
-              key === "profile" ? product.handle : `${product.handle}--${key}`;
-            return (
-              <ViewTile
-                key={key}
-                label={label}
-                src={
-                  vstate.version
-                    ? `/api/admin/preview/${previewSlug}?v=${vstate.version}`
-                    : null
-                }
-                processing={!!vstate.processing}
-                approved={!!vstate.approved}
-                error={vstate.error}
-                onApprove={() => handleApprove(key)}
-                onRegenerate={() =>
-                  processOne(key, {
-                    useCurrent: !rowState.sourcePath,
-                  })
-                }
-                disabled={disabled}
-              />
-            );
-          })}
-        </div>
+        {baseState.error && (
+          <p className="mt-2 text-[0.78rem] text-red-400">⚠️ {baseState.error}</p>
+        )}
       </div>
+
+      {/* Step 2 — 5 ADDITIONAL ANGLES (locked until step 1 validated) */}
+      {rowState.baseValidated && (
+        <div className="px-5 pb-5 border-t border-white/5 pt-5">
+          <StepLabel
+            n={2}
+            label={`5 angles supplémentaires (${validatedCount - 1}/5 validés)`}
+            done={validatedCount === 6}
+          />
+
+          <button
+            onClick={generateAllAngles}
+            disabled={disabled || ADDITIONAL_VIEWS.some((v) => rowState.views[v.key]?.processing)}
+            className="mt-3 text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
+            style={{
+              background: "rgba(58,142,255,0.18)",
+              border: "1px solid rgba(120,180,255,0.4)",
+            }}
+          >
+            🔄 Générer les 5 angles
+          </button>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-4">
+            {ADDITIONAL_VIEWS.map(({ key, label }) => {
+              const v = rowState.views[key] ?? {};
+              const slug =
+                key === "profile" ? product.handle : `${product.handle}--${key}`;
+              return (
+                <ViewTile
+                  key={key}
+                  label={label}
+                  src={
+                    v.version ? `/api/admin/preview/${slug}?v=${v.version}` : null
+                  }
+                  processing={!!v.processing}
+                  validated={!!v.validated}
+                  error={v.error}
+                  onValidate={() => validateView(key)}
+                  onRegenerate={() =>
+                    runPipeline(key, { useReference: rowState.referenceUploaded })
+                  }
+                  disabled={disabled}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Step 3 — PUBLISH (visible once at least the base is validated) */}
+      {rowState.baseValidated && (
+        <div className="px-5 pb-5 border-t border-white/5 pt-5 flex flex-wrap items-center gap-4">
+          <StepLabel n={3} label="Publication" done={!!rowState.published} />
+
+          <button
+            onClick={publishProduct}
+            disabled={disabled || rowState.publishing || validatedCount === 0 || !!rowState.published}
+            className="text-[0.85rem] font-bold px-5 py-2.5 rounded-full disabled:opacity-40 transition"
+            style={{
+              background: "linear-gradient(135deg, #4ade80, #22c55e)",
+              color: "#06060f",
+            }}
+          >
+            {rowState.publishing
+              ? "🚀 Publication…"
+              : rowState.published
+                ? "✓ Publié"
+                : `🚀 Publier sur le site (${validatedCount} image${validatedCount > 1 ? "s" : ""})`}
+          </button>
+
+          {rowState.published?.url && (
+            <a
+              href={rowState.published.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[0.78rem] text-emerald-400 underline truncate max-w-md"
+            >
+              Voir le déploiement →
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-function ImagePane({ label, src }: { label: string; src: string | null }) {
+function StepLabel({
+  n,
+  label,
+  done,
+}: {
+  n: number;
+  label: string;
+  done: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span
+        className="inline-flex items-center justify-center font-bold text-[0.75rem] rounded-full"
+        style={{
+          width: 24,
+          height: 24,
+          background: done ? "rgba(34,197,94,0.18)" : "rgba(58,142,255,0.18)",
+          border: done
+            ? "1px solid rgba(94,220,140,0.45)"
+            : "1px solid rgba(120,180,255,0.4)",
+          color: done ? "#7df09f" : "#9cc6ff",
+        }}
+      >
+        {done ? "✓" : n}
+      </span>
+      <span
+        className="font-mono text-[0.65rem] tracking-[0.22em] uppercase"
+        style={{ color: done ? "rgba(125,240,159,0.85)" : "rgba(255,255,255,0.75)" }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function ImagePane({
+  label,
+  src,
+  placeholder,
+  validated,
+}: {
+  label: string;
+  src: string | null;
+  placeholder?: string;
+  validated?: boolean;
+}) {
   return (
     <div
       className="rounded-xl overflow-hidden relative"
       style={{
         background: "#080810",
-        border: "1px solid rgba(255,255,255,0.04)",
+        border: validated
+          ? "1px solid rgba(34,197,94,0.45)"
+          : "1px solid rgba(255,255,255,0.04)",
         aspectRatio: "1/1",
       }}
     >
@@ -603,10 +650,11 @@ function ImagePane({ label, src }: { label: string; src: string | null }) {
         className="absolute top-2 left-2 z-10 font-mono text-[0.55rem] tracking-[0.18em] uppercase px-2 py-0.5 rounded"
         style={{
           background: "rgba(8,8,16,0.85)",
-          color: "rgba(255,255,255,0.55)",
+          color: validated ? "#7df09f" : "rgba(255,255,255,0.55)",
           backdropFilter: "blur(8px)",
         }}
       >
+        {validated && "✓ "}
         {label}
       </span>
       {src ? (
@@ -618,8 +666,8 @@ function ImagePane({ label, src }: { label: string; src: string | null }) {
           style={{ padding: "6%" }}
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-white/25 text-[0.75rem]">
-          —
+        <div className="w-full h-full flex items-center justify-center text-white/25 text-[0.75rem] px-3 text-center">
+          {placeholder ?? "—"}
         </div>
       )}
     </div>
@@ -630,18 +678,18 @@ function ViewTile({
   label,
   src,
   processing,
-  approved,
+  validated,
   error,
-  onApprove,
+  onValidate,
   onRegenerate,
   disabled,
 }: {
   label: string;
   src: string | null;
   processing: boolean;
-  approved: boolean;
+  validated: boolean;
   error?: string;
-  onApprove: () => void;
+  onValidate: () => void;
   onRegenerate: () => void;
   disabled: boolean;
 }) {
@@ -650,7 +698,7 @@ function ViewTile({
       className="rounded-xl overflow-hidden relative flex flex-col"
       style={{
         background: "#080810",
-        border: approved
+        border: validated
           ? "1px solid rgba(34,197,94,0.55)"
           : "1px solid rgba(255,255,255,0.04)",
       }}
@@ -660,11 +708,11 @@ function ViewTile({
           className="absolute top-2 left-2 z-10 font-mono text-[0.55rem] tracking-[0.18em] uppercase px-2 py-0.5 rounded"
           style={{
             background: "rgba(8,8,16,0.85)",
-            color: approved ? "#7df09f" : "rgba(255,255,255,0.55)",
+            color: validated ? "#7df09f" : "rgba(255,255,255,0.55)",
             backdropFilter: "blur(8px)",
           }}
         >
-          {approved && "✓ "}
+          {validated && "✓ "}
           {label}
         </span>
         {processing ? (
@@ -688,17 +736,17 @@ function ViewTile({
       {src && !processing && (
         <div className="flex gap-1.5 p-2 border-t border-white/5">
           <button
-            onClick={onApprove}
-            disabled={disabled || approved}
+            onClick={onValidate}
+            disabled={disabled || validated}
             className="flex-1 text-[0.7rem] font-bold py-1.5 rounded-md disabled:opacity-40 transition"
             style={{
-              background: approved
+              background: validated
                 ? "rgba(34,197,94,0.15)"
                 : "linear-gradient(135deg, #4ade80, #22c55e)",
-              color: approved ? "#7df09f" : "#06060f",
+              color: validated ? "#7df09f" : "#06060f",
             }}
           >
-            {approved ? "✓ Validée" : "✅ Valider"}
+            {validated ? "✓ Validée" : "✅ Valider"}
           </button>
           <button
             onClick={onRegenerate}

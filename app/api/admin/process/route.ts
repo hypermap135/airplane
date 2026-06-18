@@ -189,11 +189,26 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { handle, sourcePath, useCurrent, view } = await req.json();
+  const { handle, sourcePath, useCurrent, view, useReference } = await req.json();
   if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
     return NextResponse.json({ error: "invalid handle" }, { status: 400 });
   }
   const viewKey = view && VIEWS[view] ? view : "profile";
+
+  // Optionally include a reference image (.tmp/references/{handle}.*)
+  // that the operator dropped from the photos studio. When present, the
+  // pipeline tells Gemini to imitate that reference's livery/design.
+  let referencePath: string | null = null;
+  if (useReference) {
+    const refDir = path.join(process.cwd(), ".tmp", "references");
+    try {
+      const refFiles = await readdir(refDir);
+      const match = refFiles.find((f) => f.startsWith(`${handle}.`));
+      if (match) referencePath = path.join(refDir, match);
+    } catch {
+      /* dir doesn't exist yet — fine, just no reference */
+    }
+  }
 
   // Source resolution priority:
   //   1. useCurrent: true  →  pull the product's current image
@@ -241,11 +256,29 @@ export async function POST(req: NextRequest) {
   // Scenic views (shelf, ...) keep the Gemini render verbatim — rembg
   // would strip the staged background and lose the whole point.
   const script = path.join(process.cwd(), "scripts", "enhance_product_photo.py");
-  const prompt = buildPromptForView(viewKey);
+  let prompt = buildPromptForView(viewKey);
+  if (referencePath) {
+    prompt =
+      "TWO IMAGES are attached: " +
+      "IMAGE 1 is the airplane model maquette to redraw (preserve its silhouette, " +
+      "stand, and proportions). " +
+      "IMAGE 2 is a real-world REFERENCE photo whose LIVERY, COLORS, AIRLINE " +
+      "LOGO, REGISTRATION FONT, TAIL DESIGN, and stripe/wave patterns must be " +
+      "transferred onto IMAGE 1's airplane. Match the reference's paint scheme " +
+      "exactly (colors, wordmark placement, decals, window line) while keeping " +
+      "IMAGE 1's airframe shape, scale, and wooden display stand. " +
+      "Then apply the rest of the standard rules: " +
+      prompt;
+  }
   const SCENIC_VIEWS = new Set(["shelf", "desk"]);
   const args = [script, source, dest, "--prompt", prompt];
   if (SCENIC_VIEWS.has(viewKey)) {
     args.push("--no-rembg", "--no-frame");
+  }
+  if (referencePath) {
+    // When a reference is in play, the prompt tells Gemini that
+    // the second image is the design source. Tweak the prompt slightly.
+    args.push("--reference", referencePath);
   }
   return new Promise<NextResponse>((resolve) => {
     const proc = spawn("python3", args, { cwd: process.cwd() });
