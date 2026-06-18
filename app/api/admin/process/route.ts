@@ -39,27 +39,27 @@ type ViewSpec = {
 const VIEWS: Record<string, ViewSpec> = {
   profile: {
     label: "Modèle de base",
-    // "Profile" view is actually the canonical 3/4 catalog shot — slightly
-    // off-side so the customer reads the airline livery + cockpit + engines
-    // in one glance. Pure side profile killed the depth, that's why the
-    // user complained.
+    // CANONICAL ORIENTATION: NOSE ALWAYS TO THE RIGHT, across every view.
+    // Same direction as a takeoff roll on a runway — the eye reads the
+    // airplane from tail to nose, left to right. Mixing directions kills
+    // the catalog consistency.
     angleClause:
-      "Slight three-quarter side view, nose pointing to the RIGHT and tilted ~20° toward the camera, both engines and cockpit windows clearly visible, the airplane sits at a slightly elevated angle (camera ~10° above the wing).",
+      "Slight three-quarter side view, NOSE POINTING TO THE RIGHT and tilted ~20° toward the camera, both engines and cockpit windows clearly visible, the airplane sits at a slightly elevated angle (camera ~10° above the wing).",
   },
   "3quarter-front": {
     label: "3/4 avant",
     angleClause:
-      "Three-quarter front view: the airplane angled ~35° toward the camera, nose pointing slightly to the right, cockpit windows large and centered.",
+      "Three-quarter front view: the airplane angled ~35° toward the camera, NOSE POINTING TO THE RIGHT, cockpit windows large and centered.",
   },
   "3quarter-rear": {
     label: "3/4 arrière",
     angleClause:
-      "Three-quarter rear view: the airplane angled ~35° away from the camera, tail fin and engines prominent, nose pointing slightly to the left.",
+      "Three-quarter rear view from BEHIND the airplane, NOSE STILL POINTING TO THE RIGHT (we're looking at the tail end with the nose visible to the right of frame), tail fin and engines prominent in the foreground.",
   },
   top: {
     label: "Dessus",
     angleClause:
-      "Top-down view, fuselage running horizontally across the frame, both wings fully spread.",
+      "Top-down view, fuselage running horizontally across the frame, NOSE POINTING TO THE RIGHT, both wings fully spread.",
   },
   shelf: {
     label: "Sur étagère",
