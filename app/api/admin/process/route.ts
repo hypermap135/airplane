@@ -38,19 +38,23 @@ type ViewSpec = {
 
 const VIEWS: Record<string, ViewSpec> = {
   profile: {
-    label: "Profil",
+    label: "Modèle de base",
+    // "Profile" view is actually the canonical 3/4 catalog shot — slightly
+    // off-side so the customer reads the airline livery + cockpit + engines
+    // in one glance. Pure side profile killed the depth, that's why the
+    // user complained.
     angleClause:
-      "Pure side profile view, plane facing right, both wings visible from the side.",
+      "Slight three-quarter side view, nose pointing to the RIGHT and tilted ~20° toward the camera, both engines and cockpit windows clearly visible, the airplane sits at a slightly elevated angle (camera ~10° above the wing).",
   },
   "3quarter-front": {
     label: "3/4 avant",
     angleClause:
-      "Three-quarter front view: the airplane angled ~30° toward the camera, nose pointing slightly to the right, cockpit windows clearly visible.",
+      "Three-quarter front view: the airplane angled ~35° toward the camera, nose pointing slightly to the right, cockpit windows large and centered.",
   },
   "3quarter-rear": {
     label: "3/4 arrière",
     angleClause:
-      "Three-quarter rear view: the airplane angled ~30° away from the camera, tail fin and engines prominent.",
+      "Three-quarter rear view: the airplane angled ~35° away from the camera, tail fin and engines prominent, nose pointing slightly to the left.",
   },
   top: {
     label: "Dessus",
@@ -59,129 +63,85 @@ const VIEWS: Record<string, ViewSpec> = {
   },
   shelf: {
     label: "Sur étagère",
-    customPrompt: () =>
-      "Re-render this airplane model in a premium showroom scene. SCENE: place the " +
-      "airplane (on its wooden display stand) on a single FLOATING DARK WALNUT SHELF " +
-      "(matte finish, ~4 cm thick, clean straight edges) mounted against a deep " +
-      "matte BLACK wall (#080810). The shelf is centered horizontally and runs " +
-      "across the lower third of the frame. A single soft warm key-light from the " +
-      "upper-left illuminates the airplane, casting a subtle shadow on the shelf. " +
-      "The plane fills ~70% of the frame, slightly elevated viewing angle (~15°) " +
-      "so we see the top of the wings, 3/4 front-side composition with the nose " +
-      "pointing slightly to the right. " +
-      "PRESERVE the airplane EXACTLY as in the source: same livery, same colors, " +
-      "same registration, same shape — do not modify anything on the aircraft. " +
-      "REMOVE all watermarks, URLs, gold glyphs, stray text. Premium museum / " +
-      "luxury boutique presentation. Sharp focus, high resolution, professional " +
-      "product photography. Square 1:1 format. NO transparency, NO checker pattern, " +
-      "NO added text, NO new branding. " +
-      "ABSOLUTE QUALITY GATE — ZERO tolerance for defects: every edge of the " +
-      "airplane (engines, wings, tail, antennas, landing gear, nose, winglets) " +
-      "MUST be RAZOR-SHARP and perfectly clean-cut against the black wall. NO " +
-      "halo, NO ghosting, NO smudge, NO grey/dark blur around any part of the " +
-      "plane. NO motion-blur, NO partial transparency, NO smeared / wispy " +
-      "pixels at the silhouette. If a portion of the source plane looks hazy, " +
-      "RECONSTRUCT it as a clean opaque solid surface. Every detail (rivets, " +
-      "antennas, engine intakes, wing edges) is tack-sharp in focus. The whole " +
-      "airplane is FULLY VISIBLE — no cropping. This is a luxury product shot " +
-      "that MUST make the customer want to buy immediately.",
+    customPrompt: (plane) =>
+      `Re-render this "${plane}" 1:144 scale model in a premium showroom scene.\n\n` +
+      "SCENE — place the airplane (on its wooden display stand) on a single " +
+      "FLOATING DARK WALNUT SHELF (matte, ~4cm thick, clean straight edges) " +
+      "mounted against a deep matte BLACK wall (#080810). Shelf centered " +
+      "horizontally, runs across the lower third of the frame. Soft warm " +
+      "key-light from upper-left, subtle shadow on the shelf.\n\n" +
+      "COMPOSITION — plane fills ~70% of the SQUARE 1:1 frame, slightly " +
+      "elevated viewing angle (~15°), 3/4 front-side with nose pointing " +
+      "to the right.\n\n" +
+      `LIVERY — KEEP EXACTLY as in the source. ${plane} colors, wordmark, ` +
+      "tail logo, registration, decals — pixel-perfect. Never invent.\n\n" +
+      "QUALITY — RAZOR-SHARP focus everywhere, no halo, no blur around " +
+      "engines/wings, fully opaque surfaces, premium boutique catalog look. " +
+      "REMOVE floating watermarks, URLs, gold glyphs. NO checker pattern, " +
+      "NO transparency, NO added text.",
   },
   desk: {
     label: "Sur un bureau",
-    customPrompt: () =>
-      "Re-render this airplane model staged on a modern workspace desk. SCENE: " +
-      "place the airplane (on its wooden display stand) on a clean matte DARK " +
-      "WALNUT WOOD DESK SURFACE that fills the lower half of the frame. " +
-      "In the deep blurry background (heavy bokeh, f/2.0): a hint of a closed " +
-      "leather notebook, a small brass lamp on the right out of focus, and a " +
-      "neutral charcoal wall — premium executive office vibe. " +
-      "Soft natural daylight from the upper-left (window-style), warm contact " +
-      "shadow under the wooden stand. " +
-      "The plane fills ~65% of the frame, slightly elevated viewing angle (~15°), " +
-      "3/4 front-side composition with the nose pointing slightly to the right. " +
-      "PRESERVE the airplane EXACTLY as in the source: same livery, same colors, " +
-      "same registration, same shape — do not modify anything on the aircraft. " +
-      "REMOVE all watermarks, URLs, gold glyphs, stray text. Upscale CEO desk " +
-      "decoration vibe. Sharp focus on the airplane, blurred background. Square " +
-      "1:1 format. NO transparency, NO checker pattern, NO added text, NO new " +
-      "branding, NO computer screens or visible text in the background. " +
-      "ABSOLUTE QUALITY GATE — ZERO tolerance for defects: every edge of the " +
-      "airplane (engines, wings, tail, antennas, landing gear, nose, winglets) " +
-      "MUST be RAZOR-SHARP and perfectly clean-cut. NO halo, NO ghosting, NO " +
-      "smudge, NO grey/dark blur around any part of the plane. The airplane " +
-      "itself stays in tack-sharp focus (only the BACKGROUND is blurred via " +
-      "shallow depth-of-field). NO partial transparency, NO smeared / wispy " +
-      "pixels at the silhouette. If a portion of the source plane looks hazy, " +
-      "RECONSTRUCT it as a clean opaque solid surface. Every detail (rivets, " +
-      "antennas, engine intakes, wing edges) is razor-sharp. The whole airplane " +
-      "is FULLY VISIBLE — no cropping. This is a luxury product shot that MUST " +
-      "make the customer want to buy immediately.",
+    customPrompt: (plane) =>
+      `Re-render this "${plane}" 1:144 scale model staged on a modern desk.\n\n` +
+      "SCENE — clean matte DARK WALNUT WOOD DESK SURFACE filling the lower " +
+      "half of the frame. Deep blurry background (heavy bokeh, f/2.0): a " +
+      "hint of a closed leather notebook, a small brass lamp out of focus, " +
+      "a neutral charcoal wall. Soft natural daylight from upper-left, warm " +
+      "contact shadow under the wooden stand.\n\n" +
+      "COMPOSITION — plane fills ~65% of the SQUARE 1:1 frame, slightly " +
+      "elevated viewing angle (~15°), 3/4 front-side with nose pointing " +
+      "to the right.\n\n" +
+      `LIVERY — KEEP EXACTLY as in the source. ${plane} colors, wordmark, ` +
+      "tail logo, registration, decals — pixel-perfect. Never invent.\n\n" +
+      "QUALITY — RAZOR-SHARP focus on the airplane (only the BACKGROUND " +
+      "is blurred via depth-of-field), no halo, fully opaque surfaces, " +
+      "premium executive vibe. REMOVE floating watermarks, URLs, gold " +
+      "glyphs. NO checker pattern, NO transparency, NO added text, NO " +
+      "computer screens or visible text in the background.",
   },
 };
 
-function buildPromptForView(view: string): string {
+/** Lookup the product's full title (e.g. "Airbus A320 Air France") so it
+ *  can be injected into the Gemini prompt as an unambiguous identifier.
+ *  When Gemini knows it's looking at an Air France livery, it stops
+ *  hallucinating white-fuselage replacements. */
+function describePlane(handle: string): string {
+  const p = PRODUCTS.find((pp) => pp.handle === handle);
+  if (!p) return "an airline model airplane";
+  return p.title;
+}
+
+function buildPromptForView(view: string, handle: string): string {
   const spec = VIEWS[view] ?? VIEWS.profile;
-  if (spec.customPrompt) return spec.customPrompt("");
+  if (spec.customPrompt) return spec.customPrompt(describePlane(handle));
   const angle = spec.angleClause ?? VIEWS.profile.angleClause!;
+  const plane = describePlane(handle);
+  // KEEP THIS PROMPT SHORT AND DIRECT.
+  // Multiple iterations of "more rules → worse output" proved that long
+  // multi-paragraph prompts cause Gemini to drop the livery, change the
+  // angle, or fade colors. Five rules max — each one a single line.
   return (
-    "You are retouching a product photo of an airplane model on a wooden " +
-    "display stand for a PREMIUM LUXURY E-COMMERCE catalog. The final image " +
-    "must look like a high-end Apple-store / Hermès-store product shot — " +
-    "absolutely flawless, no defects, perfectly clean. The airplane LIVERY " +
-    "(paint scheme, airline name, logo, registration code, decals, tail " +
-    "markings, window line) is ALREADY CORRECT in the source image. Your job " +
-    "is to clean it up — DO NOT redesign the livery, DO NOT invent new text, " +
-    "DO NOT change the airline name, DO NOT make up any logo. " +
-    "" +
-    "RULES (strict, in order of priority): " +
-    "(1) PRESERVE THE LIVERY EXACTLY as in the source. If the source shows " +
-    "'AIRFRANCE' on the fuselage in blue letters, the output MUST show " +
-    "'AIRFRANCE' in those same blue letters at the same position — character " +
-    "for character. If the source shows 'EMIRATES', it stays 'EMIRATES'. " +
-    "Never write 'AIRBUSS' or any other invented word. If you are not 100% " +
-    "sure of a letter, copy it pixel-perfect from the source. " +
-    "(2) PRESERVE every decal, tail flag, stripe pattern, registration code, " +
-    "engine markings, and window line exactly. " +
-    "(3) REMOVE only OBVIOUS watermarks that are clearly NOT painted on the " +
-    "fuselage: e.g. floating 'www.something.com' URLs, semi-transparent " +
-    "site-name overlays, gold airplane glyphs that don't belong to the " +
-    "airline. Everything else stays. When in doubt, KEEP it. " +
-    "(4) Keep the airplane shape, scale, and the wooden display stand exactly " +
-    "as in the source — same nose, same wings, same tail, same engines. " +
-    "(5) Place on a CLEAN LIGHT GREY studio background (around #c5c8cd at " +
-    "centre fading to #9aa0a8 at edges) — no checker pattern, no transparency. " +
-    "(6) The airplane fills approximately 85% of a square 1:1 frame. " +
-    `(7) ANGLE: ${angle} ` +
-    "(8) Studio key-light from above-left, soft contact shadow under the base, " +
-    "sharp focus, high-resolution professional product photography. " +
-    "" +
-    "ABSOLUTE QUALITY GATE (this is the difference between a sold product and " +
-    "a refund request — ZERO tolerance): " +
-    "• EVERY EDGE of the airplane (engines, wings, tail, antennas, landing " +
-    "  gear, nose, winglets) MUST be RAZOR-SHARP and perfectly clean-cut " +
-    "  against the background. NO halo, NO ghosting, NO smudge, NO grey/dark " +
-    "  blur around any part of the plane. " +
-    "• NO motion-blur, NO out-of-focus zones on the airplane. Every detail " +
-    "  (rivets, antennas, engine intakes, wing edges, landing gear struts) " +
-    "  is tack-sharp in focus. " +
-    "• NO partial transparency, NO faded edges, NO smeared / smoky / wispy " +
-    "  pixels at the silhouette. If a portion of the source plane looks " +
-    "  hazy, RECONSTRUCT it as a clean opaque solid surface — never leave a " +
-    "  fuzzy or semi-transparent region. " +
-    "• NO compression artifacts, NO jaggies, NO chromatic aberration, NO " +
-    "  noise, NO banding. The image must look like a CLEAN STUDIO RENDER. " +
-    "• NO floating debris, NO orphan pixels, NO leftover background fragments " +
-    "  from the source — the only objects in the frame are the airplane and " +
-    "  its wooden stand on the clean studio background. " +
-    "• The whole airplane must be FULLY VISIBLE — no cropping of wingtips, " +
-    "  tail, nose, or stand. Generous margin of clean background around the " +
-    "  plane. " +
-    "• This is a luxury product shot. The image MUST make the customer want " +
-    "  to buy it immediately. If anything looks even slightly off (blurry " +
-    "  engine, dirty edge, partial transparency), it is REJECTED. " +
-    "" +
-    "NEVER add new text. NEVER invent an airline name. NEVER change letters. " +
-    "When unsure, copy from the source pixel-for-pixel."
+    `This is a product photo of a "${plane}" 1:144 scale model on a wooden ` +
+    "display stand. Generate a CLEAN PREMIUM CATALOG SHOT with these rules:\n\n" +
+    `1. LIVERY — KEEP EXACTLY as in the source. ${plane} colors, airline ` +
+    "wordmark, tail logo, registration code, decals, stripes, window line — " +
+    "every detail PIXEL-PERFECT. Never invent a new name. Never replace " +
+    "with white. If you can't read a letter, copy it from the source.\n" +
+    `2. ANGLE — ${angle}\n` +
+    "3. FRAME — the airplane (with its wooden stand) fills ~85% of a SQUARE " +
+    "1:1 frame, centered, generous margin so wingtips, tail and nose are " +
+    "FULLY VISIBLE (never cropped).\n" +
+    "4. BACKGROUND — clean light-grey studio gradient (#c8ccd2 at center → " +
+    "#9aa0a8 at edges). Fully opaque, no checker, no transparency, no " +
+    "stripes, no shadows on the background other than a soft contact " +
+    "shadow under the wooden stand.\n" +
+    "5. LIGHT & FINISH — soft warm key-light from upper-left, subtle gloss " +
+    "on the fuselage paint, RAZOR-SHARP focus on every part of the airplane " +
+    "(no halo, no haze, no blur around engines or wings). Premium luxury " +
+    "catalog vibe — the image must make the customer want to buy it.\n\n" +
+    "REMOVE ONLY: floating watermarks, URLs, gold-plane glyphs, site-name " +
+    "overlays. KEEP every painted marking on the airplane itself."
   );
 }
 
@@ -329,7 +289,7 @@ export async function POST(req: NextRequest) {
   // Scenic views (shelf, ...) keep the Gemini render verbatim — rembg
   // would strip the staged background and lose the whole point.
   const script = path.join(process.cwd(), "scripts", "enhance_product_photo.py");
-  let prompt = buildPromptForView(viewKey);
+  let prompt = buildPromptForView(viewKey, handle);
   if (referencePath) {
     prompt =
       "TWO IMAGES are attached: " +
