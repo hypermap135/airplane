@@ -434,41 +434,44 @@ function ProductCard({
             placeholder={
               baseState.processing
                 ? "⚙️ Génération…"
-                : "Clique sur 'Générer modèle de base' →"
+                : "Clique sur 'Générer modèle de base' ↓"
             }
             validated={baseState.validated}
+            // Action bar (Valider / Re-générer) shows up as soon as a preview
+            // is available, so the operator never has to scroll to find the
+            // green button.
+            onValidate={
+              baseState.version ? () => validateView(BASE_VIEW) : undefined
+            }
+            onRegenerate={
+              baseState.version
+                ? () =>
+                    runPipeline(BASE_VIEW, {
+                      useReference: rowState.referenceUploaded,
+                    })
+                : undefined
+            }
+            disabled={disabled || baseState.processing}
           />
         </div>
 
         <div className="flex flex-wrap gap-2 mt-4">
-          <button
-            onClick={() => runPipeline(BASE_VIEW, { useReference: rowState.referenceUploaded })}
-            disabled={disabled || baseState.processing}
-            className="text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
-            style={{
-              background: "rgba(255,180,77,0.16)",
-              border: "1px solid rgba(255,180,77,0.4)",
-              color: "rgba(255,210,160,1)",
-            }}
-          >
-            {baseState.processing
-              ? "⚙️…"
-              : baseState.version
-                ? "♻️ Re-générer le modèle"
-                : "♻️ Générer modèle de base"}
-          </button>
-
-          {baseState.version && !baseState.validated && (
+          {!baseState.version && (
             <button
-              onClick={() => validateView(BASE_VIEW)}
-              disabled={disabled}
-              className="text-[0.78rem] font-bold px-4 py-2 rounded-full disabled:opacity-40 transition"
+              onClick={() =>
+                runPipeline(BASE_VIEW, {
+                  useReference: rowState.referenceUploaded,
+                })
+              }
+              disabled={disabled || baseState.processing}
+              className="text-[0.78rem] font-semibold px-4 py-2 rounded-full disabled:opacity-40 transition"
               style={{
-                background: "linear-gradient(135deg, #4ade80, #22c55e)",
-                color: "#06060f",
+                background: "rgba(255,180,77,0.16)",
+                border: "1px solid rgba(255,180,77,0.4)",
+                color: "rgba(255,210,160,1)",
               }}
             >
-              ✅ Valider modèle
+              {baseState.processing ? "⚙️…" : "♻️ Générer modèle de base"}
             </button>
           )}
 
@@ -497,7 +500,10 @@ function ProductCard({
                     : "1px solid rgba(120,180,255,0.4)",
                 }}
               >
-                🎨 {rowState.referenceUploaded ? "Référence chargée — re-cliquer pour changer" : "Donner une photo de référence"}
+                🎨{" "}
+                {rowState.referenceUploaded
+                  ? "Référence chargée — re-cliquer pour changer"
+                  : "Donner une photo de référence"}
               </button>
             </>
           )}
@@ -633,45 +639,88 @@ function ImagePane({
   src,
   placeholder,
   validated,
+  onValidate,
+  onRegenerate,
+  disabled,
 }: {
   label: string;
   src: string | null;
   placeholder?: string;
   validated?: boolean;
+  /** When provided AND src is truthy, renders an action bar with Validate
+   *  / Regenerate buttons under the image (same UX as the angle tiles). */
+  onValidate?: () => void;
+  onRegenerate?: () => void;
+  disabled?: boolean;
 }) {
+  const hasActions = !!src && (onValidate || onRegenerate);
   return (
     <div
-      className="rounded-xl overflow-hidden relative"
+      className="rounded-xl overflow-hidden relative flex flex-col"
       style={{
         background: "#080810",
         border: validated
-          ? "1px solid rgba(34,197,94,0.45)"
+          ? "1px solid rgba(34,197,94,0.55)"
           : "1px solid rgba(255,255,255,0.04)",
-        aspectRatio: "1/1",
       }}
     >
-      <span
-        className="absolute top-2 left-2 z-10 font-mono text-[0.55rem] tracking-[0.18em] uppercase px-2 py-0.5 rounded"
-        style={{
-          background: "rgba(8,8,16,0.85)",
-          color: validated ? "#7df09f" : "rgba(255,255,255,0.55)",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        {validated && "✓ "}
-        {label}
-      </span>
-      {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={label}
-          className="w-full h-full object-contain"
-          style={{ padding: "6%" }}
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center text-white/25 text-[0.75rem] px-3 text-center">
-          {placeholder ?? "—"}
+      <div className="relative" style={{ aspectRatio: "1/1" }}>
+        <span
+          className="absolute top-2 left-2 z-10 font-mono text-[0.55rem] tracking-[0.18em] uppercase px-2 py-0.5 rounded"
+          style={{
+            background: "rgba(8,8,16,0.85)",
+            color: validated ? "#7df09f" : "rgba(255,255,255,0.55)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          {validated && "✓ "}
+          {label}
+        </span>
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt={label}
+            className="w-full h-full object-contain"
+            style={{ padding: "6%" }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white/25 text-[0.75rem] px-3 text-center">
+            {placeholder ?? "—"}
+          </div>
+        )}
+      </div>
+      {hasActions && (
+        <div className="flex gap-1.5 p-2 border-t border-white/5">
+          {onValidate && (
+            <button
+              onClick={onValidate}
+              disabled={disabled || validated}
+              className="flex-1 text-[0.75rem] font-bold py-2 rounded-md disabled:opacity-40 transition"
+              style={{
+                background: validated
+                  ? "rgba(34,197,94,0.15)"
+                  : "linear-gradient(135deg, #4ade80, #22c55e)",
+                color: validated ? "#7df09f" : "#06060f",
+              }}
+            >
+              {validated ? "✓ Validé" : "✅ Valider"}
+            </button>
+          )}
+          {onRegenerate && (
+            <button
+              onClick={onRegenerate}
+              disabled={disabled}
+              className="text-[0.75rem] font-semibold px-3 py-2 rounded-md disabled:opacity-40 transition"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+              title="Re-générer cette image"
+            >
+              🔄
+            </button>
+          )}
         </div>
       )}
     </div>
