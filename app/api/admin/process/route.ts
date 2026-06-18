@@ -112,34 +112,41 @@ function describePlane(handle: string): string {
   return p.title;
 }
 
+/** ONE unified studio scene shared by every standard view. Same exact
+ *  background, lighting, and framing across all products — only the
+ *  airplane changes. Catalog grid stays visually coherent. */
+const STUDIO_SCENE =
+  "BACKGROUND — fixed dark charcoal studio: gentle radial gradient from " +
+  "#1c1c26 at center to #0a0a12 at corners. Fully opaque, smooth, " +
+  "uniform across every product — IDENTICAL background on every shot, no " +
+  "props, no clutter, no extra lighting effects, no shadow on the wall.\n" +
+  "FRAME — perfectly SQUARE 1:1 canvas. The airplane (with its wooden " +
+  "stand) is centered horizontally, fills exactly 80% of the canvas " +
+  "width, with generous margin so wingtips, tail and nose are FULLY " +
+  "VISIBLE — never cropped, never touching the edges. SAME framing across " +
+  "every product in the catalog.\n" +
+  "LIGHTING — single soft warm key-light from upper-left at ~45°, subtle " +
+  "gloss on the fuselage paint, a soft contact shadow only DIRECTLY UNDER " +
+  "the wooden stand. No rim light, no second source, no colored gels.\n" +
+  "QUALITY — clean opaque surfaces everywhere, sharp focus on the " +
+  "airplane, no halo, no haze, no faded edges, no partial transparency. " +
+  "Premium luxury aviation catalog vibe.";
+
 function buildPromptForView(view: string, handle: string): string {
   const spec = VIEWS[view] ?? VIEWS.profile;
   if (spec.customPrompt) return spec.customPrompt(describePlane(handle));
   const angle = spec.angleClause ?? VIEWS.profile.angleClause!;
   const plane = describePlane(handle);
-  // KEEP THIS PROMPT SHORT AND DIRECT.
-  // Multiple iterations of "more rules → worse output" proved that long
-  // multi-paragraph prompts cause Gemini to drop the livery, change the
-  // angle, or fade colors. Five rules max — each one a single line.
   return (
-    `This is a product photo of a "${plane}" 1:144 scale model on a wooden ` +
-    "display stand. Generate a CLEAN PREMIUM CATALOG SHOT with these rules:\n\n" +
-    `1. LIVERY — KEEP EXACTLY as in the source. ${plane} colors, airline ` +
+    `Generate a premium catalog photo of this "${plane}" 1:144 scale model ` +
+    "on its wooden display stand. The product photo must match EXACTLY the " +
+    "house style — only the airplane itself varies between products.\n\n" +
+    `LIVERY — KEEP EXACTLY as in the source. ${plane} colors, airline ` +
     "wordmark, tail logo, registration code, decals, stripes, window line — " +
     "every detail PIXEL-PERFECT. Never invent a new name. Never replace " +
     "with white. If you can't read a letter, copy it from the source.\n" +
-    `2. ANGLE — ${angle}\n` +
-    "3. FRAME — the airplane (with its wooden stand) fills ~85% of a SQUARE " +
-    "1:1 frame, centered, generous margin so wingtips, tail and nose are " +
-    "FULLY VISIBLE (never cropped).\n" +
-    "4. BACKGROUND — clean light-grey studio gradient (#c8ccd2 at center → " +
-    "#9aa0a8 at edges). Fully opaque, no checker, no transparency, no " +
-    "stripes, no shadows on the background other than a soft contact " +
-    "shadow under the wooden stand.\n" +
-    "5. LIGHT & FINISH — soft warm key-light from upper-left, subtle gloss " +
-    "on the fuselage paint, RAZOR-SHARP focus on every part of the airplane " +
-    "(no halo, no haze, no blur around engines or wings). Premium luxury " +
-    "catalog vibe — the image must make the customer want to buy it.\n\n" +
+    `ANGLE — ${angle}\n` +
+    STUDIO_SCENE + "\n" +
     "REMOVE ONLY: floating watermarks, URLs, gold-plane glyphs, site-name " +
     "overlays. KEEP every painted marking on the airplane itself."
   );
@@ -312,11 +319,12 @@ export async function POST(req: NextRequest) {
       `it contradicts the rules below): ${cleanExtra}\n\n` +
       prompt;
   }
-  const SCENIC_VIEWS = new Set(["shelf", "desk"]);
-  const args = [script, source, dest, "--prompt", prompt];
-  if (SCENIC_VIEWS.has(viewKey)) {
-    args.push("--no-rembg", "--no-frame");
-  }
+  // rembg + frame disabled across the board: the alpha matte step was
+  // grinding off livery details, leaving fuzzy edges, and rejecting
+  // colored areas as "background" — destroying the very thing we want
+  // to preserve. Gemini now bakes the dark charcoal studio background
+  // into the image directly, so we keep its output verbatim.
+  const args = [script, source, dest, "--prompt", prompt, "--no-rembg", "--no-frame"];
   if (referencePath) {
     // When a reference is in play, the prompt tells Gemini that
     // the second image is the design source. Tweak the prompt slightly.
