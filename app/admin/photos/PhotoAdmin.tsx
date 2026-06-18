@@ -511,13 +511,29 @@ function ProductCard({
 
   async function generateAllAngles() {
     await Promise.all(
-      ADDITIONAL_VIEWS.map(({ key }) => runPipeline(key, { useReference: rowState.referenceUploaded })),
+      ADDITIONAL_VIEWS.map(({ key }) =>
+        runPipeline(key, { useReference: rowState.referenceUploaded }),
+      ),
     );
   }
 
   async function validateView(view: ViewKey) {
     onUpdateView(view, { validated: true });
-    if (view === BASE_VIEW) onUpdate({ baseValidated: true });
+    if (view === BASE_VIEW) {
+      onUpdate({ baseValidated: true });
+      // Auto-trigger the 5 additional angles. Pre-set every view to
+      // "processing" right away so the UI shows the loading state the
+      // instant the operator clicks ✅ Valider — no perceived delay.
+      for (const { key } of ADDITIONAL_VIEWS) {
+        onUpdateView(key, { processing: true, error: undefined });
+      }
+      // Fire and forget — Promise.all just keeps the parallel semantics.
+      Promise.all(
+        ADDITIONAL_VIEWS.map(({ key }) =>
+          runPipeline(key, { useReference: rowState.referenceUploaded }),
+        ),
+      ).catch(() => {});
+    }
   }
 
   async function uploadReference(file: File) {
