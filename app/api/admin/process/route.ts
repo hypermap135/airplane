@@ -103,20 +103,37 @@ function buildPromptForView(view: string): string {
   if (spec.customPrompt) return spec.customPrompt("");
   const angle = spec.angleClause ?? VIEWS.profile.angleClause!;
   return (
-    "Edit this product photo of an airplane model on a wooden display stand. " +
-    "CRITICAL REQUIREMENTS: " +
-    "(1) REMOVE every text fragment, watermark, URL, gold-plane glyph, or any letter — " +
-    "nothing should remain in the source image except the airplane and its base. " +
-    "(2) The airplane MUST FILL approximately 85% of the frame. " +
-    "(3) Keep the airplane EXACTLY identical: same livery, same registration markings, " +
-    "same colors, same shape, same wooden display stand. Do not invent or modify " +
-    "any livery, lettering, or markings. " +
-    "(4) Place on a CLEAN LIGHT GREY studio background (around #c5c8cd at center " +
-    "fading to #9aa0a8 at edges). " +
-    "(5) Studio key-lighting from above-left, soft contact shadow under the base, " +
-    "sharp focus, high resolution, professional product photography. " +
-    `(6) ANGLE: ${angle} ` +
-    "NO transparency, NO checker pattern, NO added text, NO new branding. Square 1:1 format."
+    "You are retouching a product photo of an airplane model on a wooden " +
+    "display stand. The airplane LIVERY (paint scheme, airline name, logo, " +
+    "registration code, decals, tail markings, window line) is ALREADY CORRECT " +
+    "in the source image. Your only job is to clean it up — DO NOT redesign " +
+    "the livery, DO NOT invent new text, DO NOT change the airline name, DO " +
+    "NOT make up any logo. " +
+    "" +
+    "RULES (strict, in order of priority): " +
+    "(1) PRESERVE THE LIVERY EXACTLY as in the source. If the source shows " +
+    "'AIRFRANCE' on the fuselage in blue letters, the output MUST show " +
+    "'AIRFRANCE' in those same blue letters at the same position — character " +
+    "for character. If the source shows 'EMIRATES', it stays 'EMIRATES'. " +
+    "Never write 'AIRBUSS' or any other invented word. If you are not 100% " +
+    "sure of a letter, copy it pixel-perfect from the source. " +
+    "(2) PRESERVE every decal, tail flag, stripe pattern, registration code, " +
+    "engine markings, and window line exactly. " +
+    "(3) REMOVE only OBVIOUS watermarks that are clearly NOT painted on the " +
+    "fuselage: e.g. floating 'www.something.com' URLs, semi-transparent " +
+    "site-name overlays, gold airplane glyphs that don't belong to the " +
+    "airline. Everything else stays. When in doubt, KEEP it. " +
+    "(4) Keep the airplane shape, scale, and the wooden display stand exactly " +
+    "as in the source — same nose, same wings, same tail, same engines. " +
+    "(5) Place on a CLEAN LIGHT GREY studio background (around #c5c8cd at " +
+    "centre fading to #9aa0a8 at edges) — no checker pattern, no transparency. " +
+    "(6) The airplane fills approximately 85% of a square 1:1 frame. " +
+    `(7) ANGLE: ${angle} ` +
+    "(8) Studio key-light from above-left, soft contact shadow under the base, " +
+    "sharp focus, high-resolution professional product photography. " +
+    "" +
+    "NEVER add new text. NEVER invent an airline name. NEVER change letters. " +
+    "When unsure, copy from the source pixel-for-pixel."
   );
 }
 

@@ -40,12 +40,16 @@ type ViewKey =
   | "shelf"
   | "desk";
 
-const BASE_VIEW: ViewKey = "shelf"; // the model used for "modèle de base"
+// Profile is the catalogue's existing format: square 1400×1400, plane on a
+// wooden stand, transparent background → the card chrome takes over.
+// Using it as the base view keeps the catalogue visually consistent —
+// only the airplane itself changes between products.
+const BASE_VIEW: ViewKey = "profile";
 const ADDITIONAL_VIEWS: { key: ViewKey; label: string }[] = [
-  { key: "profile",        label: "Profil" },
   { key: "3quarter-front", label: "3/4 avant" },
   { key: "3quarter-rear",  label: "3/4 arrière" },
   { key: "top",            label: "Dessus" },
+  { key: "shelf",          label: "Sur étagère" },
   { key: "desk",           label: "Sur un bureau" },
 ];
 const VIEW_LABEL: Record<ViewKey, string> = {
