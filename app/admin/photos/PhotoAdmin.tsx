@@ -89,12 +89,28 @@ const COLLECTION_LABEL: Record<string, string> = {
 export default function PhotoAdmin({
   products,
   disabled,
+  existingPreviews = {},
 }: {
   products: ProductRow[];
   disabled: boolean;
+  /** Map of { handle: ["profile", "3quarter-front", ...] } pre-computed
+   *  server-side by the page from .tmp/preview/. Used to hydrate the
+   *  initial state so the ✅ Valider button is visible immediately. */
+  existingPreviews?: Record<string, string[]>;
 }) {
   const [filter, setFilter] = useState<string>("all");
-  const [state, setState] = useState<Record<string, RowState>>({});
+  // Hydrate state directly from the SSR scan — no client fetch needed.
+  const [state, setState] = useState<Record<string, RowState>>(() => {
+    const initial: Record<string, RowState> = {};
+    for (const [handle, views] of Object.entries(existingPreviews)) {
+      const viewsMap: Partial<Record<ViewKey, ViewState>> = {};
+      for (const v of views) {
+        viewsMap[v as ViewKey] = { version: 1 };
+      }
+      initial[handle] = { views: viewsMap };
+    }
+    return initial;
+  });
 
   useEffect(() => {
     // 1. Pull the problematic list so the chip + flag are restored
@@ -115,31 +131,8 @@ export default function PhotoAdmin({
       })
       .catch(() => {});
 
-    // 2. Hydrate ANY preview that already exists on disk. Without this,
-    //    a page refresh wipes the "version" memory of every preview and
-    //    the ✅ Valider button disappears even though the file is still
-    //    served by /api/admin/preview/{slug}.
-    fetch("/api/admin/preview-status")
-      .then((r) => r.json())
-      .then((data) => {
-        const map = (data?.handles ?? {}) as Record<string, string[]>;
-        setState((s) => {
-          const next = { ...s };
-          for (const [handle, views] of Object.entries(map)) {
-            const row = next[handle] ?? { views: {} };
-            const merged = { ...row, views: { ...row.views } };
-            for (const v of views) {
-              merged.views[v as ViewKey] = {
-                ...(merged.views[v as ViewKey] ?? {}),
-                version: 1, // any positive number triggers preview display
-              };
-            }
-            next[handle] = merged;
-          }
-          return next;
-        });
-      })
-      .catch(() => {});
+    // Preview hydration happens at SSR (see scanPreviews in page.tsx)
+    // — no client fetch needed.
   }, []);
 
   const collections = useMemo(() => {

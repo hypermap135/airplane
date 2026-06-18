@@ -1,5 +1,48 @@
 import { PRODUCTS } from "@/lib/products";
 import PhotoAdmin from "./PhotoAdmin";
+import { readdir } from "fs/promises";
+import path from "path";
+
+/** Scan .tmp/preview/ at SSR time so the client always boots with the
+ *  correct "which previews already exist" state — no client fetch, no
+ *  auth-cookie issue, no race condition. */
+async function scanPreviews(): Promise<Record<string, string[]>> {
+  if (process.env.VERCEL) return {};
+  const dir = path.join(process.cwd(), ".tmp", "preview");
+  const VIEW_KEYS = new Set([
+    "profile",
+    "3quarter-front",
+    "3quarter-rear",
+    "top",
+    "shelf",
+    "desk",
+  ]);
+  let files: string[];
+  try {
+    files = await readdir(dir);
+  } catch {
+    return {};
+  }
+  const out: Record<string, string[]> = {};
+  for (const f of files) {
+    if (!f.endsWith(".png")) continue;
+    const base = f.slice(0, -4);
+    const sep = base.lastIndexOf("--");
+    let handle: string;
+    let view: string;
+    if (sep >= 0) {
+      handle = base.slice(0, sep);
+      view = base.slice(sep + 2);
+      if (!VIEW_KEYS.has(view)) continue;
+    } else {
+      handle = base;
+      view = "profile";
+    }
+    if (!out[handle]) out[handle] = [];
+    if (!out[handle].includes(view)) out[handle].push(view);
+  }
+  return out;
+}
 
 /**
  * Admin photo-picker UI.
@@ -20,7 +63,7 @@ import PhotoAdmin from "./PhotoAdmin";
  */
 export const dynamic = "force-dynamic";
 
-export default function PhotosAdminPage() {
+export default async function PhotosAdminPage() {
   const products = PRODUCTS.filter((p) => p.collection !== "accessoires").map(
     (p) => ({
       handle: p.handle,
@@ -32,6 +75,7 @@ export default function PhotosAdminPage() {
   );
 
   const isVercel = !!process.env.VERCEL;
+  const existingPreviews = await scanPreviews();
 
   return (
     <div className="min-h-screen bg-[#06060f] text-white pt-24 pb-32 px-6 md:px-12">
@@ -83,7 +127,11 @@ export default function PhotosAdminPage() {
           )}
         </div>
 
-        <PhotoAdmin products={products} disabled={isVercel} />
+        <PhotoAdmin
+          products={products}
+          disabled={isVercel}
+          existingPreviews={existingPreviews}
+        />
       </div>
     </div>
   );
