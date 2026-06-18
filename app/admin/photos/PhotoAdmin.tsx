@@ -162,9 +162,156 @@ export default function PhotoAdmin({
     () => Object.values(state).filter((s) => s.published).length,
     [state],
   );
+  const validatedBaseCount = useMemo(
+    () =>
+      Object.values(state).filter(
+        (s) => s.baseValidated && !s.published,
+      ).length,
+    [state],
+  );
+
+  const [batchPublishing, setBatchPublishing] = useState<
+    null | { done: number; total: number; current?: string }
+  >(null);
+
+  /**
+   * Publish every product that has its base model validated and isn't
+   * already published. Runs sequentially (Vercel deploy at the end of
+   * each is cheap because the FS update is the slow part).
+   */
+  async function publishAllValidated() {
+    const candidates = products
+      .map((p) => ({
+        p,
+        row: state[p.handle],
+      }))
+      .filter(({ row }) => row?.baseValidated && !row.published);
+
+    if (candidates.length === 0) return;
+
+    setBatchPublishing({ done: 0, total: candidates.length });
+
+    for (let i = 0; i < candidates.length; i++) {
+      const { p, row } = candidates[i];
+      setBatchPublishing({
+        done: i,
+        total: candidates.length,
+        current: p.title,
+      });
+
+      // Order of validated views — base first, then additional ones in
+      // their declared order. Filter to only the ones the operator validated.
+      const orderedKeys = ["profile", "3quarter-front", "3quarter-rear", "top", "shelf", "desk"] as const;
+      const views = orderedKeys.filter((k) => row?.views[k]?.validated);
+      if (views.length === 0) continue;
+
+      try {
+        const res = await fetch("/api/admin/publish-product", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          // Skip the per-product deploy — we batch one deploy at the end.
+          body: JSON.stringify({
+            handle: p.handle,
+            views,
+            deploy: i === candidates.length - 1, // only the last call triggers vercel
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setState((s) => ({
+            ...s,
+            [p.handle]: {
+              ...(s[p.handle] ?? { views: {} }),
+              published: { url: data.deployUrl },
+            },
+          }));
+        }
+      } catch {
+        // best-effort — skip and continue
+      }
+    }
+    setBatchPublishing(null);
+  }
 
   return (
     <div>
+      {/* Dashboard stats header */}
+      <div
+        className="rounded-2xl mb-8 p-5 flex flex-wrap items-center gap-4 md:gap-6"
+        style={{
+          background: "linear-gradient(145deg, #0c0c18, #07070f)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <StatBlock label="Catalogue" value={products.length} tone="default" />
+        <Sep />
+        <StatBlock
+          label="Modèles validés"
+          value={validatedBaseCount + publishedCount}
+          sub={`${validatedBaseCount} prêts à publier`}
+          tone="success"
+        />
+        <Sep />
+        <StatBlock
+          label="Publiés"
+          value={publishedCount}
+          tone="success"
+        />
+        <Sep />
+        <StatBlock
+          label="À redemander"
+          value={problematicCount}
+          tone="warning"
+        />
+        <div className="ml-auto" />
+        <button
+          onClick={publishAllValidated}
+          disabled={disabled || !!batchPublishing || validatedBaseCount === 0}
+          className="text-[0.85rem] font-bold px-5 py-2.5 rounded-full disabled:opacity-40 transition"
+          style={{
+            background:
+              validatedBaseCount > 0
+                ? "linear-gradient(135deg, #4ade80, #22c55e)"
+                : "rgba(255,255,255,0.04)",
+            color: validatedBaseCount > 0 ? "#06060f" : "rgba(255,255,255,0.4)",
+          }}
+        >
+          {batchPublishing
+            ? `🚀 Publication ${batchPublishing.done + 1}/${batchPublishing.total}…`
+            : validatedBaseCount > 0
+              ? `🚀 Publier les ${validatedBaseCount} validés`
+              : "Aucun modèle prêt"}
+        </button>
+      </div>
+
+      {/* Batch publishing progress bar (when active) */}
+      {batchPublishing && (
+        <div className="mb-6 p-4 rounded-xl"
+          style={{
+            background: "rgba(34,197,94,0.08)",
+            border: "1px solid rgba(94,220,140,0.35)",
+          }}
+        >
+          <p className="text-[0.85rem] text-emerald-300 mb-2">
+            Publication en cours : {batchPublishing.current ?? ""}
+          </p>
+          <div className="h-1.5 rounded-full overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.08)" }}
+          >
+            <div
+              className="h-full transition-all"
+              style={{
+                width: `${(batchPublishing.done / batchPublishing.total) * 100}%`,
+                background: "linear-gradient(90deg, #4ade80, #22c55e)",
+              }}
+            />
+          </div>
+          <p className="mt-1.5 font-mono text-[0.65rem] text-white/50">
+            {batchPublishing.done}/{batchPublishing.total}
+          </p>
+        </div>
+      )}
+
       {/* Category + status filter */}
       <div className="flex flex-wrap gap-2 mb-8">
         <Chip active={filter === "all"} onClick={() => setFilter("all")}>
@@ -212,6 +359,59 @@ export default function PhotoAdmin({
         ))}
       </div>
     </div>
+  );
+}
+
+function StatBlock({
+  label,
+  value,
+  sub,
+  tone = "default",
+}: {
+  label: string;
+  value: number;
+  sub?: string;
+  tone?: "default" | "success" | "warning";
+}) {
+  const colors = {
+    default: "rgba(120,180,255,0.85)",
+    success: "#7df09f",
+    warning: "#ffd28a",
+  };
+  return (
+    <div className="flex flex-col">
+      <span
+        className="font-mono text-[0.55rem] tracking-[0.22em] uppercase"
+        style={{ color: "rgba(255,255,255,0.45)" }}
+      >
+        {label}
+      </span>
+      <span
+        className="font-black text-[1.6rem] leading-tight"
+        style={{ color: colors[tone] }}
+      >
+        {value}
+      </span>
+      {sub && (
+        <span className="font-mono text-[0.6rem] mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
+          {sub}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function Sep() {
+  return (
+    <div
+      aria-hidden
+      className="hidden md:block"
+      style={{
+        width: 1,
+        height: 40,
+        background: "rgba(255,255,255,0.08)",
+      }}
+    />
   );
 }
 
