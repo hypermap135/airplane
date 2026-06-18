@@ -74,7 +74,17 @@ const VIEWS: Record<string, ViewSpec> = {
       "REMOVE all watermarks, URLs, gold glyphs, stray text. Premium museum / " +
       "luxury boutique presentation. Sharp focus, high resolution, professional " +
       "product photography. Square 1:1 format. NO transparency, NO checker pattern, " +
-      "NO added text, NO new branding.",
+      "NO added text, NO new branding. " +
+      "ABSOLUTE QUALITY GATE — ZERO tolerance for defects: every edge of the " +
+      "airplane (engines, wings, tail, antennas, landing gear, nose, winglets) " +
+      "MUST be RAZOR-SHARP and perfectly clean-cut against the black wall. NO " +
+      "halo, NO ghosting, NO smudge, NO grey/dark blur around any part of the " +
+      "plane. NO motion-blur, NO partial transparency, NO smeared / wispy " +
+      "pixels at the silhouette. If a portion of the source plane looks hazy, " +
+      "RECONSTRUCT it as a clean opaque solid surface. Every detail (rivets, " +
+      "antennas, engine intakes, wing edges) is tack-sharp in focus. The whole " +
+      "airplane is FULLY VISIBLE — no cropping. This is a luxury product shot " +
+      "that MUST make the customer want to buy immediately.",
   },
   desk: {
     label: "Sur un bureau",
@@ -94,7 +104,18 @@ const VIEWS: Record<string, ViewSpec> = {
       "REMOVE all watermarks, URLs, gold glyphs, stray text. Upscale CEO desk " +
       "decoration vibe. Sharp focus on the airplane, blurred background. Square " +
       "1:1 format. NO transparency, NO checker pattern, NO added text, NO new " +
-      "branding, NO computer screens or visible text in the background.",
+      "branding, NO computer screens or visible text in the background. " +
+      "ABSOLUTE QUALITY GATE — ZERO tolerance for defects: every edge of the " +
+      "airplane (engines, wings, tail, antennas, landing gear, nose, winglets) " +
+      "MUST be RAZOR-SHARP and perfectly clean-cut. NO halo, NO ghosting, NO " +
+      "smudge, NO grey/dark blur around any part of the plane. The airplane " +
+      "itself stays in tack-sharp focus (only the BACKGROUND is blurred via " +
+      "shallow depth-of-field). NO partial transparency, NO smeared / wispy " +
+      "pixels at the silhouette. If a portion of the source plane looks hazy, " +
+      "RECONSTRUCT it as a clean opaque solid surface. Every detail (rivets, " +
+      "antennas, engine intakes, wing edges) is razor-sharp. The whole airplane " +
+      "is FULLY VISIBLE — no cropping. This is a luxury product shot that MUST " +
+      "make the customer want to buy immediately.",
   },
 };
 
@@ -104,11 +125,13 @@ function buildPromptForView(view: string): string {
   const angle = spec.angleClause ?? VIEWS.profile.angleClause!;
   return (
     "You are retouching a product photo of an airplane model on a wooden " +
-    "display stand. The airplane LIVERY (paint scheme, airline name, logo, " +
-    "registration code, decals, tail markings, window line) is ALREADY CORRECT " +
-    "in the source image. Your only job is to clean it up — DO NOT redesign " +
-    "the livery, DO NOT invent new text, DO NOT change the airline name, DO " +
-    "NOT make up any logo. " +
+    "display stand for a PREMIUM LUXURY E-COMMERCE catalog. The final image " +
+    "must look like a high-end Apple-store / Hermès-store product shot — " +
+    "absolutely flawless, no defects, perfectly clean. The airplane LIVERY " +
+    "(paint scheme, airline name, logo, registration code, decals, tail " +
+    "markings, window line) is ALREADY CORRECT in the source image. Your job " +
+    "is to clean it up — DO NOT redesign the livery, DO NOT invent new text, " +
+    "DO NOT change the airline name, DO NOT make up any logo. " +
     "" +
     "RULES (strict, in order of priority): " +
     "(1) PRESERVE THE LIVERY EXACTLY as in the source. If the source shows " +
@@ -131,6 +154,31 @@ function buildPromptForView(view: string): string {
     `(7) ANGLE: ${angle} ` +
     "(8) Studio key-light from above-left, soft contact shadow under the base, " +
     "sharp focus, high-resolution professional product photography. " +
+    "" +
+    "ABSOLUTE QUALITY GATE (this is the difference between a sold product and " +
+    "a refund request — ZERO tolerance): " +
+    "• EVERY EDGE of the airplane (engines, wings, tail, antennas, landing " +
+    "  gear, nose, winglets) MUST be RAZOR-SHARP and perfectly clean-cut " +
+    "  against the background. NO halo, NO ghosting, NO smudge, NO grey/dark " +
+    "  blur around any part of the plane. " +
+    "• NO motion-blur, NO out-of-focus zones on the airplane. Every detail " +
+    "  (rivets, antennas, engine intakes, wing edges, landing gear struts) " +
+    "  is tack-sharp in focus. " +
+    "• NO partial transparency, NO faded edges, NO smeared / smoky / wispy " +
+    "  pixels at the silhouette. If a portion of the source plane looks " +
+    "  hazy, RECONSTRUCT it as a clean opaque solid surface — never leave a " +
+    "  fuzzy or semi-transparent region. " +
+    "• NO compression artifacts, NO jaggies, NO chromatic aberration, NO " +
+    "  noise, NO banding. The image must look like a CLEAN STUDIO RENDER. " +
+    "• NO floating debris, NO orphan pixels, NO leftover background fragments " +
+    "  from the source — the only objects in the frame are the airplane and " +
+    "  its wooden stand on the clean studio background. " +
+    "• The whole airplane must be FULLY VISIBLE — no cropping of wingtips, " +
+    "  tail, nose, or stand. Generous margin of clean background around the " +
+    "  plane. " +
+    "• This is a luxury product shot. The image MUST make the customer want " +
+    "  to buy it immediately. If anything looks even slightly off (blurry " +
+    "  engine, dirty edge, partial transparency), it is REJECTED. " +
     "" +
     "NEVER add new text. NEVER invent an airline name. NEVER change letters. " +
     "When unsure, copy from the source pixel-for-pixel."
