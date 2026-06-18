@@ -1,6 +1,6 @@
 import { PRODUCTS } from "@/lib/products";
 import PhotoAdmin from "./PhotoAdmin";
-import { readdir } from "fs/promises";
+import { readdir, readFile } from "fs/promises";
 import path from "path";
 
 /** Scan .tmp/preview/ at SSR time so the client always boots with the
@@ -65,6 +65,30 @@ async function scanReferences(): Promise<Record<string, true>> {
   return out;
 }
 
+type PublishedEntry = { handle: string; deployUrl?: string | null; at: string };
+
+/** Which handles have already shipped to production. The admin /photos
+ *  listing hides them by default (chip "🚀 Publiées" brings them back).
+ *  The product is considered done — operator moves on to the next one. */
+async function scanPublished(): Promise<Record<string, PublishedEntry>> {
+  if (process.env.VERCEL) return {};
+  const file = path.join(process.cwd(), ".tmp", "published.json");
+  try {
+    const raw = await readFile(file, "utf-8");
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return {};
+    const out: Record<string, PublishedEntry> = {};
+    for (const item of parsed as PublishedEntry[]) {
+      if (item?.handle && /^[a-z0-9-]+$/i.test(item.handle)) {
+        out[item.handle] = item;
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 /**
  * Admin photo-picker UI.
  *
@@ -98,6 +122,7 @@ export default async function PhotosAdminPage() {
   const isVercel = !!process.env.VERCEL;
   const existingPreviews = await scanPreviews();
   const existingReferences = await scanReferences();
+  const existingPublished = await scanPublished();
 
   return (
     <div className="min-h-screen bg-[#06060f] text-white pt-24 pb-32 px-6 md:px-12">
@@ -154,6 +179,7 @@ export default async function PhotosAdminPage() {
           disabled={isVercel}
           existingPreviews={existingPreviews}
           existingReferences={existingReferences}
+          existingPublished={existingPublished}
         />
       </div>
     </div>

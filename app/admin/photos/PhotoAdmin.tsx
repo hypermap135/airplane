@@ -94,6 +94,7 @@ export default function PhotoAdmin({
   disabled,
   existingPreviews = {},
   existingReferences = {},
+  existingPublished = {},
 }: {
   products: ProductRow[];
   disabled: boolean;
@@ -105,6 +106,10 @@ export default function PhotoAdmin({
    *  photo stored under .tmp/references/. Lets the "🎯 RÉFÉRENCE" pane
    *  show up at first paint without a client round-trip. */
   existingReferences?: Record<string, true>;
+  /** Map of { handle: { deployUrl, at } } for products that already
+   *  shipped. The default listing hides them — the operator only sees
+   *  products that still need work. */
+  existingPublished?: Record<string, { deployUrl?: string | null; at: string }>;
 }) {
   const [filter, setFilter] = useState<string>("all");
   // Hydrate state directly from the SSR scan — no client fetch needed.
@@ -122,6 +127,12 @@ export default function PhotoAdmin({
         ...(initial[handle] ?? { views: {} }),
         referenceUploaded: true,
         referenceVersion: 1,
+      };
+    }
+    for (const [handle, entry] of Object.entries(existingPublished)) {
+      initial[handle] = {
+        ...(initial[handle] ?? { views: {} }),
+        published: { url: entry.deployUrl ?? undefined },
       };
     }
     return initial;
@@ -157,12 +168,18 @@ export default function PhotoAdmin({
   }, [products]);
 
   const filtered = useMemo(() => {
-    if (filter === "all") return products;
+    // Default: hide products that already shipped. The whole point of
+    // this studio is to grind through the REMAINING work — a published
+    // product is done and clutters the list.
+    if (filter === "all")
+      return products.filter((p) => !state[p.handle]?.published);
     if (filter === "problematic")
       return products.filter((p) => state[p.handle]?.problematic);
     if (filter === "published")
       return products.filter((p) => state[p.handle]?.published);
-    return products.filter((p) => p.collection === filter);
+    return products.filter(
+      (p) => p.collection === filter && !state[p.handle]?.published,
+    );
   }, [products, filter, state]);
 
   const updateRow = useCallback(
@@ -347,13 +364,18 @@ export default function PhotoAdmin({
         </div>
       )}
 
-      {/* Category + status filter */}
+      {/* Category + status filter. Counts reflect REMAINING work
+          (published products excluded) so the operator sees the actual
+          workload at a glance. */}
       <div className="flex flex-wrap gap-2 mb-8">
         <Chip active={filter === "all"} onClick={() => setFilter("all")}>
-          Tout ({products.length})
+          À traiter ({products.filter((p) => !state[p.handle]?.published).length})
         </Chip>
         {collections.map((c) => {
-          const n = products.filter((p) => p.collection === c).length;
+          const n = products.filter(
+            (p) => p.collection === c && !state[p.handle]?.published,
+          ).length;
+          if (n === 0) return null;
           return (
             <Chip key={c} active={filter === c} onClick={() => setFilter(c)}>
               {COLLECTION_LABEL[c] ?? c} ({n})
@@ -638,6 +660,34 @@ function ProductCard({
     } catch {/* best-effort */}
   }
 
+  /** Drop the product from .tmp/published.json so it returns to the
+   *  "À traiter" list. Useful when the operator wants to re-shoot a
+   *  product that's already live. */
+  async function unpublish() {
+    onUpdate({ published: undefined });
+    try {
+      await fetch(
+        `/api/admin/publish-product?handle=${encodeURIComponent(product.handle)}`,
+        { method: "DELETE" },
+      );
+    } catch {/* best-effort */}
+  }
+
+  /** Mark this product as already-published WITHOUT going through the
+   *  copy/rewrite/deploy flow. Used for legacy products that shipped
+   *  before this workflow existed — the operator just wants to hide
+   *  them from the "À traiter" list. */
+  async function markAsAlreadyPublished() {
+    onUpdate({ published: { url: undefined } });
+    try {
+      await fetch("/api/admin/publish-product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: product.handle, markOnly: true }),
+      });
+    } catch {/* best-effort */}
+  }
+
   /** Pick the validated views in display order (base view first), copy them
    *  to public/images, rewrite products.ts, commit + deploy. */
   async function publishProduct() {
@@ -697,16 +747,31 @@ function ProductCard({
         </div>
         <div className="flex flex-wrap gap-2 items-center">
           {rowState.published && (
-            <span
-              className="font-mono text-[0.6rem] tracking-[0.18em] uppercase px-2.5 py-1 rounded-full"
-              style={{
-                background: "rgba(34,197,94,0.18)",
-                color: "#7df09f",
-                border: "1px solid rgba(94,220,140,0.45)",
-              }}
-            >
-              🚀 Publié
-            </span>
+            <>
+              <span
+                className="font-mono text-[0.6rem] tracking-[0.18em] uppercase px-2.5 py-1 rounded-full"
+                style={{
+                  background: "rgba(34,197,94,0.18)",
+                  color: "#7df09f",
+                  border: "1px solid rgba(94,220,140,0.45)",
+                }}
+              >
+                🚀 Publié
+              </span>
+              <button
+                onClick={unpublish}
+                disabled={disabled}
+                title="Retirer de la liste publiée — le produit réapparaîtra dans 'À traiter'"
+                className="font-mono text-[0.6rem] tracking-[0.18em] uppercase px-2.5 py-1 rounded-full transition"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "rgba(255,255,255,0.55)",
+                }}
+              >
+                ↩️ Re-traiter
+              </button>
+            </>
           )}
           <button
             onClick={toggleProblematic}
@@ -724,6 +789,21 @@ function ProductCard({
           >
             {rowState.problematic ? "⚠️ À redemander" : "🏷️ Problématique"}
           </button>
+          {!rowState.published && (
+            <button
+              onClick={markAsAlreadyPublished}
+              disabled={disabled}
+              title="Marquer comme déjà publié — le produit disparaît de la liste 'À traiter' (sans modification du site)"
+              className="font-mono text-[0.65rem] tracking-[0.18em] uppercase px-3 py-1.5 rounded-full transition"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.55)",
+              }}
+            >
+              ✅ Déjà fait
+            </button>
+          )}
         </div>
       </div>
 

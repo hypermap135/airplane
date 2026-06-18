@@ -28,6 +28,28 @@ export const maxDuration = 300;
 const PRODUCTS_TS = path.join(process.cwd(), "lib", "products.ts");
 const PREVIEW_DIR = path.join(process.cwd(), ".tmp", "preview");
 const IMAGES_DIR = path.join(process.cwd(), "public", "images");
+const PUBLISHED_JSON = path.join(process.cwd(), ".tmp", "published.json");
+
+type PublishedEntry = { handle: string; deployUrl?: string | null; at: string };
+
+/** Append (or update) a handle in .tmp/published.json so the admin
+ *  /photos page can hide products that already shipped. Best-effort —
+ *  silently ignores filesystem errors so a write failure never aborts
+ *  the actual deploy. */
+async function recordPublished(handle: string, deployUrl: string | null) {
+  try {
+    await mkdir(path.dirname(PUBLISHED_JSON), { recursive: true });
+    let items: PublishedEntry[] = [];
+    try {
+      const raw = await readFile(PUBLISHED_JSON, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) items = parsed;
+    } catch {/* fine — file doesn't exist yet */}
+    const next = items.filter((it) => it.handle !== handle);
+    next.push({ handle, deployUrl, at: new Date().toISOString() });
+    await writeFile(PUBLISHED_JSON, JSON.stringify(next, null, 2));
+  } catch {/* best-effort */}
+}
 
 function previewFile(handle: string, view: string): string {
   const slug = view === "profile" ? handle : `${handle}--${view}`;
@@ -120,10 +142,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { handle, views, deploy = true } = await req.json();
+  const { handle, views, deploy = true, markOnly = false } = await req.json();
   if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
     return NextResponse.json({ error: "invalid handle" }, { status: 400 });
   }
+
+  // "markOnly" lets the operator move legacy products (already shipped
+  // through a previous flow) out of the "À traiter" list without going
+  // through copy/rewrite/deploy. Just appends to .tmp/published.json.
+  if (markOnly) {
+    await recordPublished(handle, null);
+    return NextResponse.json({ ok: true, markedOnly: true, handle });
+  }
+
   if (!Array.isArray(views) || views.length === 0) {
     return NextResponse.json(
       { error: "views[] required (validated view keys, first = cover)" },
@@ -174,6 +205,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!deploy) {
+    await recordPublished(handle, null);
     return NextResponse.json({
       ok: true,
       handle,
@@ -218,6 +250,8 @@ export async function POST(req: NextRequest) {
     (deployRes.stdout.match(/https:\/\/[^\s]+\.vercel\.app/g) ?? []).pop() ??
     null;
 
+  await recordPublished(handle, deployUrl);
+
   return NextResponse.json({
     ok: true,
     handle,
@@ -226,4 +260,45 @@ export async function POST(req: NextRequest) {
     deployed: true,
     deployUrl,
   });
+}
+
+/**
+ * GET /api/admin/publish-product
+ *
+ * Returns the persisted published list so the admin /photos page can
+ * hide handles that already shipped. Shape: `{ items: PublishedEntry[] }`.
+ */
+export async function GET() {
+  if (process.env.VERCEL) return NextResponse.json({ items: [] });
+  try {
+    const raw = await readFile(PUBLISHED_JSON, "utf-8");
+    const parsed = JSON.parse(raw);
+    return NextResponse.json({ items: Array.isArray(parsed) ? parsed : [] });
+  } catch {
+    return NextResponse.json({ items: [] });
+  }
+}
+
+/**
+ * DELETE /api/admin/publish-product?handle=…
+ *
+ * Drops a handle from the published list so it reappears in the admin
+ * /photos main listing. Used when the operator wants to re-shoot a
+ * product after it was already published.
+ */
+export async function DELETE(req: NextRequest) {
+  if (process.env.VERCEL) return NextResponse.json({ ok: true });
+  const handle = req.nextUrl.searchParams.get("handle");
+  if (!handle || !/^[a-z0-9-]+$/i.test(handle)) {
+    return NextResponse.json({ error: "invalid handle" }, { status: 400 });
+  }
+  try {
+    const raw = await readFile(PUBLISHED_JSON, "utf-8");
+    const items: PublishedEntry[] = JSON.parse(raw);
+    const next = Array.isArray(items)
+      ? items.filter((it) => it.handle !== handle)
+      : [];
+    await writeFile(PUBLISHED_JSON, JSON.stringify(next, null, 2));
+  } catch {/* fine */}
+  return NextResponse.json({ ok: true });
 }
