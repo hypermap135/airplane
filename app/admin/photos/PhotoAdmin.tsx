@@ -72,6 +72,9 @@ type RowState = {
   baseValidated?: boolean;
   problematic?: boolean;
   referenceUploaded?: boolean;
+  /** Bumped each time the reference photo on disk changes, so the
+   *  <img> in the "🎯 RÉFÉRENCE" pane reloads without cache. */
+  referenceVersion?: number;
   publishing?: boolean;
   published?: { url?: string };
   views: Partial<Record<ViewKey, ViewState>>;
@@ -90,6 +93,7 @@ export default function PhotoAdmin({
   products,
   disabled,
   existingPreviews = {},
+  existingReferences = {},
 }: {
   products: ProductRow[];
   disabled: boolean;
@@ -97,6 +101,10 @@ export default function PhotoAdmin({
    *  server-side by the page from .tmp/preview/. Used to hydrate the
    *  initial state so the ✅ Valider button is visible immediately. */
   existingPreviews?: Record<string, string[]>;
+  /** Map of { handle: true } for products that already have a reference
+   *  photo stored under .tmp/references/. Lets the "🎯 RÉFÉRENCE" pane
+   *  show up at first paint without a client round-trip. */
+  existingReferences?: Record<string, true>;
 }) {
   const [filter, setFilter] = useState<string>("all");
   // Hydrate state directly from the SSR scan — no client fetch needed.
@@ -108,6 +116,13 @@ export default function PhotoAdmin({
         viewsMap[v as ViewKey] = { version: 1 };
       }
       initial[handle] = { views: viewsMap };
+    }
+    for (const handle of Object.keys(existingReferences)) {
+      initial[handle] = {
+        ...(initial[handle] ?? { views: {} }),
+        referenceUploaded: true,
+        referenceVersion: 1,
+      };
     }
     return initial;
   });
@@ -565,13 +580,50 @@ function ProductCard({
       const res = await fetch("/api/admin/reference", { method: "POST", body: form });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "reference upload failed");
-      onUpdate({ referenceUploaded: true });
+      onUpdate({
+        referenceUploaded: true,
+        referenceVersion: (rowState.referenceVersion ?? 0) + 1,
+      });
       // Re-process the base view with the reference immediately
       await runPipeline(BASE_VIEW, { useReference: true });
     } catch (e) {
       onUpdate({ baseValidated: false });
       onUpdateView(BASE_VIEW, { error: (e as Error).message });
     }
+  }
+
+  /** Promote the currently-generated base preview to the reference slot.
+   *  The next regeneration of the 5 angles will use it as the design
+   *  guide for Gemini ("apply image 2's livery to image 1's airframe"). */
+  async function keepAsReference() {
+    try {
+      const res = await fetch("/api/admin/reference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          handle: product.handle,
+          promoteFromPreview: true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "promote failed");
+      onUpdate({
+        referenceUploaded: true,
+        referenceVersion: (rowState.referenceVersion ?? 0) + 1,
+      });
+    } catch (e) {
+      onUpdateView(BASE_VIEW, { error: (e as Error).message });
+    }
+  }
+
+  async function clearReference() {
+    try {
+      await fetch(
+        `/api/admin/reference?handle=${encodeURIComponent(product.handle)}`,
+        { method: "DELETE" },
+      );
+      onUpdate({ referenceUploaded: false });
+    } catch {/* best-effort */}
   }
 
   async function toggleProblematic() {
@@ -680,7 +732,17 @@ function ProductCard({
         <StepLabel n={1} label="Modèle de base" done={!!rowState.baseValidated} />
 
         <div className="grid md:grid-cols-[260px_1fr] gap-5 mt-3">
-          <ImagePane label="ACTUEL" src={product.currentImage} />
+          {rowState.referenceUploaded ? (
+            <ImagePane
+              label="🎯 RÉFÉRENCE"
+              src={`/api/admin/reference/${product.handle}?v=${rowState.referenceVersion ?? 1}`}
+              tone="reference"
+              caption="Cette photo guide Gemini pour les 5 angles."
+              onClear={disabled ? undefined : clearReference}
+            />
+          ) : (
+            <ImagePane label="ACTUEL" src={product.currentImage} />
+          )}
           <div>
             <ImagePane
               label="MODÈLE DE BASE"
@@ -704,6 +766,11 @@ function ProductCard({
                       runPipeline(BASE_VIEW, {
                         useReference: rowState.referenceUploaded,
                       })
+                  : undefined
+              }
+              onKeepAsReference={
+                baseState.version && !rowState.referenceUploaded
+                  ? keepAsReference
                   : undefined
               }
               disabled={disabled || baseState.processing}
@@ -971,29 +1038,46 @@ function ImagePane({
   src,
   placeholder,
   validated,
+  tone,
+  caption,
   onValidate,
   onRegenerate,
+  onKeepAsReference,
+  onClear,
   disabled,
 }: {
   label: string;
   src: string | null;
   placeholder?: string;
   validated?: boolean;
+  /** Visual style for the pane border. "reference" = blue accent. */
+  tone?: "reference";
+  /** Short helper line shown above the image, in the header. */
+  caption?: string;
   /** When provided AND src is truthy, renders an action bar with Validate
    *  / Regenerate buttons under the image (same UX as the angle tiles). */
   onValidate?: () => void;
   onRegenerate?: () => void;
+  /** Promote this pane's image to the reference slot. */
+  onKeepAsReference?: () => void;
+  /** Wipe the reference (only used when this pane IS the reference). */
+  onClear?: () => void;
   disabled?: boolean;
 }) {
-  const hasActions = !!src && (onValidate || onRegenerate);
+  const hasActions =
+    !!src && (onValidate || onRegenerate || onKeepAsReference || onClear);
+  const borderColor =
+    tone === "reference"
+      ? "rgba(120,180,255,0.45)"
+      : validated
+        ? "rgba(34,197,94,0.55)"
+        : "rgba(255,255,255,0.04)";
   return (
     <div
       className="rounded-xl overflow-hidden relative flex flex-col"
       style={{
         background: "#080810",
-        border: validated
-          ? "1px solid rgba(34,197,94,0.55)"
-          : "1px solid rgba(255,255,255,0.04)",
+        border: `1px solid ${borderColor}`,
       }}
     >
       <div className="relative" style={{ aspectRatio: "1/1" }}>
@@ -1001,7 +1085,12 @@ function ImagePane({
           className="absolute top-2 left-2 z-10 font-mono text-[0.55rem] tracking-[0.18em] uppercase px-2 py-0.5 rounded"
           style={{
             background: "rgba(8,8,16,0.85)",
-            color: validated ? "#7df09f" : "rgba(255,255,255,0.55)",
+            color:
+              tone === "reference"
+                ? "#9cc6ff"
+                : validated
+                  ? "#7df09f"
+                  : "rgba(255,255,255,0.55)",
             backdropFilter: "blur(8px)",
           }}
         >
@@ -1022,8 +1111,16 @@ function ImagePane({
           </div>
         )}
       </div>
+      {caption && (
+        <p
+          className="px-2.5 py-1.5 font-mono text-[0.6rem] tracking-[0.06em] border-t border-white/5"
+          style={{ color: "rgba(156,198,255,0.7)" }}
+        >
+          {caption}
+        </p>
+      )}
       {hasActions && (
-        <div className="flex gap-1.5 p-2 border-t border-white/5">
+        <div className="flex flex-wrap gap-1.5 p-2 border-t border-white/5">
           {onValidate && (
             <button
               onClick={onValidate}
@@ -1039,6 +1136,21 @@ function ImagePane({
               {validated ? "✓ Validé" : "✅ Valider"}
             </button>
           )}
+          {onKeepAsReference && (
+            <button
+              onClick={onKeepAsReference}
+              disabled={disabled}
+              className="text-[0.72rem] font-semibold px-3 py-2 rounded-md disabled:opacity-40 transition"
+              style={{
+                background: "rgba(58,142,255,0.18)",
+                border: "1px solid rgba(120,180,255,0.4)",
+                color: "rgba(156,198,255,1)",
+              }}
+              title="Sauvegarder cette image comme référence design pour les 5 angles"
+            >
+              📌 Garder comme réf.
+            </button>
+          )}
           {onRegenerate && (
             <button
               onClick={onRegenerate}
@@ -1051,6 +1163,21 @@ function ImagePane({
               title="Re-générer cette image"
             >
               🔄
+            </button>
+          )}
+          {onClear && (
+            <button
+              onClick={onClear}
+              disabled={disabled}
+              className="text-[0.72rem] font-semibold px-3 py-2 rounded-md disabled:opacity-40 transition"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.55)",
+              }}
+              title="Supprimer la référence"
+            >
+              🗑️
             </button>
           )}
         </div>

@@ -44,6 +44,27 @@ async function scanPreviews(): Promise<Record<string, string[]>> {
   return out;
 }
 
+/** Which handles already have a reference photo on disk. Used to hydrate
+ *  the "🎯 RÉFÉRENCE" pane on first paint. */
+async function scanReferences(): Promise<Record<string, true>> {
+  if (process.env.VERCEL) return {};
+  const dir = path.join(process.cwd(), ".tmp", "references");
+  let files: string[];
+  try {
+    files = await readdir(dir);
+  } catch {
+    return {};
+  }
+  const out: Record<string, true> = {};
+  for (const f of files) {
+    const dot = f.lastIndexOf(".");
+    if (dot <= 0) continue;
+    const handle = f.slice(0, dot);
+    if (/^[a-z0-9-]+$/i.test(handle)) out[handle] = true;
+  }
+  return out;
+}
+
 /**
  * Admin photo-picker UI.
  *
@@ -76,6 +97,7 @@ export default async function PhotosAdminPage() {
 
   const isVercel = !!process.env.VERCEL;
   const existingPreviews = await scanPreviews();
+  const existingReferences = await scanReferences();
 
   return (
     <div className="min-h-screen bg-[#06060f] text-white pt-24 pb-32 px-6 md:px-12">
@@ -131,6 +153,7 @@ export default async function PhotosAdminPage() {
           products={products}
           disabled={isVercel}
           existingPreviews={existingPreviews}
+          existingReferences={existingReferences}
         />
       </div>
     </div>
