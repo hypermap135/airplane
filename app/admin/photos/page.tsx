@@ -109,15 +109,16 @@ async function scanPublished(): Promise<Record<string, PublishedEntry>> {
 export const dynamic = "force-dynamic";
 
 export default async function PhotosAdminPage() {
-  const products = PRODUCTS.filter((p) => p.collection !== "accessoires").map(
-    (p) => ({
-      handle: p.handle,
-      title: p.title,
-      collection: p.collection,
-      currentImage: p.image,
-      inStock: p.inStock,
-    }),
-  );
+  // Every catalogue product is exposed to the studio — packs and
+  // accessoires too, so the operator decides per-card whether to skip
+  // (✅ Déjà fait) or run them through the pipeline.
+  const products = PRODUCTS.map((p) => ({
+    handle: p.handle,
+    title: p.title,
+    collection: p.collection,
+    currentImage: p.image,
+    inStock: p.inStock,
+  }));
 
   const isVercel = !!process.env.VERCEL;
   const existingPreviews = await scanPreviews();

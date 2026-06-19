@@ -295,76 +295,89 @@ export default function PhotoAdmin({
   >(null);
 
   /**
-   * Generate the base-model preview for every product that doesn't have
-   * one yet and isn't already published / flagged problematic. Runs at
-   * a small parallelism (3 concurrent) — Gemini's rate limit on the
-   * shared key tops out around that, and the user wants the queue to
-   * actually finish in a reasonable wall-clock.
+   * Generate EVERY view (cover + 5 angles) for every product that isn't
+   * published / flagged problematic. One task per (product, view), 6 per
+   * product, processed with bounded concurrency. Skips any (product, view)
+   * pair that already has a preview on disk so a restart picks up where
+   * it left off without re-spending Gemini tokens.
    */
   async function generateAllBaseModels() {
-    const candidates = products.filter((p) => {
+    const ALL_VIEWS: ViewKey[] = [
+      "profile",
+      "3quarter-front",
+      "3quarter-rear",
+      "top",
+      "shelf",
+      "desk",
+    ];
+    const jobs: { handle: string; view: ViewKey; title: string }[] = [];
+    for (const p of products) {
       const row = state[p.handle];
-      if (row?.published) return false;
-      if (row?.problematic) return false;
-      // Skip if a base preview already exists — assume the operator
-      // wants to keep what's already there (use "🔄" to redo individually).
-      if (row?.views.profile?.version) return false;
-      return true;
-    });
-    if (candidates.length === 0) return;
+      if (row?.published) continue;
+      // Note: we intentionally DO NOT skip problematic products — the
+      // operator asked to regenerate everything. They can re-mark them
+      // afterwards if a view is still unusable.
+      for (const v of ALL_VIEWS) {
+        if (row?.views[v]?.version) continue; // already exists — skip
+        jobs.push({ handle: p.handle, view: v, title: p.title });
+      }
+    }
+    if (jobs.length === 0) return;
 
-    setBatchGenerating({ done: 0, total: candidates.length, failed: 0 });
+    setBatchGenerating({ done: 0, total: jobs.length, failed: 0 });
 
-    const CONCURRENCY = 3;
+    const CONCURRENCY = 4;
     let cursor = 0;
     let done = 0;
     let failed = 0;
 
     async function worker() {
-      while (cursor < candidates.length) {
+      while (cursor < jobs.length) {
         const idx = cursor++;
-        const p = candidates[idx];
+        const j = jobs[idx];
         setBatchGenerating({
           done,
-          total: candidates.length,
-          current: p.title,
+          total: jobs.length,
+          current: `${j.title} · ${VIEW_LABEL[j.view]}`,
           failed,
         });
-        try {
-          // Pre-paint the loading state on the card
-          setState((s) => ({
+        setState((s) => {
+          const prev = s[j.handle] ?? { views: {} };
+          return {
             ...s,
-            [p.handle]: {
-              ...(s[p.handle] ?? { views: {} }),
+            [j.handle]: {
+              ...prev,
               views: {
-                ...(s[p.handle]?.views ?? {}),
-                profile: { ...(s[p.handle]?.views?.profile ?? {}), processing: true },
+                ...prev.views,
+                [j.view]: { ...(prev.views[j.view] ?? {}), processing: true },
               },
             },
-          }));
+          };
+        });
+        try {
           const res = await fetch("/api/admin/process", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              handle: p.handle,
-              view: "profile",
+              handle: j.handle,
+              view: j.view,
               useCurrent: true,
             }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "process failed");
           setState((s) => {
-            const prev = s[p.handle] ?? { views: {} };
+            const prev = s[j.handle] ?? { views: {} };
             return {
               ...s,
-              [p.handle]: {
+              [j.handle]: {
                 ...prev,
                 views: {
                   ...prev.views,
-                  profile: {
-                    ...prev.views.profile,
+                  [j.view]: {
+                    ...prev.views[j.view],
                     processing: false,
-                    version: (prev.views.profile?.version ?? 0) + 1,
+                    version: (prev.views[j.view]?.version ?? 0) + 1,
                     validated: false,
                   },
                 },
@@ -375,15 +388,15 @@ export default function PhotoAdmin({
         } catch (e) {
           failed++;
           setState((s) => {
-            const prev = s[p.handle] ?? { views: {} };
+            const prev = s[j.handle] ?? { views: {} };
             return {
               ...s,
-              [p.handle]: {
+              [j.handle]: {
                 ...prev,
                 views: {
                   ...prev.views,
-                  profile: {
-                    ...prev.views.profile,
+                  [j.view]: {
+                    ...prev.views[j.view],
                     processing: false,
                     error: (e as Error).message,
                   },
@@ -394,8 +407,10 @@ export default function PhotoAdmin({
         }
         setBatchGenerating({
           done,
-          total: candidates.length,
-          current: candidates[Math.min(cursor, candidates.length - 1)]?.title,
+          total: jobs.length,
+          current: jobs[Math.min(cursor, jobs.length - 1)]
+            ? `${jobs[Math.min(cursor, jobs.length - 1)].title} · ${VIEW_LABEL[jobs[Math.min(cursor, jobs.length - 1)].view]}`
+            : undefined,
           failed,
         });
       }
@@ -506,8 +521,8 @@ export default function PhotoAdmin({
           }}
         >
           {batchGenerating
-            ? `⚙️ Génération ${batchGenerating.done}/${batchGenerating.total}…`
-            : "🚀 Générer TOUS les modèles de base"}
+            ? `⚙️ ${batchGenerating.done}/${batchGenerating.total} photos…`
+            : "🚀 Générer TOUTES les photos (6 par produit)"}
         </button>
         <button
           onClick={publishAllValidated}
@@ -804,19 +819,10 @@ function ProductCard({
   async function validateView(view: ViewKey) {
     onUpdateView(view, { validated: true });
     if (view === BASE_VIEW) {
+      // Step 2 is unlocked but the 5 angles are NOT auto-regenerated —
+      // the global "🚀 Générer tout" button already populated them in
+      // batch. The operator validates each angle individually instead.
       onUpdate({ baseValidated: true });
-      // Auto-trigger the 5 additional angles. Pre-set every view to
-      // "processing" right away so the UI shows the loading state the
-      // instant the operator clicks ✅ Valider — no perceived delay.
-      for (const { key } of ADDITIONAL_VIEWS) {
-        onUpdateView(key, { processing: true, error: undefined });
-      }
-      // Fire and forget — Promise.all just keeps the parallel semantics.
-      Promise.all(
-        ADDITIONAL_VIEWS.map(({ key }) =>
-          runPipeline(key, { useReference: rowState.referenceUploaded }),
-        ),
-      ).catch(() => {});
     }
   }
 
