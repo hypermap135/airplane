@@ -753,39 +753,21 @@ export const PRODUCTS: Product[] = [
       { id: "53842722357588", label: "Silhouette Constellation", image: "/images/porte-cle-silhouette-avion-2.png" },
     ],
   },
-  // ── Accessoire Aviation Métal · 1 produit, 2 designs au choix ────────
-  // Same setup as the fabric keychain bundle — pending real per-design
-  // Shopify variants, both designs route to the existing variantId so
-  // orders ship today. Fulfilment reads the cart label.
+  // ── Horloge Turbine Aviation ─────────────────────────────────────────
+  // The metal AF keychain that used to share this image lump on Shopify
+  // has no public variant to ship against — listing dropped. The clock
+  // stays as a standalone product mapped to the real Shopify product
+  // "Horloge Murale" (50833535271252).
   {
-    id: "accessoire-metal-af",
-    variantId: "53842911625556",
-    handle: "flamme-en-tissu-brode",
-    title: "Accessoire Aviation en Métal",
-    subtitle: "Métal brossé · 2 modèles au choix",
-    price: 14.9,
-    collection: "accessoires",
-    inStock: true,
-    image: `/images/accessoire-horloge-turbine.png`,
-    images: [
-      `/images/accessoire-horloge-turbine.png`,
-      `/images/accessoire-portecle-metal-af.png`,
-    ],
-    variants: [
-      { id: "53842911625556", label: "Horloge Turbine",        image: "/images/accessoire-horloge-turbine.png" },
-      { id: "53842911625556", label: "Porte-clé métal AIR FRANCE", image: "/images/accessoire-portecle-metal-af.png" },
-    ],
-  },
-  {
-    id: "horloge-murale",
+    id: "horloge-turbine",
     variantId: "50833535271252",
     handle: "horloge-mural",
-    title: "Horloge Murale Aéronautique",
-    subtitle: "Décoration murale — design réacteur",
+    title: "Horloge Turbine Aviation",
+    subtitle: "Réplique de réacteur · cadran lumineux phosphorescent",
     price: 15.9,
     collection: "accessoires",
     inStock: true,
-    image: `${CDN}/AD184BA4-005E-4FB9-B9FC-0A8B97709210_nobg_v2.png`,
+    image: `/images/accessoire-horloge-turbine.png`,
   },
   {
     id: "gravure",
