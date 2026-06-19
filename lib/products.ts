@@ -214,6 +214,14 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a350-singapore.png`,
+    images: [
+      `/images/airbus-a350-singapore.png`,
+      `/images/airbus-a350-singapore--3quarter-front.png`,
+      `/images/airbus-a350-singapore--3quarter-rear.png`,
+      `/images/airbus-a350-singapore--top.png`,
+      `/images/airbus-a350-singapore--shelf.png`,
+      `/images/airbus-a350-singapore--desk.png`,
+    ],
     scale: "1/142",
   },
   {
