@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
  * environments don't open random numbers.
  */
 const WHATSAPP_NUMBER =
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "33600000000";
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "33761477922";
 
 export default function WhatsAppButton() {
   const pathname = usePathname() ?? "";
