@@ -15,24 +15,40 @@ import urllib.error
 from pathlib import Path
 
 SRC = Path(".tmp/preview/gravure-source.png")
-OUT = Path(".tmp/preview/gravure-base-vide.png")
+OUT = Path(".tmp/preview/gravure-personnalisee.png")
 MODEL = "gemini-2.5-flash-image"
 ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 
 PROMPT = (
-    "Re-render this product photo of a wooden airplane display base. "
-    "ABSOLUTE REQUIREMENTS — keep the EXACT same wooden base: same "
-    "rosewood / cherry colour, same trapezoidal slanted shape, same "
-    "highlights, same shadow, same camera angle, same composition. "
+    "PHOTOREALISTIC re-render of this wooden airplane display base. "
+    "Keep the same trapezoidal slanted base shape and the same rich "
+    "rosewood / dark cherry colour. "
     ""
-    "ONLY CHANGE: REMOVE every engraving / text from the slanted front "
-    "face. The slope must be completely smooth, bare wood, no letters, "
-    "no marks, no carving. Show ONLY the polished wooden base with its "
-    "natural grain. "
+    "BACKGROUND: a clean dark studio scene — deep matte black with a "
+    "subtle warm spotlight grazing the wood from the upper-left, "
+    "creating soft highlights on the top edge and a soft shadow on the "
+    "tabletop. Not pure-black flat: real photo-studio darkness with "
+    "tonal gradient. Slight reflection of the base on the tabletop. "
     ""
-    "Square 1:1 frame, transparent or pure white background (same as the "
-    "source). No scene, no props, no watermark, no text anywhere in the "
-    "image."
+    "ENGRAVING: on the slanted front face, render a REAL LASER "
+    "ENGRAVING with this French text on TWO lines, centered horizontally, "
+    "elegant serif font, slightly burnt-darker than the wood with a "
+    "tiny inner highlight (genuine carved depth, not flat overlay):\n"
+    "\n"
+    "    Personnalisez votre\n"
+    "    modèle\n"
+    "\n"
+    "STRICT SPELLING — letters in order: "
+    "Line 1: P, e, r, s, o, n, n, a, l, i, s, e, z (then space) v, o, t, r, e. "
+    "Line 2: m, o, d, è, l, e. "
+    "The word Personnalisez has TWO N letters in a row and ONE S "
+    "between i and e. The word modèle uses a grave accent on the è. "
+    "No other accents, no umlauts, no hyphens. Re-check the spelling "
+    "before generating. "
+    ""
+    "Square 1:1 frame. Wood base occupies ~70% of the frame, centered. "
+    "Photo-realistic lighting and depth-of-field. No watermark, no "
+    "extra text anywhere in the image, only the two engraved lines."
 )
 
 
