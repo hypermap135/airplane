@@ -1,4 +1,4 @@
-import HeroV3Lifestyle from "@/components/HeroV3Lifestyle";
+import HeroV4Carousel from "@/components/HeroV4Carousel";
 import TrustBar from "@/components/TrustBar";
 import StatsSection from "@/components/StatsSection";
 import CustomModelBanner from "@/components/CustomModelBanner";
@@ -16,7 +16,7 @@ import SEOFooter from "@/components/SEOFooter";
 export default function HomePage() {
   return (
     <>
-      <HeroV3Lifestyle />
+      <HeroV4Carousel />
       <TrustBar />
       <StatsSection />
       {/* Banner "Maquette sur mesure" — teaser juste au-dessus des bestsellers */}
