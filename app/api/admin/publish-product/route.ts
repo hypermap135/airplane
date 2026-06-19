@@ -197,7 +197,11 @@ export async function POST(req: NextRequest) {
   ];
 
   const rewriteResult = await rewriteProduct(handle, coverUrl, galleryUrls);
-  if (!rewriteResult.ok) {
+  // A no-op rewrite is fine — it means products.ts already points at the
+  // correct image / gallery (e.g. operator clicked publish twice, or the
+  // entry was already up-to-date). Only a genuine regex-mismatch is an
+  // error worth surfacing.
+  if (!rewriteResult.ok && rewriteResult.reason !== "no changes (regex matched but rewrite was a no-op)") {
     return NextResponse.json(
       { error: `products.ts rewrite failed: ${rewriteResult.reason}` },
       { status: 500 },
