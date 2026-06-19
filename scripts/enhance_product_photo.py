@@ -86,12 +86,15 @@ def call_gemini(
     image_path: Path,
     prompt: str,
     reference_path: Path | None = None,
+    extra_references: list[Path] | None = None,
 ) -> bytes:
-    """POST one or two images + prompt to Gemini, return raw image bytes.
+    """POST one or more images + prompt to Gemini, return raw image bytes.
 
-    When `reference_path` is given, Gemini receives both images and the
-    prompt should explicitly tell it "image 1 = the airplane model to
-    redraw, image 2 = the visual reference to imitate the livery from".
+    - `image_path` = always image 1 (the primary source / airplane to redraw).
+    - `reference_path` = optional image 2 (single livery / design guide).
+    - `extra_references` = optional list of additional images (image 3, 4, ...)
+       used for PACK shots where Gemini must combine N airplanes into one
+       composition.
     """
     parts: list = [{"text": prompt}]
     parts.append({
@@ -105,6 +108,13 @@ def call_gemini(
             "inlineData": {
                 "mimeType": detect_mime(reference_path),
                 "data": base64.b64encode(reference_path.read_bytes()).decode("ascii"),
+            }
+        })
+    for extra in extra_references or []:
+        parts.append({
+            "inlineData": {
+                "mimeType": detect_mime(extra),
+                "data": base64.b64encode(extra.read_bytes()).decode("ascii"),
             }
         })
     body = {
@@ -229,6 +239,14 @@ def main() -> int:
         help="Optional second image whose livery/design Gemini should imitate",
     )
     parser.add_argument(
+        "--extra-reference",
+        type=Path,
+        action="append",
+        default=[],
+        help="Additional image (repeatable). Used for pack shots where multiple "
+             "airplanes must be combined into one composition.",
+    )
+    parser.add_argument(
         "--no-frame",
         action="store_true",
         help="Skip the final reference framing (skip if --no-rembg too)",
@@ -246,7 +264,13 @@ def main() -> int:
         if not args.reference.exists():
             sys.exit(f"ERROR: reference not found: {args.reference}")
         print(f"  reference: {args.reference} ({args.reference.stat().st_size // 1024} KB)")
-    gemini_bytes = call_gemini(key, args.input, args.prompt, args.reference)
+    for er in args.extra_reference:
+        if not er.exists():
+            sys.exit(f"ERROR: extra-reference not found: {er}")
+        print(f"  +extra: {er} ({er.stat().st_size // 1024} KB)")
+    gemini_bytes = call_gemini(
+        key, args.input, args.prompt, args.reference, args.extra_reference
+    )
     print(f"  ✓ {len(gemini_bytes) // 1024} KB returned (grey studio)")
 
     if args.no_rembg:
