@@ -753,16 +753,28 @@ export const PRODUCTS: Product[] = [
       { id: "53842722357588", label: "Silhouette Constellation", image: "/images/porte-cle-silhouette-avion-2.png" },
     ],
   },
+  // ── Accessoire Aviation Métal · 1 produit, 2 designs au choix ────────
+  // Same setup as the fabric keychain bundle — pending real per-design
+  // Shopify variants, both designs route to the existing variantId so
+  // orders ship today. Fulfilment reads the cart label.
   {
-    id: "horloge-turbine",
+    id: "accessoire-metal-af",
     variantId: "53842911625556",
     handle: "flamme-en-tissu-brode",
-    title: "Accessoires Aviation en Métal",
-    subtitle: "Collection métal brossé — décoration aéronautique",
+    title: "Accessoire Aviation en Métal",
+    subtitle: "Métal brossé · 2 modèles au choix",
     price: 14.9,
     collection: "accessoires",
     inStock: true,
-    image: `${CDN}/IMG-7037_nobg.png`,
+    image: `/images/accessoire-horloge-turbine.png`,
+    images: [
+      `/images/accessoire-horloge-turbine.png`,
+      `/images/accessoire-portecle-metal-af.png`,
+    ],
+    variants: [
+      { id: "53842911625556", label: "Horloge Turbine",        image: "/images/accessoire-horloge-turbine.png" },
+      { id: "53842911625556", label: "Porte-clé métal AIR FRANCE", image: "/images/accessoire-portecle-metal-af.png" },
+    ],
   },
   {
     id: "horloge-murale",
