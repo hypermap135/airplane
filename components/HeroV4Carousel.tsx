@@ -117,6 +117,7 @@ export default function HeroV4Carousel() {
             fill
             priority={active === 0}
             sizes="100vw"
+            quality={95}
             className="object-cover"
             style={{ objectPosition: "center 55%" }}
           />

@@ -60,7 +60,7 @@ export default function ProductCard({
               // srcset entry that covers each viewport. Vercel's image
               // optimizer turns these into AVIF/WebP automatically.
               sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 48vw"
-              quality={82}
+              quality={92}
               priority={priority}
               loading={priority ? undefined : "lazy"}
               className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"

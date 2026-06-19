@@ -121,47 +121,78 @@ export default function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative py-16"
+      className="relative py-20 md:py-24"
       style={{
-        background: "linear-gradient(135deg, #0a0a18 0%, #040410 100%)",
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background:
+          "linear-gradient(180deg, #06060f 0%, #0a0a18 50%, #06060f 100%)",
+        borderTop: "1px solid rgba(255,255,255,0.05)",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}
     >
       <div className="mx-auto max-w-7xl px-6 md:px-12">
-        <div className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0">
+        {/* Editorial crumb — same vocab as the hero ("★ N°… · Édition 2026") */}
+        <div className="flex items-center gap-3 mb-10 md:mb-14">
+          <div
+            aria-hidden
+            style={{
+              width: 28,
+              height: 1,
+              background: "rgba(58,142,255,0.65)",
+            }}
+          />
+          <span
+            className="font-mono uppercase"
+            style={{
+              fontSize: "0.62rem",
+              letterSpacing: "0.28em",
+              color: "rgba(58,142,255,0.75)",
+            }}
+          >
+            ★ La maison en chiffres
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6 md:gap-x-10">
           {STATS.map((stat, i) => (
             <div
               key={stat.label}
-              className="stat-item relative flex-1 flex flex-col items-center justify-center py-10 sm:py-0 sm:px-8 text-center"
+              className="stat-item relative flex flex-col"
             >
-              {/* Vertical divider between items */}
-              {i > 0 && (
-                <div
-                  aria-hidden
-                  className="hidden sm:block absolute left-0 top-6 bottom-6 w-px"
-                  style={{ background: "rgba(255,255,255,0.07)" }}
-                />
-              )}
-
-              {/* Animated number */}
+              {/* Top accent rule — replaces the vertical dividers, more
+                  editorial */}
               <div
-                className={`sv-${i} font-black leading-none tracking-tight text-white`}
+                aria-hidden
+                className="mb-5"
                 style={{
-                  fontSize: "clamp(2.8rem, 5vw, 5rem)",
-                  letterSpacing: "-0.04em",
+                  height: 1,
+                  width: 32,
+                  background: "rgba(255,255,255,0.18)",
+                }}
+              />
+
+              {/* Animated number — gradient white→silver, matches the hero h1 */}
+              <div
+                className={`sv-${i} font-black leading-[0.95]`}
+                style={{
+                  fontSize: "clamp(2.6rem, 5.2vw, 4.8rem)",
+                  letterSpacing: "-0.035em",
+                  background:
+                    "linear-gradient(180deg, #ffffff 0%, #c8ccd2 60%, #888 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
                 }}
               >
                 {stat.display}
               </div>
 
-              {/* Label */}
+              {/* Label — same mono caps treatment as the hero crumbs */}
               <p
-                className="font-mono uppercase mt-3"
+                className="font-mono uppercase mt-4"
                 style={{
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.25em",
-                  color: "rgba(58,142,255,0.6)",
+                  fontSize: "0.62rem",
+                  letterSpacing: "0.28em",
+                  color: "rgba(255,255,255,0.55)",
                 }}
               >
                 {stat.label}
