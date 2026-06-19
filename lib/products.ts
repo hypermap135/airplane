@@ -327,7 +327,13 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a380-emirates.png`,
-    images: [`/images/a380-emirates.png`],
+    images: [
+      `/images/airbus-a380-emirates.png`,
+      `/images/airbus-a380-emirates--3quarter-front.png`,
+      `/images/airbus-a380-emirates--3quarter-rear.png`,
+      `/images/airbus-a380-emirates--top.png`,
+      `/images/airbus-a380-emirates--shelf.png`,
+    ],
     scale: "1/160",
   },
 
