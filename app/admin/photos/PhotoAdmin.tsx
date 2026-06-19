@@ -225,6 +225,120 @@ export default function PhotoAdmin({
   const [batchPublishing, setBatchPublishing] = useState<
     null | { done: number; total: number; current?: string }
   >(null);
+  const [batchGenerating, setBatchGenerating] = useState<
+    null | { done: number; total: number; current?: string; failed: number }
+  >(null);
+
+  /**
+   * Generate the base-model preview for every product that doesn't have
+   * one yet and isn't already published / flagged problematic. Runs at
+   * a small parallelism (3 concurrent) — Gemini's rate limit on the
+   * shared key tops out around that, and the user wants the queue to
+   * actually finish in a reasonable wall-clock.
+   */
+  async function generateAllBaseModels() {
+    const candidates = products.filter((p) => {
+      const row = state[p.handle];
+      if (row?.published) return false;
+      if (row?.problematic) return false;
+      // Skip if a base preview already exists — assume the operator
+      // wants to keep what's already there (use "🔄" to redo individually).
+      if (row?.views.profile?.version) return false;
+      return true;
+    });
+    if (candidates.length === 0) return;
+
+    setBatchGenerating({ done: 0, total: candidates.length, failed: 0 });
+
+    const CONCURRENCY = 3;
+    let cursor = 0;
+    let done = 0;
+    let failed = 0;
+
+    async function worker() {
+      while (cursor < candidates.length) {
+        const idx = cursor++;
+        const p = candidates[idx];
+        setBatchGenerating({
+          done,
+          total: candidates.length,
+          current: p.title,
+          failed,
+        });
+        try {
+          // Pre-paint the loading state on the card
+          setState((s) => ({
+            ...s,
+            [p.handle]: {
+              ...(s[p.handle] ?? { views: {} }),
+              views: {
+                ...(s[p.handle]?.views ?? {}),
+                profile: { ...(s[p.handle]?.views?.profile ?? {}), processing: true },
+              },
+            },
+          }));
+          const res = await fetch("/api/admin/process", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              handle: p.handle,
+              view: "profile",
+              useCurrent: true,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "process failed");
+          setState((s) => {
+            const prev = s[p.handle] ?? { views: {} };
+            return {
+              ...s,
+              [p.handle]: {
+                ...prev,
+                views: {
+                  ...prev.views,
+                  profile: {
+                    ...prev.views.profile,
+                    processing: false,
+                    version: (prev.views.profile?.version ?? 0) + 1,
+                    validated: false,
+                  },
+                },
+              },
+            };
+          });
+          done++;
+        } catch (e) {
+          failed++;
+          setState((s) => {
+            const prev = s[p.handle] ?? { views: {} };
+            return {
+              ...s,
+              [p.handle]: {
+                ...prev,
+                views: {
+                  ...prev.views,
+                  profile: {
+                    ...prev.views.profile,
+                    processing: false,
+                    error: (e as Error).message,
+                  },
+                },
+              },
+            };
+          });
+        }
+        setBatchGenerating({
+          done,
+          total: candidates.length,
+          current: candidates[Math.min(cursor, candidates.length - 1)]?.title,
+          failed,
+        });
+      }
+    }
+
+    await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
+    setBatchGenerating(null);
+  }
 
   /**
    * Publish every product that has its base model validated and isn't
@@ -317,8 +431,22 @@ export default function PhotoAdmin({
         />
         <div className="ml-auto" />
         <button
+          onClick={generateAllBaseModels}
+          disabled={disabled || !!batchGenerating || !!batchPublishing}
+          title="Génère le modèle de base pour tous les produits qui n'en ont pas encore — 3 en parallèle"
+          className="text-[0.85rem] font-bold px-5 py-2.5 rounded-full disabled:opacity-40 transition"
+          style={{
+            background: "linear-gradient(135deg, #ffb84d, #ff8c42)",
+            color: "#06060f",
+          }}
+        >
+          {batchGenerating
+            ? `⚙️ Génération ${batchGenerating.done}/${batchGenerating.total}…`
+            : "🚀 Générer TOUS les modèles de base"}
+        </button>
+        <button
           onClick={publishAllValidated}
-          disabled={disabled || !!batchPublishing || validatedBaseCount === 0}
+          disabled={disabled || !!batchPublishing || !!batchGenerating || validatedBaseCount === 0}
           className="text-[0.85rem] font-bold px-5 py-2.5 rounded-full disabled:opacity-40 transition"
           style={{
             background:
@@ -335,6 +463,39 @@ export default function PhotoAdmin({
               : "Aucun modèle prêt"}
         </button>
       </div>
+
+      {/* Batch generation progress bar (when generating in batch) */}
+      {batchGenerating && (
+        <div className="mb-6 p-4 rounded-xl"
+          style={{
+            background: "rgba(255,140,66,0.08)",
+            border: "1px solid rgba(255,180,77,0.35)",
+          }}
+        >
+          <p className="text-[0.85rem] mb-2" style={{ color: "rgba(255,210,160,0.95)" }}>
+            ⚙️ Génération en cours : {batchGenerating.current ?? ""}
+            {batchGenerating.failed > 0 && (
+              <span className="ml-3 text-red-400/85">
+                ({batchGenerating.failed} échec{batchGenerating.failed > 1 ? "s" : ""})
+              </span>
+            )}
+          </p>
+          <div className="h-1.5 rounded-full overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.08)" }}
+          >
+            <div
+              className="h-full transition-all"
+              style={{
+                width: `${(batchGenerating.done / batchGenerating.total) * 100}%`,
+                background: "linear-gradient(90deg, #ffb84d, #ff8c42)",
+              }}
+            />
+          </div>
+          <p className="mt-1.5 font-mono text-[0.65rem] text-white/50">
+            {batchGenerating.done}/{batchGenerating.total} générés — 3 en parallèle, ~30-90s chacun
+          </p>
+        </div>
+      )}
 
       {/* Batch publishing progress bar (when active) */}
       {batchPublishing && (
