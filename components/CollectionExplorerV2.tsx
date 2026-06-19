@@ -1,73 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { PRODUCTS, COLLECTIONS, formatPrice, type Product } from "@/lib/products";
+import ProductCard from "./ProductCard";
+import { PRODUCTS, type Product } from "@/lib/products";
 
 /**
- * CollectionExplorerV2 — editorial carousel + category strip.
+ * CollectionExplorerV2 — shoppy 6-up grid + category strip.
  *
- * Replaces the dense grid with a slower-paced "icon" feel inspired by
- * Apple, Ami Paris and Aimé Leon Dore:
- *  - A horizontal snap-scroll carousel of 8 hero airplanes (oversized
- *    cards with breathing room, paging arrows, scroll progress bar).
- *  - Below, four big category tiles (Airbus / Boeing / Concorde / Jet)
- *    that funnel deep-divers into the full collection page.
+ * Replaces the editorial carousel (which felt too "exhibition" and
+ * surfaced out-of-stock planes) with a clean shop layout:
+ *  - 6 in-stock hero airplanes in a 3×2 grid using ProductCard so the
+ *    image, price and "+ Panier" button are visible at a glance.
+ *  - "Voir tout le catalogue →" CTA below to push deep-divers to /collections/all.
+ *  - 4 category tiles (Airbus / Boeing / Concorde / Jet) further down.
+ *
+ * The hero lineup is HAND-PICKED but auto-filtered against the live
+ * inStock + comingSoon flags so anything that goes out of stock drops
+ * silently and gets backfilled.
  */
 
-// Hand-picked hero lineup — one per livery / brand / vibe.
-const HERO_HANDLES = [
-  "maquette-avion-maquette-airbus-a380",          // A380 AF
-  "concorde-airfrance",                            // Concorde AF
-  "boeing-747-air-force-one",                      // 747 AFO
-  "airbus-a350-singapore",                         // A350 SQ
-  "airbus-a380-emirates",                          // A380 Emirates
-  "boeing-787-etihad-manchester-city",             // 787 Etihad x Man City
-  "airbus-a320-neo-transavia",                     // A320 Transavia
-  "jet-prive",                                     // Gulfstream G650
+// Preference order — we keep the first 6 entries that are actually
+// in stock. Cross-family on purpose so the grid shows breadth.
+const PREFERRED_HANDLES = [
+  "maquette-avion-maquette-airbus-a380",          // A380 AF (bestseller)
+  "concorde-airfrance",                            // Concorde AF (icon)
+  "maquette-avion-maquette-boeing-747",            // B747 AF (Queen of the Skies)
+  "maquette-avion-maquette-airbus-a350-airfrance", // A350 AF (new-gen)
+  "boeing-787",                                    // B787 AF (Dreamliner)
+  "jet-prive",                                     // Gulfstream G650 (jet privé)
+  // Fallbacks if any of the above goes out of stock:
+  "concorde-british",
+  "airbus-a220-air-france",
+  "boeing-777",
+  "a-321",
+  "concorde-airfrance-30cm",
 ];
 
 const CATEGORY_TILES: { slug: string; label: string; accent: string }[] = [
-  { slug: "airbus",   label: "Airbus",   accent: "#3a8eff" },
-  { slug: "boeing",   label: "Boeing",   accent: "#d97706" },
-  { slug: "concorde", label: "Concorde", accent: "#9333ea" },
+  { slug: "airbus",   label: "Airbus",    accent: "#3a8eff" },
+  { slug: "boeing",   label: "Boeing",    accent: "#d97706" },
+  { slug: "concorde", label: "Concorde",  accent: "#9333ea" },
   { slug: "jet",      label: "Jet privé", accent: "#a78bfa" },
 ];
 
 export default function CollectionExplorerV2() {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
-
-  // Resolve hero products in declared order; skip missing handles silently.
-  const heroes: Product[] = HERO_HANDLES
+  // Pull the first 6 preferred handles that are actually buyable today.
+  const heroes: Product[] = PREFERRED_HANDLES
     .map((h) => PRODUCTS.find((p) => p.handle === h))
-    .filter((p): p is Product => Boolean(p));
+    .filter((p): p is Product => Boolean(p) && p!.inStock && !p!.comingSoon)
+    .slice(0, 6);
 
-  // Count products per category for the category tiles.
   const countByCollection = (slug: string) =>
-    PRODUCTS.filter((p) => p.collection === slug).length;
-
-  // Scroll progress bar — updates as the user scrolls the carousel.
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      setProgress(max > 0 ? el.scrollLeft / max : 0);
-    };
-    onScroll();
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const scrollByCards = (dir: 1 | -1) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    // Approximate card-width step so arrows jump card-by-card.
-    const step = Math.max(320, el.clientWidth * 0.55);
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
-  };
+    PRODUCTS.filter((p) => p.collection === slug && p.inStock).length;
 
   return (
     <section
@@ -110,81 +94,35 @@ export default function CollectionExplorerV2() {
             Les icônes,<br/>une à une.
           </h2>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => scrollByCards(-1)}
-              aria-label="Précédent"
-              className="h-11 w-11 grid place-items-center transition hover:scale-110"
-              style={{
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
-            <button
-              onClick={() => scrollByCards(1)}
-              aria-label="Suivant"
-              className="h-11 w-11 grid place-items-center transition hover:scale-110"
-              style={{
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ── CAROUSEL ── */}
-      <div
-        ref={scrollerRef}
-        className="overflow-x-auto pb-6 px-6 md:px-12 xl:px-20"
-        style={{
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        <div className="flex gap-5 md:gap-6">
-          {heroes.map((p, idx) => (
-            <HeroCard key={p.id} product={p} index={idx + 1} total={heroes.length} />
-          ))}
-          {/* Spacer so the last card can scroll fully into view */}
-          <div aria-hidden style={{ minWidth: "10vw" }} />
-        </div>
-      </div>
-
-      {/* ── PROGRESS BAR ── */}
-      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 mt-2">
-        <div
-          className="relative h-px"
-          style={{ background: "rgba(255,255,255,0.06)" }}
-        >
-          <div
-            className="absolute inset-y-0 left-0 transition-[width] duration-100"
+          <Link
+            href="/collections/all"
+            className="inline-flex items-center gap-2 transition-transform hover:scale-[1.02]"
             style={{
-              width: `${Math.max(8, progress * 100)}%`,
-              background: "linear-gradient(90deg, rgba(58,142,255,0.85) 0%, rgba(120,180,255,1) 100%)",
-              boxShadow: "0 0 10px rgba(58,142,255,0.4)",
+              padding: "0.75rem 1.4rem",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "rgba(255,255,255,0.85)",
+              fontSize: "0.78rem",
+              fontWeight: 600,
             }}
-          />
+          >
+            Voir tout le catalogue →
+          </Link>
+        </div>
+      </div>
+
+      {/* ── 6-UP SHOPPY GRID ── */}
+      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20">
+        <div className="grid gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {heroes.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
         </div>
       </div>
 
       {/* ── CATEGORY TILES ── */}
-      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 mt-14 md:mt-20">
+      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 mt-16 md:mt-24">
         <div className="flex items-center gap-3 mb-6">
           <div aria-hidden style={{ width: 20, height: 1, background: "rgba(255,255,255,0.25)" }} />
           <span
@@ -211,118 +149,7 @@ export default function CollectionExplorerV2() {
   );
 }
 
-/* ── HeroCard — XL editorial card ───────────────────────────────────────── */
-
-function HeroCard({ product, index, total }: { product: Product; index: number; total: number }) {
-  return (
-    <Link
-      href={`/products/${product.handle}`}
-      className="group shrink-0 relative overflow-hidden"
-      style={{
-        scrollSnapAlign: "start",
-        width: "clamp(280px, 42vw, 520px)",
-        aspectRatio: "3/4",
-        borderRadius: 20,
-        background: "linear-gradient(160deg,#0c0c1c 0%,#06060f 100%)",
-        border: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      {/* Index counter — top-left */}
-      <div className="absolute top-4 left-4 z-10">
-        <span
-          className="font-mono uppercase"
-          style={{
-            fontSize: "0.58rem",
-            letterSpacing: "0.24em",
-            color: "rgba(255,255,255,0.45)",
-            padding: "0.35rem 0.7rem",
-            borderRadius: 999,
-            background: "rgba(8,8,20,0.6)",
-            border: "1px solid rgba(255,255,255,0.10)",
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          {String(index).padStart(2, "0")} / {String(total).padStart(2, "0")}
-        </span>
-      </div>
-
-      {/* Bestseller / promo badge — top-right */}
-      {product.compareAt && (
-        <div
-          className="absolute top-4 right-4 z-10 px-2 py-0.5 text-[0.7rem] font-black"
-          style={{ borderRadius: 6, background: "#fff", color: "#010108" }}
-        >
-          −{Math.round(100 - (product.price / product.compareAt) * 100)}%
-        </div>
-      )}
-
-      {/* Image — full bleed with subtle Ken-Burns on hover */}
-      <div className="absolute inset-0">
-        <Image
-          src={product.image}
-          alt={product.title}
-          fill
-          sizes="(min-width: 1024px) 42vw, 86vw"
-          quality={92}
-          className="object-contain transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-          style={{ padding: "8%" }}
-        />
-      </div>
-
-      {/* Bottom gradient + meta */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-2/3 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to top, rgba(3,3,8,0.92) 0%, rgba(3,3,8,0.55) 45%, transparent 100%)",
-        }}
-      />
-
-      <div className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-6">
-        <p
-          className="font-mono uppercase mb-2"
-          style={{
-            fontSize: "0.55rem",
-            letterSpacing: "0.24em",
-            color: "rgba(120,180,255,0.85)",
-          }}
-        >
-          {product.collection}{product.scale ? ` · ${product.scale}` : ""}
-        </p>
-
-        <h3
-          className="font-bold text-white mb-2 leading-tight"
-          style={{ fontSize: "clamp(1.05rem, 2vw, 1.4rem)", letterSpacing: "-0.015em" }}
-        >
-          {product.title}
-        </h3>
-
-        <div className="flex items-baseline justify-between gap-3">
-          <span
-            className="font-black text-white"
-            style={{ fontSize: "1.15rem", letterSpacing: "-0.02em" }}
-          >
-            {formatPrice(product.price)}
-          </span>
-
-          <span
-            className="font-mono uppercase opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{
-              fontSize: "0.58rem",
-              letterSpacing: "0.22em",
-              color: "rgba(255,255,255,0.7)",
-            }}
-          >
-            Découvrir →
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/* ── CategoryTile — big collection card ─────────────────────────────────── */
+/* ── CategoryTile — collection card with giant faded background label ──── */
 
 function CategoryTile({
   slug,
@@ -346,7 +173,6 @@ function CategoryTile({
         border: `1px solid ${accent}22`,
       }}
     >
-      {/* Faint giant label in the bg */}
       <span
         aria-hidden
         className="absolute font-black uppercase select-none"
@@ -373,7 +199,7 @@ function CategoryTile({
             color: `${accent}cc`,
           }}
         >
-          {count} modèles
+          {count} modèle{count > 1 ? "s" : ""}
         </p>
 
         <div>
