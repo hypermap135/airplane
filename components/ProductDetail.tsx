@@ -7,6 +7,8 @@ import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, related, getProduct, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
 import ProductCard from "./ProductCard";
+import AirplaneStorySection from "./AirplaneStory";
+import { getStory } from "@/lib/airplane-stories";
 
 // For each plane handle, the pack to up-sell on its detail page.
 const PACK_UPSELL: Record<string, string> = {
@@ -582,6 +584,25 @@ export default function ProductDetail({ product }: { product: Product }) {
             </div>
           </div>
         </div>
+
+        {/* Editorial story — only shown for products with content authored */}
+        {(() => {
+          const s = getStory(product.handle);
+          if (!s) return null;
+          // Prefer the 3quarter-front shot for the editorial hero.
+          const gallery = product.images && product.images.length > 0
+            ? product.images
+            : [product.image];
+          const hero = gallery[1] ?? gallery[0];
+          return (
+            <AirplaneStorySection
+              story={s.model}
+              livery={s.livery}
+              heroImage={hero}
+              heroAlt={product.title}
+            />
+          );
+        })()}
 
         {/* Related products */}
         {relatedItems.length > 0 && (

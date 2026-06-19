@@ -59,12 +59,16 @@ export default function ProductCard({
   };
 
   return (
-    <>
     <motion.div
       whileHover={{ scale: 1.025 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      style={{ borderRadius: "1.25rem", overflow: "hidden" }}
+      style={{ borderRadius: "1.25rem", overflow: "hidden", position: "relative" }}
     >
+      <QuickViewModal
+        product={product}
+        open={quickOpen}
+        onClose={() => setQuickOpen(false)}
+      />
       <Link href={`/products/${product.handle}`} className="block relative group" style={{ background: "#080810" }}>
 
         {/* ── Image block ── */}
@@ -251,12 +255,5 @@ export default function ProductCard({
         </div>
       </Link>
     </motion.div>
-
-    <QuickViewModal
-      product={product}
-      open={quickOpen}
-      onClose={() => setQuickOpen(false)}
-    />
-    </>
   );
 }
