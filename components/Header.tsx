@@ -52,39 +52,46 @@ export default function Header() {
             backdropFilter: "blur(12px)",
           }}
         >
-          <span
-            className="font-mono text-[0.6rem] tracking-[0.22em] uppercase"
-            style={{ color: "rgba(180,210,255,0.8)" }}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("airplane:open-discount"))}
+            className="flex items-center gap-1.5 cursor-pointer transition-transform hover:scale-[1.02]"
+            style={{ background: "none", border: "none", padding: 0 }}
           >
-            ✈ Offre limitée&nbsp;·&nbsp;
-          </span>
-          <span
-            className="font-mono text-[0.6rem] tracking-[0.18em] uppercase"
-            style={{ color: "rgba(255,255,255,0.5)", margin: "0 0.4rem" }}
-          >
-            –10% sur votre 1re commande avec
-          </span>
-          <span
-            className="font-mono text-[0.62rem] font-bold tracking-[0.18em] px-2 py-0.5 mx-1"
-            style={{
-              background: "linear-gradient(135deg, #c8ccd0, #f0f2f5)",
-              color: "#010108",
-              borderRadius: 4,
-            }}
-          >
-            TAKEOFF10
-          </span>
-          <span
-            className="font-mono text-[0.6rem] tracking-[0.18em] uppercase hidden sm:inline"
-            style={{ color: "rgba(255,255,255,0.3)", marginLeft: "0.5rem" }}
-          >
-            · Livraison offerte dès 100€
-          </span>
+            <span
+              className="font-mono text-[0.6rem] tracking-[0.22em] uppercase"
+              style={{ color: "rgba(180,210,255,0.85)" }}
+            >
+              ✈ Offre limitée&nbsp;·&nbsp;
+            </span>
+            <span
+              className="font-mono text-[0.6rem] tracking-[0.18em] uppercase font-semibold"
+              style={{ color: "rgba(255,255,255,0.95)" }}
+            >
+              Obtenez votre code −10%
+            </span>
+            <span
+              className="font-mono text-[0.62rem] font-bold tracking-[0.18em] px-2 py-0.5 mx-1"
+              style={{
+                background: "linear-gradient(135deg, #ffe28a 0%, #ffb84d 100%)",
+                color: "#1a0e00",
+                borderRadius: 4,
+              }}
+            >
+              Cliquer →
+            </span>
+            <span
+              className="font-mono text-[0.6rem] tracking-[0.18em] uppercase hidden sm:inline"
+              style={{ color: "rgba(255,255,255,0.3)", marginLeft: "0.5rem" }}
+            >
+              · Livraison offerte dès 100€
+            </span>
+          </button>
           <button
             onClick={() => setAnnounceClosed(true)}
             aria-label="Fermer"
             className="absolute right-3 top-1/2 -translate-y-1/2 opacity-40 hover:opacity-80 transition-opacity"
-            style={{ color: "white", fontSize: "1rem", lineHeight: 1 }}
+            style={{ color: "white", fontSize: "1rem", lineHeight: 1, background: "none", border: "none", cursor: "pointer" }}
           >
             ×
           </button>

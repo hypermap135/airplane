@@ -36,6 +36,16 @@ export default function ExitIntentModal() {
     pathname.startsWith("/products/") ||
     pathname === "/favoris";
 
+  // Manual trigger from anywhere in the app (e.g. the announcement
+  // bar CTA "Obtenez votre code"). Listened on ALL routes, even where
+  // the auto exit-intent is skipped — the user explicitly asked for it.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onOpen = () => setOpen(true);
+    window.addEventListener("airplane:open-discount", onOpen);
+    return () => window.removeEventListener("airplane:open-discount", onOpen);
+  }, []);
+
   useEffect(() => {
     if (skip) return;
     if (typeof window === "undefined") return;
@@ -74,7 +84,10 @@ export default function ExitIntentModal() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  if (!mounted || skip) return null;
+  // Always mount — the auto exit-intent honours `skip`, but the
+  // manual trigger (announcement bar CTA) must work on every route,
+  // including the ones we skip for auto-fire (PDP, /favoris).
+  if (!mounted) return null;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
