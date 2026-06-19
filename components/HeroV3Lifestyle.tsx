@@ -35,13 +35,13 @@ export default function HeroV3Lifestyle() {
         style={{ objectPosition: "center 60%" }}
       />
 
-      {/* Vignettes for legibility — soft black gradient at the bottom
-          (text band) and a subtle one at the top (chrome / pill) */}
+      {/* Vignette gradient — strong at top (where the text band lives
+          now) and a touch at the bottom so the desk reads cleanly. */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(10,10,18,0.65) 0%, rgba(10,10,18,0.0) 18%, rgba(10,10,18,0.0) 45%, rgba(10,10,18,0.85) 100%)",
+            "linear-gradient(to bottom, rgba(10,10,18,0.78) 0%, rgba(10,10,18,0.35) 35%, rgba(10,10,18,0.0) 60%, rgba(10,10,18,0.0) 80%, rgba(10,10,18,0.55) 100%)",
         }}
       />
 
@@ -91,11 +91,11 @@ export default function HeroV3Lifestyle() {
         </span>
       </motion.div>
 
-      {/* ── Editorial tagline (bottom-left) ── */}
+      {/* ── Editorial tagline (top-left, under the crumb) ── */}
       <div
         className="absolute left-0 right-0 z-10"
         style={{
-          bottom: "clamp(2.5rem, 7vh, 5rem)",
+          top: "clamp(7rem, 18vh, 11rem)",
           padding: "0 clamp(1.5rem, 6vw, 4rem)",
         }}
       >
