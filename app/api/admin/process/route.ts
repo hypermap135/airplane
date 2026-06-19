@@ -39,19 +39,21 @@ type ViewSpec = {
 const VIEWS: Record<string, ViewSpec> = {
   profile: {
     label: "Modèle de base",
-    // CANONICAL ORIENTATION: NOSE ALWAYS TO THE RIGHT, across every view.
-    // Same direction as a takeoff roll on a runway — the eye reads the
-    // airplane from tail to nose, left to right. Mixing directions kills
-    // the catalog consistency.
+    // CANONICAL ORIENTATION: NOSE ALWAYS TO THE LEFT — house style chosen
+    // from the A380 Emirates reference photo. Camera is positioned to the
+    // FRONT-RIGHT, looking at the LEFT side of the fuselage with the nose
+    // pointing to the LEFT of the frame, tail to the right.
     angleClause:
-      "STANDARD CATALOG VIEW (the cover shot). Camera placed at a slight " +
-      "front-side angle, ~20° off the centerline, ~10° above the wing. " +
-      "Result: we see the LEFT side of the fuselage with the NOSE POINTING " +
-      "TO THE RIGHT of the frame, the cockpit windows visible at the right, " +
-      "the tail at the left, the near wing slightly foreshortened, both " +
-      "engines visible underneath. This is NOT a pure side profile and NOT " +
-      "a front view — it's the slight 3/4 cover shot used as the catalog " +
-      "thumbnail.",
+      "STANDARD CATALOG VIEW (the cover shot — house style). Camera placed " +
+      "to the FRONT-RIGHT of the airplane at ~25° off the centerline and " +
+      "~10° above the wing, so we see the RIGHT side of the fuselage with " +
+      "the NOSE POINTING TO THE LEFT of the frame and the TAIL to the " +
+      "RIGHT. Cockpit windows visible on the left, both engines visible " +
+      "under the wings, the wooden display stand fully in shot underneath. " +
+      "This is the catalog thumbnail orientation — NOT a side profile, NOT " +
+      "a head-on view, NOT mirrored. House-style reference: an A380 Emirates " +
+      "1:144 model floating above its chrome arm on a walnut base, nose " +
+      "left, three-quarter front-right view.",
   },
   "3quarter-front": {
     label: "3/4 avant",
@@ -188,23 +190,33 @@ const PRODUCT_PROMPT_OVERRIDES: Record<string, string> = {
 
 /** ONE unified studio scene shared by every standard view. Same exact
  *  background, lighting, and framing across all products — only the
- *  airplane changes. Catalog grid stays visually coherent. */
+ *  airplane changes. Catalog grid stays visually coherent.
+ *
+ *  Reference image: the A380 Emirates 1:144 model on a walnut base —
+ *  dark charcoal vignette background, single warm halo of light pooling
+ *  on the ground under the wooden stand, airplane perfectly centered. */
 const STUDIO_SCENE =
-  "BACKGROUND — fixed dark charcoal studio: gentle radial gradient from " +
-  "#1c1c26 at center to #0a0a12 at corners. Fully opaque, smooth, " +
-  "uniform across every product — IDENTICAL background on every shot, no " +
-  "props, no clutter, no extra lighting effects, no shadow on the wall.\n" +
+  "BACKGROUND — fixed dark charcoal studio matching the house reference. " +
+  "Top two-thirds of the frame: a very deep charcoal/near-black backdrop " +
+  "(#15151c at the top fading to #1f1f28 lower). Bottom third: a slightly " +
+  "warmer charcoal floor (#22222a) so we feel ground vs wall, with a " +
+  "subtle elliptical pool of warm light glowing UNDER the wooden stand " +
+  "(creating a soft halo / vignette on the ground). Fully opaque, smooth, " +
+  "IDENTICAL background on every product — no props, no clutter, no " +
+  "horizon line, no second light source on the wall.\n" +
   "FRAME — perfectly SQUARE 1:1 canvas. The airplane (with its wooden " +
   "stand) is centered horizontally, fills exactly 80% of the canvas " +
   "width, with generous margin so wingtips, tail and nose are FULLY " +
-  "VISIBLE — never cropped, never touching the edges. SAME framing across " +
-  "every product in the catalog.\n" +
+  "VISIBLE — never cropped, never touching the edges. The wooden stand " +
+  "sits in the LOWER THIRD of the frame, the airplane in the UPPER " +
+  "TWO-THIRDS. SAME exact framing across every product in the catalog.\n" +
   "LIGHTING — single soft warm key-light from upper-left at ~45°, subtle " +
-  "gloss on the fuselage paint, a soft contact shadow only DIRECTLY UNDER " +
-  "the wooden stand. No rim light, no second source, no colored gels.\n" +
+  "gloss on the fuselage paint. The warm pool of light under the stand " +
+  "creates a halo on the ground (matches house reference). No rim light " +
+  "on the wall, no colored gels.\n" +
   "QUALITY — clean opaque surfaces everywhere, sharp focus on the " +
-  "airplane, no halo, no haze, no faded edges, no partial transparency. " +
-  "Premium luxury aviation catalog vibe.";
+  "airplane, no halo around the silhouette, no haze, no faded edges, " +
+  "no partial transparency. Premium luxury aviation catalog vibe.";
 
 function buildPromptForView(view: string, handle: string): string {
   const spec = VIEWS[view] ?? VIEWS.profile;
