@@ -66,11 +66,7 @@ const PACK_VIEWS: Record<PackView, string> = {
     "frame, planes centered, ~20% breathing room above and below. Noses " +
     "to the LEFT.",
   desk:
-    "CAMERA — slight three-quarter front-right angle, lower viewpoint as " +
-    "if the shelf were mounted at desk-height. Wide framing. Noses to the " +
-    "LEFT. (Same shelf staging — NO desk surface, NO notebook, NO lamp; " +
-    "just the shelf and the planes on the matte black wall, only the " +
-    "camera position changes.)",
+    "__OFFICE_DESK_SCENE__",
 };
 
 const PACK_STUDIO_SCENE =
@@ -195,37 +191,78 @@ export async function POST(req: NextRequest) {
 
   const titles = sourceHandles.map(planeTitle);
   const numbered = titles.map((t, i) => `(image ${i + 1}) ${t}`).join("\n  ");
-  let prompt =
-    `Compose a SINGLE catalog product photo of the "${planeTitle(handle)}" — ` +
-    `a curated collection of ${sourceHandles.length} airplane models on ` +
-    `wooden display stands.\n\n` +
+  const COMMON_RULES =
     `THE ${sourceHandles.length} AIRPLANES (one source image attached for ` +
     `each, in this exact order):\n  ${numbered}\n\n` +
-    `MANDATORY COMPOSITION (zero tolerance):\n` +
+    `MANDATORY (zero tolerance):\n` +
     `1. Show ALL ${sourceHandles.length} airplanes — count them: ` +
-    `${sourceHandles.length} DISTINCT, SEPARATE airplane models in the frame. ` +
-    `Not two, not four — exactly ${sourceHandles.length}. ` +
-    `If any model is missing or duplicated, the image is REJECTED.\n` +
-    `2. Each airplane sits on its OWN individual wooden display stand ` +
-    `(separate base, separate chrome arm). No shared base. The ` +
-    `${sourceHandles.length} stands are aligned in a row, evenly spaced ` +
-    `with clear gap between each (~10% of the airplane's width).\n` +
-    `3. Order LEFT to RIGHT by physical size, SMALLEST on the LEFT, ` +
-    `LARGEST on the RIGHT. (For Airbus: A320 left, A350 middle, A380 right. ` +
-    `For Boeing: 737/787 left, 747/777 right.)\n` +
-    `4. Each airplane is FULLY VISIBLE — no overlap, no occlusion, no ` +
-    `tail/wing cropped, no plane hidden behind another. Generous margin ` +
-    `around the group.\n` +
-    `5. Each airplane keeps its OWN livery EXACTLY as shown in its source ` +
-    `image (airline name, colors, decals, registration). Never mix two ` +
+    `${sourceHandles.length} DISTINCT, SEPARATE models. Not less, not more. ` +
+    `If missing or duplicated, the image is REJECTED.\n` +
+    `2. Each airplane keeps its OWN livery EXACTLY as in its source ` +
+    `(airline wordmark, colors, decals, registration). Never mix two ` +
     `liveries onto one plane.\n` +
-    `6. Sizes are roughly proportional to the real-life aircraft — the ` +
-    `bigger model in real life is the bigger model in the frame.\n\n` +
-    `${PACK_VIEWS[viewKey]}\n\n` +
-    PACK_STUDIO_SCENE +
-    (PACK_SCENE_OVERRIDES[handle] ? "\n\n" + PACK_SCENE_OVERRIDES[handle] : "") +
-    "\n\nREMOVE floating watermarks, URLs, gold-plane glyphs. KEEP every " +
-    "painted marking on each airplane.";
+    `3. Each airplane is FULLY VISIBLE — no occlusion, no cropping.`;
+
+  let prompt: string;
+  if (viewKey === "desk") {
+    // The "desk" view is a totally different scene: a realistic office
+    // desk with the airplanes artistically scattered on it, alongside
+    // a closed laptop, a vintage lamp, books, a coffee mug. Lifestyle
+    // catalog vibe — the planes feel "lived with", not aligned on a
+    // shelf.
+    prompt =
+      `Compose a SINGLE lifestyle catalog photo for the "${planeTitle(handle)}" — ` +
+      `the ${sourceHandles.length} airplane models displayed on a real ` +
+      `office desk, like a collector's workspace.\n\n` +
+      `${COMMON_RULES}\n\n` +
+      `OFFICE DESK SCENE (mandatory):\n` +
+      `• Surface: a real DARK WALNUT WOOD DESK SURFACE filling the lower ` +
+      `  ~55% of the square 1:1 frame, edge of the desk visible at the ` +
+      `  very bottom.\n` +
+      `• Other desk objects (must be present and recognizable, not just ` +
+      `  blurred shapes): a slim CLOSED LAPTOP at the back-left, a small ` +
+      `  brass DESK LAMP at the back-right (lit, casting a warm glow), a ` +
+      `  short stack of 2-3 HARDCOVER BOOKS, a CERAMIC COFFEE MUG, maybe ` +
+      `  a leather notebook or a pair of vintage aviator glasses. Real ` +
+      `  objects in sharp focus, not bokeh.\n` +
+      `• Background: a neutral warm-grey wall behind the desk, softly ` +
+      `  lit, with a hint of natural daylight from the upper-left ` +
+      `  (window-style).\n` +
+      `• THE ${sourceHandles.length} AIRPLANES are placed AESTHETICALLY ` +
+      `  on the desk surface — NOT aligned in a row, NOT on a shelf. ` +
+      `  Each on its own wooden stand, scattered at slightly different ` +
+      `  depths and angles (e.g. one on the left front, one in the ` +
+      `  center back, one on the right) so the composition feels ` +
+      `  curated, not catalogued. Noses can point different directions.\n` +
+      `• Composition: square 1:1, the desk fills the lower half, the wall ` +
+      `  / desk objects fill the upper half, the airplanes are the focal ` +
+      `  point but the desk reads as a real workspace.\n` +
+      `• Lighting: soft warm daylight upper-left + the brass lamp's ` +
+      `  warm glow on the right. Gentle gloss on every fuselage. Sharp ` +
+      `  focus on everything (no shallow depth-of-field).\n` +
+      `• Premium executive collector vibe — the image must make the viewer ` +
+      `  want to recreate this scene on their own desk.\n\n` +
+      "REMOVE floating watermarks, URLs, gold-plane glyphs. KEEP every " +
+      "painted marking on each airplane.";
+  } else {
+    // Default: shelf staging (covers profile / 3qf / 3qr / top / shelf).
+    prompt =
+      `Compose a SINGLE catalog product photo of the "${planeTitle(handle)}" — ` +
+      `a curated collection of ${sourceHandles.length} airplane models on ` +
+      `wooden display stands.\n\n` +
+      `${COMMON_RULES}\n` +
+      `4. Each airplane sits on its OWN individual wooden display stand ` +
+      `(separate base, separate chrome arm). The ${sourceHandles.length} ` +
+      `stands are aligned in a row, evenly spaced (clear gap between each).\n` +
+      `5. Order LEFT to RIGHT by physical size, SMALLEST on the LEFT, ` +
+      `LARGEST on the RIGHT.\n` +
+      `6. Sizes are roughly proportional to the real-life aircraft.\n\n` +
+      `${PACK_VIEWS[viewKey]}\n\n` +
+      PACK_STUDIO_SCENE +
+      (PACK_SCENE_OVERRIDES[handle] ? "\n\n" + PACK_SCENE_OVERRIDES[handle] : "") +
+      "\n\nREMOVE floating watermarks, URLs, gold-plane glyphs. KEEP every " +
+      "painted marking on each airplane.";
+  }
 
   const cleanExtra =
     typeof extraPrompt === "string"

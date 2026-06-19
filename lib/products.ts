@@ -616,10 +616,6 @@ export const PRODUCTS: Product[] = [
     image: `/images/pack-prestige-air-france.png`,
     images: [
       `/images/pack-prestige-air-france.png`,
-      `/images/pack-prestige-air-france--3quarter-front.png`,
-      `/images/pack-prestige-air-france--3quarter-rear.png`,
-      `/images/pack-prestige-air-france--top.png`,
-      `/images/pack-prestige-air-france--shelf.png`,
       `/images/pack-prestige-air-france--desk.png`,
       `/images/maquette-avion-maquette-airbus-a380--3quarter-front.png`,
       `/images/maquette-avion-maquette-airbus-a380--desk.png`,
@@ -643,10 +639,6 @@ export const PRODUCTS: Product[] = [
     image: `/images/pack-trio-airbus-premium-a320-a350-a380.png`,
     images: [
       `/images/pack-trio-airbus-premium-a320-a350-a380.png`,
-      `/images/pack-trio-airbus-premium-a320-a350-a380--3quarter-front.png`,
-      `/images/pack-trio-airbus-premium-a320-a350-a380--3quarter-rear.png`,
-      `/images/pack-trio-airbus-premium-a320-a350-a380--top.png`,
-      `/images/pack-trio-airbus-premium-a320-a350-a380--shelf.png`,
       `/images/pack-trio-airbus-premium-a320-a350-a380--desk.png`,
       `/images/a320-neo--3quarter-front.png`,
       `/images/a320-neo--desk.png`,
@@ -669,10 +661,6 @@ export const PRODUCTS: Product[] = [
     image: `/images/pack-collection-boeing.png`,
     images: [
       `/images/pack-collection-boeing.png`,
-      `/images/pack-collection-boeing--3quarter-front.png`,
-      `/images/pack-collection-boeing--3quarter-rear.png`,
-      `/images/pack-collection-boeing--top.png`,
-      `/images/pack-collection-boeing--shelf.png`,
       `/images/pack-collection-boeing--desk.png`,
       `/images/boeing-787--3quarter-front.png`,
       `/images/boeing-787--desk.png`,
@@ -695,10 +683,6 @@ export const PRODUCTS: Product[] = [
     image: `/images/pack-duo.png`,
     images: [
       `/images/pack-duo.png`,
-      `/images/pack-duo--3quarter-front.png`,
-      `/images/pack-duo--3quarter-rear.png`,
-      `/images/pack-duo--top.png`,
-      `/images/pack-duo--shelf.png`,
       `/images/pack-duo--desk.png`,
       `/images/a320-neo--3quarter-front.png`,
       `/images/a320-neo--desk.png`,
