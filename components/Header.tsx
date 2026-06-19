@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useCart, useCartDrawer } from "@/lib/cart";
+import { useWishlist } from "@/lib/wishlist";
 import { COLLECTIONS } from "@/lib/products";
 
 const NAV_LINKS = [
@@ -19,6 +20,7 @@ const NAV_LINKS = [
 export default function Header() {
   const { count } = useCart();
   const { toggle } = useCartDrawer();
+  const wishlist = useWishlist();
   const [scrolled, setScrolled]     = useState(false);
   const [menuOpen, setMenuOpen]     = useState(false);
   const [announceClosed, setAnnounceClosed] = useState(false);
@@ -228,6 +230,43 @@ export default function Header() {
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
+            {/* Wishlist heart pill */}
+            <Link
+              href="/favoris"
+              aria-label={`Mes favoris${wishlist.count > 0 ? ` (${wishlist.count})` : ""}`}
+              className="relative inline-flex items-center justify-center transition-all duration-300"
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 999,
+                border: "1px solid rgba(255,255,255,0.15)",
+                background: "rgba(255,255,255,0.04)",
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(226,75,74,0.5)";
+                (e.currentTarget as HTMLElement).style.background = "rgba(226,75,74,0.1)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
+                (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlist.count > 0 ? "#ff4a4a" : "none"} stroke={wishlist.count > 0 ? "#ff4a4a" : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+              {wishlist.count > 0 && (
+                <span
+                  className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 grid place-items-center rounded-full text-[0.62rem] font-bold"
+                  style={{
+                    background: "#ff4a4a",
+                    color: "#fff",
+                  }}
+                >
+                  {wishlist.count}
+                </span>
+              )}
+            </Link>
+
             {/* Cart / PANIER button — premium pill */}
             <button
               onClick={toggle}

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
+import { useWishlist } from "@/lib/wishlist";
 import { useState } from "react";
 
 /**
@@ -23,7 +24,15 @@ export default function ProductCard({
 }) {
   const { add }      = useCart();
   const { setOpen }  = useCartDrawer();
+  const wishlist     = useWishlist();
   const [imgError, setImgError] = useState(false);
+  const liked = wishlist.has(product.handle);
+
+  const onToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    wishlist.toggle(product.handle);
+  };
 
   const onAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -104,6 +113,37 @@ export default function ProductCard({
               –{Math.round(100 - (product.price / product.compareAt) * 100)}%
             </div>
           )}
+
+          {/* Wishlist heart — bottom-right of the image area */}
+          <button
+            onClick={onToggleWishlist}
+            aria-label={liked ? "Retirer des favoris" : "Ajouter aux favoris"}
+            aria-pressed={liked}
+            className="absolute bottom-3 right-3 w-8 h-8 grid place-items-center transition-all hover:scale-110"
+            style={{
+              borderRadius: 999,
+              background: liked ? "rgba(226,75,74,0.18)" : "rgba(8,8,20,0.7)",
+              border: liked
+                ? "1px solid rgba(226,75,74,0.6)"
+                : "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(8px)",
+              cursor: "pointer",
+            }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill={liked ? "#ff4a4a" : "none"}
+              stroke={liked ? "#ff4a4a" : "rgba(255,255,255,0.85)"}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
 
           {/* Out of stock overlay */}
           {!product.inStock && (

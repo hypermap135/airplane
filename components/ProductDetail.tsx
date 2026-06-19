@@ -29,8 +29,22 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [submitted, setSubmitted] = useState(false);
   const [gravure, setGravure] = useState(false);
   const [thumbErrors, setThumbErrors] = useState<Record<number, boolean>>({});
+  const [showSticky, setShowSticky] = useState(false);
   const { add } = useCart();
   const { setOpen } = useCartDrawer();
+
+  // Sticky add-to-cart appears when the primary CTA is scrolled out of view
+  useEffect(() => {
+    if (!product.inStock) return;
+    const target = document.getElementById("primary-add-to-cart");
+    if (!target) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setShowSticky(!entry.isIntersecting),
+      { rootMargin: "-80px 0px 0px 0px" }, // account for the site header
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [product.inStock]);
 
   const GRAVURE_VARIANT_ID = "53749941698900";
 
@@ -351,10 +365,53 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
 
+            {/* Urgency signals — only when in stock */}
+            {product.inStock && (
+              <div
+                className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-2"
+                style={{
+                  fontSize: "0.72rem",
+                  color: "rgba(255,255,255,0.78)",
+                }}
+              >
+                <div
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                  style={{
+                    background: "rgba(255,180,77,0.08)",
+                    border: "1px solid rgba(255,180,77,0.28)",
+                  }}
+                >
+                  <span aria-hidden style={{ color: "#ffb84d" }}>⚡</span>
+                  <span>Stock limité — pièce numérotée</span>
+                </div>
+                <div
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                  style={{
+                    background: "rgba(34,197,94,0.08)",
+                    border: "1px solid rgba(94,220,140,0.3)",
+                  }}
+                >
+                  <span aria-hidden style={{ color: "#7df09f" }}>🚚</span>
+                  <span>Livré sous 7-15 jours ouvrés</span>
+                </div>
+                <div
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                  style={{
+                    background: "rgba(120,180,255,0.08)",
+                    border: "1px solid rgba(120,180,255,0.28)",
+                  }}
+                >
+                  <span aria-hidden style={{ color: "#9cc6ff" }}>↩️</span>
+                  <span>Retour gratuit 30j sans condition</span>
+                </div>
+              </div>
+            )}
+
             {/* CTA */}
             <div className="mb-4">
               {product.inStock ? (
                 <motion.button
+                  id="primary-add-to-cart"
                   onClick={onAdd}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -465,6 +522,72 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         )}
       </div>
+
+      {/* ── Sticky add-to-cart bar (mobile + desktop) ── */}
+      <AnimatePresence>
+        {showSticky && product.inStock && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed left-0 right-0 bottom-0 z-40"
+            style={{
+              background: "rgba(8,8,18,0.92)",
+              backdropFilter: "blur(14px)",
+              borderTop: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 -10px 40px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div className="mx-auto max-w-[1440px] px-4 md:px-12 py-3 flex items-center gap-3 md:gap-5">
+              {/* Thumb */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={product.image}
+                alt=""
+                aria-hidden
+                className="w-12 h-12 md:w-14 md:h-14 object-contain rounded-lg shrink-0"
+                style={{
+                  background: "#0a0a14",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              />
+              {/* Title + price */}
+              <div className="min-w-0 flex-1">
+                <p className="text-white font-semibold text-[0.85rem] md:text-[0.95rem] truncate">
+                  {product.title}
+                </p>
+                <p
+                  className="font-mono text-[0.65rem] md:text-[0.7rem] mt-0.5"
+                  style={{ color: "rgba(255,255,255,0.55)", letterSpacing: "0.08em" }}
+                >
+                  {formatPrice(product.price + (gravure ? 15 : 0))}
+                  {gravure && (
+                    <span style={{ color: "rgba(58,142,255,0.8)" }}> · gravure incluse</span>
+                  )}
+                </p>
+              </div>
+              {/* Action */}
+              <motion.button
+                onClick={onAdd}
+                whileTap={{ scale: 0.96 }}
+                className="font-bold text-white text-[0.8rem] md:text-[0.85rem] tracking-[0.08em] uppercase shrink-0 transition-all"
+                style={{
+                  padding: "0.85rem 1.4rem",
+                  borderRadius: "0.75rem",
+                  background: "linear-gradient(135deg, #1a4aff, #0a2fd4)",
+                  boxShadow: "0 4px 16px rgba(26,74,255,0.4)",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <span className="hidden md:inline">Ajouter au panier →</span>
+                <span className="md:hidden">Ajouter →</span>
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
