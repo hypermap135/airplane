@@ -101,14 +101,9 @@ function productLd(product: Product) {
         applicableCountry: "FR",
       },
     },
-    aggregateRating: {
-      // Site-wide aggregate (matches what's shown on /stats).
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      reviewCount: "347",
-      bestRating: "5",
-      worstRating: "1",
-    },
+    // aggregateRating intentionally omitted until real customer reviews
+    // are wired in — Google penalises sites that emit fabricated review
+    // data, even if the visible UI shows placeholder stars.
   };
 }
 

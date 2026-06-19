@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice } from "@/lib/products";
 import { checkoutUrl, DISCOUNT_CODE } from "@/lib/shopify";
 import { trackMeta } from "@/lib/meta";
 
 const FREE_SHIPPING_THRESHOLD = 100;
+const EMAIL_STORAGE_KEY = "airplanestore.lead-email";
 
 export default function CartDrawer() {
   const { open, setOpen } = useCartDrawer();
@@ -15,6 +16,36 @@ export default function CartDrawer() {
   const [promo, setPromo] = useState(DISCOUNT_CODE);
   const [promoApplied, setPromoApplied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailSaved, setEmailSaved] = useState(false);
+
+  // Restore on mount — don't re-ask if we already captured this visitor.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (localStorage.getItem(EMAIL_STORAGE_KEY)) setEmailSaved(true);
+  }, []);
+
+  const submitEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const v = email.trim().toLowerCase();
+    if (!v.includes("@")) return;
+    setEmailSaved(true);
+    localStorage.setItem(EMAIL_STORAGE_KEY, v);
+    trackMeta("Lead", {
+      content_name: "cart_capture",
+      value: subtotal,
+      currency: "EUR",
+    });
+    try {
+      await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: v, source: "cart-drawer" }),
+      });
+    } catch {
+      /* don't surface backend errors to the buyer */
+    }
+  };
 
   const discount = promoApplied && promo.trim().toUpperCase() === DISCOUNT_CODE ? 0.1 : 0;
   const discountAmount = subtotal * discount;
@@ -241,6 +272,34 @@ export default function CartDrawer() {
         </div>
 
         <div className="border-t border-ink-border px-5 py-5 space-y-4 bg-ink-700/60">
+          {/* Email capture — only shown when there's at least one item */}
+          {entries.length > 0 && !emailSaved && (
+            <form onSubmit={submitEmail}>
+              <div className="hud text-white/50 mb-2">📧 Garder le panier</div>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="votre@email.fr"
+                  className="flex-1 bg-ink-900 border border-ink-border rounded-full px-4 py-2 text-sm text-white outline-none focus:border-white/40"
+                />
+                <button type="submit" className="btn-ghost">
+                  Recevoir
+                </button>
+              </div>
+              <p className="text-[0.65rem] text-mute mt-1.5">
+                On vous envoie le rappel + −10% si vous oubliez. Pas de spam.
+              </p>
+            </form>
+          )}
+          {entries.length > 0 && emailSaved && (
+            <div className="text-xs text-led flex items-center gap-1.5">
+              ✓ Votre panier est sauvegardé
+            </div>
+          )}
+
           <div>
             <div className="hud text-white/50 mb-2">Code promo</div>
             <div className="flex gap-2">

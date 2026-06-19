@@ -9,6 +9,7 @@ import { trackMeta } from "@/lib/meta";
 import ProductCard from "./ProductCard";
 import AirplaneStorySection from "./AirplaneStory";
 import { getStory } from "@/lib/airplane-stories";
+import ImageZoomModal from "./ImageZoomModal";
 
 // For each plane handle, the pack to up-sell on its detail page.
 const PACK_UPSELL: Record<string, string> = {
@@ -42,6 +43,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [gravure, setGravure] = useState(false);
   const [thumbErrors, setThumbErrors] = useState<Record<number, boolean>>({});
   const [showSticky, setShowSticky] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const { add } = useCart();
   const { setOpen } = useCartDrawer();
 
@@ -140,14 +142,21 @@ export default function ProductDetail({ product }: { product: Product }) {
             />
 
             <div className="relative z-10 flex flex-col gap-3">
-              {/* Main image */}
-              <div
-                className="relative overflow-hidden"
+              {/* Main image — click to zoom */}
+              <button
+                type="button"
+                onClick={() => setZoomOpen(true)}
+                aria-label="Agrandir l'image"
+                className="relative overflow-hidden group"
                 style={{
                   borderRadius: "1.5rem",
                   background: "#0c0c1a",
                   aspectRatio: "1/1",
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px rgba(0,0,0,0.6)",
+                  cursor: "zoom-in",
+                  width: "100%",
+                  padding: 0,
+                  border: "none",
                 }}
               >
                 <AnimatePresence mode="wait">
@@ -164,6 +173,28 @@ export default function ProductDetail({ product }: { product: Product }) {
                     style={{ display: "block", padding: "4%", transform: "scale(1.1) translateY(-6%)" }}
                   />
                 </AnimatePresence>
+
+                {/* Zoom hint — bottom-left, fades in on hover */}
+                <span
+                  aria-hidden
+                  className="absolute bottom-4 left-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                  style={{
+                    fontSize: "0.6rem",
+                    letterSpacing: "0.22em",
+                    color: "rgba(255,255,255,0.85)",
+                    padding: "0.4rem 0.7rem",
+                    borderRadius: 999,
+                    background: "rgba(8,8,20,0.78)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3M8 11h6M11 8v6" />
+                  </svg>
+                  <span className="font-mono uppercase">Cliquer pour zoomer</span>
+                </span>
 
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 pointer-events-none" style={{
@@ -196,7 +227,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                     </span>
                   </div>
                 )}
-              </div>
+              </button>
 
               {/* Thumbnail strip — horizontal scroll on all screens */}
               {images.length > 1 && (
@@ -383,7 +414,14 @@ export default function ProductDetail({ product }: { product: Product }) {
               if (!packHandle) return null;
               const pack = getProduct(packHandle);
               if (!pack || !pack.inStock) return null;
-              const savings =
+              // Real € saved compared to buying the individual planes
+              // separately (sum of their individual prices vs the pack price).
+              // Falls back to pack.compareAt if the bundle isn't introspectable.
+              const savingsEuros =
+                pack.compareAt && pack.compareAt > pack.price
+                  ? Math.round(pack.compareAt - pack.price)
+                  : null;
+              const savingsPct =
                 pack.compareAt && pack.compareAt > pack.price
                   ? Math.round(100 - (pack.price / pack.compareAt) * 100)
                   : null;
@@ -428,12 +466,17 @@ export default function ProductDetail({ product }: { product: Product }) {
                         style={{ color: "rgba(255,255,255,0.7)" }}
                       >
                         {formatPrice(pack.price)}
-                        {savings && (
+                        {savingsEuros && (
                           <span
                             className="ml-2"
                             style={{ color: "#7df09f", fontWeight: 700 }}
                           >
-                            −{savings}%
+                            Économisez {formatPrice(savingsEuros)}
+                            {savingsPct && (
+                              <span style={{ opacity: 0.7, fontWeight: 500 }}>
+                                {" "}(−{savingsPct}%)
+                              </span>
+                            )}
                           </span>
                         )}
                       </p>
@@ -692,6 +735,13 @@ export default function ProductDetail({ product }: { product: Product }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ImageZoomModal
+        src={images[activeImg]}
+        alt={product.title}
+        open={zoomOpen}
+        onClose={() => setZoomOpen(false)}
+      />
     </motion.div>
   );
 }

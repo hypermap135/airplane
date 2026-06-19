@@ -7,6 +7,8 @@ import ScrollProgress from "./ScrollProgress";
 import Header from "./Header";
 import Footer from "./Footer";
 import CartDrawer from "./CartDrawer";
+import WhatsAppButton from "./WhatsAppButton";
+import ExitIntentModal from "./ExitIntentModal";
 
 /**
  * Wraps every page with the public-site chrome (smooth scroll, scroll
@@ -33,6 +35,8 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
       <main>{children}</main>
       <Footer />
       <CartDrawer />
+      <WhatsAppButton />
+      <ExitIntentModal />
     </SmoothScroll>
   );
 }

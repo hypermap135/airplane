@@ -143,13 +143,9 @@ const ORG_LD = {
   // enough for Google to know where we ship; declaring an empty/partial
   // PostalAddress would just trigger "field missing (optional)" warnings
   // in Rich Results test without any SEO benefit.
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    reviewCount: "347",
-    bestRating: "5",
-    worstRating: "1",
-  },
+  // aggregateRating intentionally omitted until real reviews are wired in
+  // (Judge.me / Trustpilot). Emitting fake schema data triggers Google
+  // manual actions.
   sameAs: [
     // Add here once the social profiles exist:
     // "https://www.instagram.com/airplanestore",
