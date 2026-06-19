@@ -1,39 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import ProductCard from "./ProductCard";
-import { PRODUCTS, type Product } from "@/lib/products";
+import Image from "next/image";
+import { PRODUCTS, formatPrice, type Product } from "@/lib/products";
 
 /**
- * CollectionExplorerV2 — shoppy 6-up grid + category strip.
+ * CollectionExplorerV2 — spec-sheet rows + category strip.
  *
- * Replaces the editorial carousel (which felt too "exhibition" and
- * surfaced out-of-stock planes) with a clean shop layout:
- *  - 6 in-stock hero airplanes in a 3×2 grid using ProductCard so the
- *    image, price and "+ Panier" button are visible at a glance.
- *  - "Voir tout le catalogue →" CTA below to push deep-divers to /collections/all.
- *  - 4 category tiles (Airbus / Boeing / Concorde / Jet) further down.
- *
- * The hero lineup is HAND-PICKED but auto-filtered against the live
- * inStock + comingSoon flags so anything that goes out of stock drops
- * silently and gets backfilled.
+ * No more cards. Each plane is a horizontal row: tiny square thumb,
+ * collection / scale eyebrow, title, price, hover arrow → PDP. Reads
+ * like an editorial catalogue index (Apple Store online, Aimé Leon
+ * Dore). Auto-filters against inStock + comingSoon so out-of-stock
+ * planes never show.
  */
 
-// Preference order — we keep the first 6 entries that are actually
-// in stock. Cross-family on purpose so the grid shows breadth.
 const PREFERRED_HANDLES = [
-  "maquette-avion-maquette-airbus-a380",          // A380 AF (bestseller)
-  "concorde-airfrance",                            // Concorde AF (icon)
-  "maquette-avion-maquette-boeing-747",            // B747 AF (Queen of the Skies)
-  "maquette-avion-maquette-airbus-a350-airfrance", // A350 AF (new-gen)
-  "boeing-787",                                    // B787 AF (Dreamliner)
-  "jet-prive",                                     // Gulfstream G650 (jet privé)
-  // Fallbacks if any of the above goes out of stock:
+  "maquette-avion-maquette-airbus-a380",          // A380 AF
+  "concorde-airfrance",                            // Concorde AF
+  "maquette-avion-maquette-boeing-747",            // B747 AF
+  "maquette-avion-maquette-airbus-a350-airfrance", // A350 AF
+  "boeing-787",                                    // B787 AF
+  "jet-prive",                                     // Gulfstream
   "concorde-british",
   "airbus-a220-air-france",
   "boeing-777",
   "a-321",
-  "concorde-airfrance-30cm",
 ];
 
 const CATEGORY_TILES: { slug: string; label: string; accent: string }[] = [
@@ -44,11 +35,10 @@ const CATEGORY_TILES: { slug: string; label: string; accent: string }[] = [
 ];
 
 export default function CollectionExplorerV2() {
-  // Pull the first 6 preferred handles that are actually buyable today.
-  const heroes: Product[] = PREFERRED_HANDLES
+  const rows: Product[] = PREFERRED_HANDLES
     .map((h) => PRODUCTS.find((p) => p.handle === h))
     .filter((p): p is Product => Boolean(p) && p!.inStock && !p!.comingSoon)
-    .slice(0, 6);
+    .slice(0, 8);
 
   const countByCollection = (slug: string) =>
     PRODUCTS.filter((p) => p.collection === slug && p.inStock).length;
@@ -63,7 +53,7 @@ export default function CollectionExplorerV2() {
       }}
     >
       {/* ── HEADER ── */}
-      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 mb-10 md:mb-14">
+      <div className="mx-auto max-w-[1100px] px-6 md:px-12 mb-12 md:mb-16">
         <div className="flex items-center gap-3 mb-5">
           <div aria-hidden style={{ width: 28, height: 1, background: "rgba(58,142,255,0.55)" }} />
           <span
@@ -96,33 +86,37 @@ export default function CollectionExplorerV2() {
 
           <Link
             href="/collections/all"
-            className="inline-flex items-center gap-2 transition-transform hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 transition-opacity hover:opacity-100"
             style={{
-              padding: "0.75rem 1.4rem",
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "rgba(255,255,255,0.85)",
-              fontSize: "0.78rem",
-              fontWeight: 600,
+              padding: "0.6rem 0",
+              color: "rgba(255,255,255,0.55)",
+              fontSize: "0.7rem",
+              fontWeight: 500,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              fontFamily: "var(--font-mono)",
             }}
           >
-            Voir tout le catalogue →
+            Voir tout →
           </Link>
         </div>
       </div>
 
-      {/* ── 6-UP SHOPPY GRID ── */}
-      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20">
-        <div className="grid gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {heroes.map((p) => (
-            <ProductCard key={p.id} product={p} />
+      {/* ── SPEC-SHEET ROWS ── */}
+      <div className="mx-auto max-w-[1100px] px-6 md:px-12">
+        <div
+          aria-hidden
+          style={{ height: 1, background: "rgba(255,255,255,0.06)", marginBottom: 0 }}
+        />
+        <ul>
+          {rows.map((p) => (
+            <SpecRow key={p.id} product={p} />
           ))}
-        </div>
+        </ul>
       </div>
 
       {/* ── CATEGORY TILES ── */}
-      <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20 mt-16 md:mt-24">
+      <div className="mx-auto max-w-[1100px] px-6 md:px-12 mt-16 md:mt-24">
         <div className="flex items-center gap-3 mb-6">
           <div aria-hidden style={{ width: 20, height: 1, background: "rgba(255,255,255,0.25)" }} />
           <span
@@ -146,6 +140,110 @@ export default function CollectionExplorerV2() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ── SpecRow — single-line catalogue entry ──────────────────────────────── */
+
+function SpecRow({ product }: { product: Product }) {
+  return (
+    <li>
+      <Link
+        href={`/products/${product.handle}`}
+        className="group flex items-center gap-4 md:gap-6 py-4 md:py-5 transition-colors"
+        style={{
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.background =
+            "linear-gradient(90deg, rgba(58,142,255,0.05) 0%, transparent 80%)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+        }}
+      >
+        {/* Thumbnail */}
+        <div
+          className="relative shrink-0"
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 10,
+            background: "linear-gradient(145deg,#0c0c1c,#06060f)",
+            overflow: "hidden",
+          }}
+        >
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            sizes="64px"
+            quality={85}
+            className="object-contain"
+            style={{ padding: "8%" }}
+          />
+        </div>
+
+        {/* Title + collection eyebrow */}
+        <div className="min-w-0 flex-1">
+          <p
+            className="font-mono uppercase mb-1"
+            style={{
+              fontSize: "0.55rem",
+              letterSpacing: "0.24em",
+              color: "rgba(120,180,255,0.7)",
+            }}
+          >
+            {product.collection}{product.scale ? ` · ${product.scale}` : ""}
+          </p>
+          <h3
+            className="font-bold text-white truncate"
+            style={{
+              fontSize: "clamp(0.95rem, 1.6vw, 1.15rem)",
+              letterSpacing: "-0.01em",
+              lineHeight: 1.2,
+            }}
+          >
+            {product.title}
+          </h3>
+        </div>
+
+        {/* Price */}
+        <div className="shrink-0 text-right">
+          <span
+            className="font-mono font-bold text-white"
+            style={{
+              fontSize: "clamp(0.9rem, 1.4vw, 1.05rem)",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {formatPrice(product.price)}
+          </span>
+          {product.compareAt && (
+            <span
+              className="ml-2 text-[0.7rem] line-through hidden md:inline"
+              style={{ color: "rgba(255,255,255,0.3)" }}
+            >
+              {formatPrice(product.compareAt)}
+            </span>
+          )}
+        </div>
+
+        {/* Hover arrow */}
+        <div
+          aria-hidden
+          className="shrink-0 transition-transform group-hover:translate-x-1"
+          style={{
+            width: 24,
+            color: "rgba(255,255,255,0.45)",
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </div>
+      </Link>
+    </li>
   );
 }
 
