@@ -23,6 +23,22 @@ const nextConfig = {
     ],
   },
   experimental: { optimizePackageImports: ["gsap"] },
+  // Keep serverless function bundles small: public/images/ is served as
+  // static assets by Vercel's CDN, never read from inside any route, so
+  // tracing must not slurp it into every function's payload. Same for
+  // .tmp/ (local-only) and the Python script (executed via spawn at
+  // runtime, not bundled). Without these excludes, publish-product
+  // crossed the 250MB unzipped function limit.
+  outputFileTracingExcludes: {
+    "*": [
+      "public/images/**",
+      ".tmp/**",
+      "scripts/**",
+      ".next/cache/**",
+      "node_modules/@next/swc-*/**",
+      "node_modules/@esbuild/**",
+    ],
+  },
 };
 
 module.exports = nextConfig;
