@@ -61,14 +61,6 @@ export const PRODUCTS: Product[] = [
     inStock: true,
     comingSoon: false,
     image: `/images/airbus-a220-air-france.png`,
-    images: [
-      `/images/airbus-a220-air-france.png`,
-      `/images/airbus-a220-air-france--3quarter-front.png`,
-      `/images/airbus-a220-air-france--3quarter-rear.png`,
-      `/images/airbus-a220-air-france--top.png`,
-      `/images/airbus-a220-air-france--shelf.png`,
-      `/images/airbus-a220-air-france--desk.png`,
-    ],
     bestseller: false,
     scale: "1/100",
   },
@@ -82,14 +74,6 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     image: `/images/a320-neo.png`,
-    images: [
-      `/images/a320-neo.png`,
-      `/images/a320-neo--3quarter-front.png`,
-      `/images/a320-neo--3quarter-rear.png`,
-      `/images/a320-neo--top.png`,
-      `/images/a320-neo--shelf.png`,
-      `/images/a320-neo--desk.png`,
-    ],
     bestseller: false,
     scale: "1/85",
   },
@@ -103,14 +87,6 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     image: `/images/airbus-a320-echelle-1-85-finition-premium.png`,
-    images: [
-      `/images/airbus-a320-echelle-1-85-finition-premium.png`,
-      `/images/airbus-a320-echelle-1-85-finition-premium--3quarter-front.png`,
-      `/images/airbus-a320-echelle-1-85-finition-premium--3quarter-rear.png`,
-      `/images/airbus-a320-echelle-1-85-finition-premium--top.png`,
-      `/images/airbus-a320-echelle-1-85-finition-premium--shelf.png`,
-      `/images/airbus-a320-echelle-1-85-finition-premium--desk.png`,
-    ],
     scale: "1/85",
   },
   {
@@ -127,14 +103,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a320-neo-transavia.png`,
-    images: [
-      `/images/airbus-a320-neo-transavia.png`,
-      `/images/airbus-a320-neo-transavia--3quarter-front.png`,
-      `/images/airbus-a320-neo-transavia--3quarter-rear.png`,
-      `/images/airbus-a320-neo-transavia--top.png`,
-      `/images/airbus-a320-neo-transavia--shelf.png`,
-      `/images/airbus-a320-neo-transavia--desk.png`,
-    ],
     scale: "1/100",
   },
   {
@@ -147,14 +115,6 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     image: `/images/copie-airbus-a320-echelle-1-85-finition-premium.png`,
-    images: [
-      `/images/copie-airbus-a320-echelle-1-85-finition-premium.png`,
-      `/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-front.png`,
-      `/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-rear.png`,
-      `/images/copie-airbus-a320-echelle-1-85-finition-premium--top.png`,
-      `/images/copie-airbus-a320-echelle-1-85-finition-premium--shelf.png`,
-      `/images/copie-airbus-a320-echelle-1-85-finition-premium--desk.png`,
-    ],
     scale: "1/85",
   },
   {
@@ -167,14 +127,6 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     image: `/images/a-321.png`,
-    images: [
-      `/images/a-321.png`,
-      `/images/a-321--3quarter-front.png`,
-      `/images/a-321--3quarter-rear.png`,
-      `/images/a-321--top.png`,
-      `/images/a-321--shelf.png`,
-      `/images/a-321--desk.png`,
-    ],
     scale: "1/100",
   },
   {
@@ -188,14 +140,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a321-easyjet.png`,
-    images: [
-      `/images/airbus-a321-easyjet.png`,
-      `/images/airbus-a321-easyjet--3quarter-front.png`,
-      `/images/airbus-a321-easyjet--3quarter-rear.png`,
-      `/images/airbus-a321-easyjet--top.png`,
-      `/images/airbus-a321-easyjet--shelf.png`,
-      `/images/airbus-a321-easyjet--desk.png`,
-    ],
     scale: "1/100",
   },
   {
@@ -208,14 +152,6 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     image: `/images/maquette-avion-maquette-airbus-a350-airfrance.png`,
-    images: [
-      `/images/maquette-avion-maquette-airbus-a350-airfrance.png`,
-      `/images/maquette-avion-maquette-airbus-a350-airfrance--3quarter-front.png`,
-      `/images/maquette-avion-maquette-airbus-a350-airfrance--3quarter-rear.png`,
-      `/images/maquette-avion-maquette-airbus-a350-airfrance--top.png`,
-      `/images/maquette-avion-maquette-airbus-a350-airfrance--shelf.png`,
-      `/images/maquette-avion-maquette-airbus-a350-airfrance--desk.png`,
-    ],
     bestseller: false,
     scale: "1/142",
   },
@@ -230,14 +166,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a350-singapore.png`,
-    images: [
-      `/images/airbus-a350-singapore.png`,
-      `/images/airbus-a350-singapore--3quarter-front.png`,
-      `/images/airbus-a350-singapore--3quarter-rear.png`,
-      `/images/airbus-a350-singapore--top.png`,
-      `/images/airbus-a350-singapore--shelf.png`,
-      `/images/airbus-a350-singapore--desk.png`,
-    ],
     scale: "1/142",
   },
   {
@@ -264,14 +192,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a350-emirates.png`,
-    images: [
-      `/images/airbus-a350-emirates.png`,
-      `/images/airbus-a350-emirates--3quarter-front.png`,
-      `/images/airbus-a350-emirates--3quarter-rear.png`,
-      `/images/airbus-a350-emirates--top.png`,
-      `/images/airbus-a350-emirates--shelf.png`,
-      `/images/airbus-a350-emirates--desk.png`,
-    ],
     scale: "1/142",
   },
   {
@@ -284,14 +204,6 @@ export const PRODUCTS: Product[] = [
     collection: "airbus",
     inStock: true,
     image: `/images/maquette-avion-maquette-airbus-a380.png`,
-    images: [
-      `/images/maquette-avion-maquette-airbus-a380.png`,
-      `/images/maquette-avion-maquette-airbus-a380--3quarter-front.png`,
-      `/images/maquette-avion-maquette-airbus-a380--3quarter-rear.png`,
-      `/images/maquette-avion-maquette-airbus-a380--top.png`,
-      `/images/maquette-avion-maquette-airbus-a380--shelf.png`,
-      `/images/maquette-avion-maquette-airbus-a380--desk.png`,
-    ],
     bestseller: true,
     scale: "1/160",
   },
@@ -306,14 +218,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a380-singapore.png`,
-    images: [
-      `/images/airbus-a380-singapore.png`,
-      `/images/airbus-a380-singapore--3quarter-front.png`,
-      `/images/airbus-a380-singapore--3quarter-rear.png`,
-      `/images/airbus-a380-singapore--top.png`,
-      `/images/airbus-a380-singapore--shelf.png`,
-      `/images/airbus-a380-singapore--desk.png`,
-    ],
     scale: "1/160",
   },
   {
@@ -327,14 +231,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a380-emirates.png`,
-    images: [
-      `/images/airbus-a380-emirates.png`,
-      `/images/airbus-a380-emirates--3quarter-front.png`,
-      `/images/airbus-a380-emirates--3quarter-rear.png`,
-      `/images/airbus-a380-emirates--top.png`,
-      `/images/airbus-a380-emirates--shelf.png`,
-      `/images/airbus-a380-emirates--desk.png`,
-    ],
     scale: "1/160",
   },
 
@@ -352,14 +248,6 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: true,
     image: `/images/boeing-737-ryannair.png`,
-    images: [
-      `/images/boeing-737-ryannair.png`,
-      `/images/boeing-737-ryannair--3quarter-front.png`,
-      `/images/boeing-737-ryannair--3quarter-rear.png`,
-      `/images/boeing-737-ryannair--top.png`,
-      `/images/boeing-737-ryannair--shelf.png`,
-      `/images/boeing-737-ryannair--desk.png`,
-    ],
     scale: "1/85",
   },
   {
@@ -372,14 +260,6 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: true,
     image: `/images/maquette-avion-maquette-boeing-747.png`,
-    images: [
-      `/images/maquette-avion-maquette-boeing-747.png`,
-      `/images/maquette-avion-maquette-boeing-747--3quarter-front.png`,
-      `/images/maquette-avion-maquette-boeing-747--3quarter-rear.png`,
-      `/images/maquette-avion-maquette-boeing-747--top.png`,
-      `/images/maquette-avion-maquette-boeing-747--shelf.png`,
-      `/images/maquette-avion-maquette-boeing-747--desk.png`,
-    ],
     bestseller: true,
     scale: "1/150",
   },
@@ -394,14 +274,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/boeing-747-air-force-one.png`,
-    images: [
-      `/images/boeing-747-air-force-one.png`,
-      `/images/boeing-747-air-force-one--3quarter-front.png`,
-      `/images/boeing-747-air-force-one--3quarter-rear.png`,
-      `/images/boeing-747-air-force-one--top.png`,
-      `/images/boeing-747-air-force-one--shelf.png`,
-      `/images/boeing-747-air-force-one--desk.png`,
-    ],
     scale: "1/150",
   },
   {
@@ -414,14 +286,6 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: true,
     image: `/images/boeing-777.png`,
-    images: [
-      `/images/boeing-777.png`,
-      `/images/boeing-777--3quarter-front.png`,
-      `/images/boeing-777--3quarter-rear.png`,
-      `/images/boeing-777--top.png`,
-      `/images/boeing-777--shelf.png`,
-      `/images/boeing-777--desk.png`,
-    ],
     bestseller: false,
     scale: "1/157",
   },
@@ -436,14 +300,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/boeing-777-qatar.png`,
-    images: [
-      `/images/boeing-777-qatar.png`,
-      `/images/boeing-777-qatar--3quarter-front.png`,
-      `/images/boeing-777-qatar--3quarter-rear.png`,
-      `/images/boeing-777-qatar--top.png`,
-      `/images/boeing-777-qatar--shelf.png`,
-      `/images/boeing-777-qatar--desk.png`,
-    ],
     scale: "1/157",
   },
   {
@@ -456,14 +312,6 @@ export const PRODUCTS: Product[] = [
     collection: "boeing",
     inStock: true,
     image: `/images/boeing-787.png`,
-    images: [
-      `/images/boeing-787.png`,
-      `/images/boeing-787--3quarter-front.png`,
-      `/images/boeing-787--3quarter-rear.png`,
-      `/images/boeing-787--top.png`,
-      `/images/boeing-787--shelf.png`,
-      `/images/boeing-787--desk.png`,
-    ],
     bestseller: false,
     scale: "1/130",
   },
@@ -478,14 +326,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/boeing-787-lufthansa-100th.png`,
-    images: [
-      `/images/boeing-787-lufthansa-100th.png`,
-      `/images/boeing-787-lufthansa-100th--3quarter-front.png`,
-      `/images/boeing-787-lufthansa-100th--3quarter-rear.png`,
-      `/images/boeing-787-lufthansa-100th--top.png`,
-      `/images/boeing-787-lufthansa-100th--shelf.png`,
-      `/images/boeing-787-lufthansa-100th--desk.png`,
-    ],
     scale: "1/130",
   },
   {
@@ -499,14 +339,6 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/boeing-787-etihad-manchester-city.png`,
-    images: [
-      `/images/boeing-787-etihad-manchester-city.png`,
-      `/images/boeing-787-etihad-manchester-city--3quarter-front.png`,
-      `/images/boeing-787-etihad-manchester-city--3quarter-rear.png`,
-      `/images/boeing-787-etihad-manchester-city--top.png`,
-      `/images/boeing-787-etihad-manchester-city--shelf.png`,
-      `/images/boeing-787-etihad-manchester-city--desk.png`,
-    ],
     scale: "1/130",
   },
 
@@ -524,14 +356,6 @@ export const PRODUCTS: Product[] = [
     collection: "jet",
     inStock: true,
     image: `/images/jet-prive.png`,
-    images: [
-      `/images/jet-prive.png`,
-      `/images/jet-prive--3quarter-front.png`,
-      `/images/jet-prive--3quarter-rear.png`,
-      `/images/jet-prive--top.png`,
-      `/images/jet-prive--shelf.png`,
-      `/images/jet-prive--desk.png`,
-    ],
     scale: "1/75",
   },
 
@@ -549,13 +373,6 @@ export const PRODUCTS: Product[] = [
     collection: "concorde",
     inStock: true,
     image: `/images/concorde-airfrance.png`,
-    images: [
-      `/images/concorde-airfrance.png`,
-      `/images/concorde-airfrance--3quarter-front.png`,
-      `/images/concorde-airfrance--top.png`,
-      `/images/concorde-airfrance--shelf.png`,
-      `/images/concorde-airfrance--desk.png`,
-    ],
     scale: "1/125",
   },
   {
@@ -568,14 +385,6 @@ export const PRODUCTS: Product[] = [
     collection: "concorde",
     inStock: true,
     image: `/images/concorde-british.png`,
-    images: [
-      `/images/concorde-british.png`,
-      `/images/concorde-british--3quarter-front.png`,
-      `/images/concorde-british--3quarter-rear.png`,
-      `/images/concorde-british--top.png`,
-      `/images/concorde-british--shelf.png`,
-      `/images/concorde-british--desk.png`,
-    ],
     scale: "1/125",
   },
   {
@@ -589,13 +398,6 @@ export const PRODUCTS: Product[] = [
     inStock: true,
     comingSoon: false,
     image: `/images/concorde-airfrance-30cm.png`,
-    images: [
-      `/images/concorde-airfrance-30cm.png`,
-      `/images/concorde-airfrance-30cm--3quarter-front.png`,
-      `/images/concorde-airfrance-30cm--3quarter-rear.png`,
-      `/images/concorde-airfrance-30cm--top.png`,
-      `/images/concorde-airfrance-30cm--desk.png`,
-    ],
     scale: "1/200",
   },
 
@@ -614,11 +416,6 @@ export const PRODUCTS: Product[] = [
     collection: "packs",
     inStock: true,
     image: `${CDN}/1C22E355-7DE6-46E2-A665-53491B42E69B_nobg.png`,
-    images: [
-      `${CDN}/1C22E355-7DE6-46E2-A665-53491B42E69B_nobg.png`,
-      `${CDN}/A3EB5B58-0063-41BF-84DB-D39C72E6466E.png`,
-      `${CDN}/8ED448B8-6083-4E27-909D-CC18CD1742D0.png`,
-    ],
     bestseller: true,
   },
   {
@@ -632,11 +429,6 @@ export const PRODUCTS: Product[] = [
     collection: "packs",
     inStock: true,
     image: `/images/pack-trio-airbus-premium-a320-a350-a380.png`,
-    images: [
-      `${CDN}/0DD70AD8-A997-4B31-8A95-0DBBA2C32358_nobg.png`,
-      `${CDN}/63D5AD62-E1FF-48B8-B7FD-F1AADA6987A0.png`,
-      `${CDN}/324BDF52-8AC7-45D0-B8D8-285ADCDC1E67.png`,
-    ],
   },
   {
     id: "pack-boeing",
@@ -649,11 +441,6 @@ export const PRODUCTS: Product[] = [
     collection: "packs",
     inStock: true,
     image: `${CDN}/7FA23F23-9A53-4EB8-A584-36B12C7C84BB_nobg_v2.png`,
-    images: [
-      `${CDN}/7FA23F23-9A53-4EB8-A584-36B12C7C84BB_nobg_v2.png`,
-      `${CDN}/90A8AC17-FE60-4BED-91D4-4086FAD9448B.png`,
-      `${CDN}/1AD928A7-1A25-4C97-A73C-815AD78F98C7.png`,
-    ],
   },
   {
     id: "pack-duo",
@@ -666,11 +453,6 @@ export const PRODUCTS: Product[] = [
     collection: "packs",
     inStock: true,
     image: `${CDN}/B1CB0E59-0EA0-4AC4-9E68-5CD63B6AEA8F_nobg_v2.png`,
-    images: [
-      `${CDN}/B1CB0E59-0EA0-4AC4-9E68-5CD63B6AEA8F_nobg_v2.png`,
-      `${CDN}/AC009271-46B9-45C0-8B9A-F361820858F9.jpg`,
-      `${CDN}/F147607F-A27D-44EC-92D7-21A4B6A0B497.jpg`,
-    ],
   },
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -687,11 +469,6 @@ export const PRODUCTS: Product[] = [
     collection: "accessoires",
     inStock: true,
     image: `${CDN}/D1FC9309-F3A3-46FE-9F1F-7612F7CBAC54_nobg.png`,
-    images: [
-      `${CDN}/D1FC9309-F3A3-46FE-9F1F-7612F7CBAC54_nobg.png`,
-      `${CDN}/01C2DF70-B230-429F-8A58-CA08EB987ED9.png`,
-      `${CDN}/E3EAE3DC-B130-4541-B60C-7E22BA304D0F.jpg`,
-    ],
   },
   {
     id: "horloge-turbine",
@@ -703,11 +480,6 @@ export const PRODUCTS: Product[] = [
     collection: "accessoires",
     inStock: true,
     image: `${CDN}/IMG-7037_nobg.png`,
-    images: [
-      `${CDN}/IMG-7037_nobg.png`,
-      `${CDN}/1F1264FD-AA41-4D9D-ABC1-1B1242B09859.png`,
-      `${CDN}/633CDBEE-D7A2-428B-B9DD-10039EDC5E2C.png`,
-    ],
   },
   {
     id: "horloge-murale",
@@ -719,11 +491,6 @@ export const PRODUCTS: Product[] = [
     collection: "accessoires",
     inStock: true,
     image: `${CDN}/AD184BA4-005E-4FB9-B9FC-0A8B97709210_nobg_v2.png`,
-    images: [
-      `${CDN}/AD184BA4-005E-4FB9-B9FC-0A8B97709210_nobg_v2.png`,
-      `${CDN}/FD6A72D0-8AE3-4C49-965D-939F3EAF42E0.jpg`,
-      `${CDN}/F758E57F-8DE1-48A7-8855-45722BBED144.jpg`,
-    ],
   },
   {
     id: "gravure",
@@ -735,10 +502,6 @@ export const PRODUCTS: Product[] = [
     collection: "accessoires",
     inStock: true,
     image: `${CDN}/IMG-7011_nobg.png`,
-    images: [
-      `${CDN}/IMG-7011_nobg.png`,
-      `${CDN}/F1FA1DE1-5FEA-418F-AD88-659D0583F334.jpg`,
-    ],
   },
 ];
 
