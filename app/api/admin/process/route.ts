@@ -112,6 +112,36 @@ function describePlane(handle: string): string {
   return p.title;
 }
 
+/**
+ * Per-handle prompt addenda — appended AFTER the standard rules when a
+ * specific product needs extra hand-holding (the generic prompt keeps
+ * failing it). Add an entry here when a product takes 3+ regenerations
+ * to land. Each addendum is treated as a HARD override.
+ */
+const PRODUCT_PROMPT_OVERRIDES: Record<string, string> = {
+  // Airbus A320 Air France — Gemini keeps drifting on this one: wrong
+  // angle, wrong framing, livery faded. Explicit description forces it.
+  "a320-neo":
+    "MANDATORY for this product (override any conflicting interpretation): " +
+    "the airplane is an AIRBUS A320 in modern AIR FRANCE livery. " +
+    "Fuselage: white. Cockpit window line is dark blue. A thin BLUE stripe " +
+    "runs along the entire fuselage at the window-line level. The tail fin " +
+    "is split into vertical BLUE / WHITE / RED bands (French tricolore) " +
+    "with the curved 'AIR FRANCE' ribbon in BLUE on the white middle. " +
+    "'AIR FRANCE' wordmark in BLUE on the upper forward fuselage. " +
+    "Registration code 'F-XXXX' in small black letters on the rear " +
+    "fuselage. Two engines under the wings in matte grey with dark inlets. " +
+    "ORIENTATION: slight three-quarter side view with the NOSE POINTING TO " +
+    "THE RIGHT, the airplane tilted ~20° toward the camera, camera ~10° " +
+    "above the wing. The plane (with its wooden display stand) fills " +
+    "EXACTLY 80% of the square 1:1 canvas, centered horizontally, " +
+    "perfectly symmetric framing — same composition as every other " +
+    "product in the catalog. Do NOT crop wingtips, tail, nose, or stand. " +
+    "Do NOT switch to a head-on view. Do NOT flip the orientation. " +
+    "Background MUST be the standard dark charcoal studio gradient " +
+    "(#1c1c26 center → #0a0a12 corners), no props, no scene.",
+};
+
 /** ONE unified studio scene shared by every standard view. Same exact
  *  background, lighting, and framing across all products — only the
  *  airplane changes. Catalog grid stays visually coherent. */
@@ -137,7 +167,8 @@ function buildPromptForView(view: string, handle: string): string {
   if (spec.customPrompt) return spec.customPrompt(describePlane(handle));
   const angle = spec.angleClause ?? VIEWS.profile.angleClause!;
   const plane = describePlane(handle);
-  return (
+  const override = PRODUCT_PROMPT_OVERRIDES[handle];
+  let prompt =
     `Generate a premium catalog photo of this "${plane}" 1:144 scale model ` +
     "on its wooden display stand. The product photo must match EXACTLY the " +
     "house style — only the airplane itself varies between products.\n\n" +
@@ -148,8 +179,9 @@ function buildPromptForView(view: string, handle: string): string {
     `ANGLE — ${angle}\n` +
     STUDIO_SCENE + "\n" +
     "REMOVE ONLY: floating watermarks, URLs, gold-plane glyphs, site-name " +
-    "overlays. KEEP every painted marking on the airplane itself."
-  );
+    "overlays. KEEP every painted marking on the airplane itself.";
+  if (override) prompt += "\n\n" + override;
+  return prompt;
 }
 
 async function findUpload(handle: string): Promise<string | null> {

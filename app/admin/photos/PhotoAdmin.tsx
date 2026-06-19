@@ -112,7 +112,11 @@ export default function PhotoAdmin({
   existingPublished?: Record<string, { deployUrl?: string | null; at: string }>;
 }) {
   const [filter, setFilter] = useState<string>("all");
-  // Hydrate state directly from the SSR scan — no client fetch needed.
+  // Hydrate state directly from the SSR scan, then overlay anything we
+  // saved in localStorage (validated flags, problematic flags) so the
+  // operator's progress survives HMR reloads triggered by publishing a
+  // product (which rewrites lib/products.ts → Next dev fast-refresh →
+  // component remount).
   const [state, setState] = useState<Record<string, RowState>>(() => {
     const initial: Record<string, RowState> = {};
     for (const [handle, views] of Object.entries(existingPreviews)) {
@@ -135,8 +139,69 @@ export default function PhotoAdmin({
         published: { url: entry.deployUrl ?? undefined },
       };
     }
+    // Overlay client-only state from previous session.
+    if (typeof window !== "undefined") {
+      try {
+        const raw = window.localStorage.getItem("photoAdmin.state.v1");
+        if (raw) {
+          const persisted = JSON.parse(raw) as Record<string, RowState>;
+          for (const [handle, row] of Object.entries(persisted)) {
+            const cur = initial[handle] ?? { views: {} };
+            // Merge per-view: keep SSR version (disk truth) but overlay
+            // validated flag from localStorage.
+            const mergedViews: Partial<Record<ViewKey, ViewState>> = { ...cur.views };
+            for (const [vk, vstate] of Object.entries(row.views ?? {})) {
+              const ssrView = cur.views[vk as ViewKey];
+              if (!ssrView) continue; // no disk preview — skip
+              mergedViews[vk as ViewKey] = {
+                ...ssrView,
+                validated: vstate?.validated ?? false,
+              };
+            }
+            initial[handle] = {
+              ...cur,
+              views: mergedViews,
+              baseValidated: row.baseValidated ?? cur.baseValidated,
+              problematic: row.problematic ?? cur.problematic,
+            };
+          }
+        }
+      } catch {/* ignore corrupt storage */}
+    }
     return initial;
   });
+
+  // Persist state to localStorage on every change so a publish-triggered
+  // HMR doesn't wipe the validated flags.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      // Strip ephemeral fields (processing flags, errors, batch counters)
+      // — keep only what's meaningful to restore.
+      const compact: Record<string, RowState> = {};
+      for (const [handle, row] of Object.entries(state)) {
+        const views: Partial<Record<ViewKey, ViewState>> = {};
+        for (const [vk, vstate] of Object.entries(row.views ?? {})) {
+          if (vstate?.validated) views[vk as ViewKey] = { validated: true };
+        }
+        if (
+          row.baseValidated ||
+          row.problematic ||
+          Object.keys(views).length > 0
+        ) {
+          compact[handle] = {
+            views,
+            baseValidated: row.baseValidated,
+            problematic: row.problematic,
+          };
+        }
+      }
+      window.localStorage.setItem(
+        "photoAdmin.state.v1",
+        JSON.stringify(compact),
+      );
+    } catch {/* quota or disabled — fine */}
+  }, [state]);
 
   useEffect(() => {
     // 1. Pull the problematic list so the chip + flag are restored
