@@ -64,7 +64,7 @@ export default function AirplaneStorySection({
           backgroundClip: "text",
         }}
       >
-        L'histoire d'un géant.
+        {story.heading}
       </h2>
 
       {/* ── Hero image — full bleed, no card border ── */}
