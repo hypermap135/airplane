@@ -778,7 +778,7 @@ export const PRODUCTS: Product[] = [
     price: 15,
     collection: "accessoires",
     inStock: true,
-    image: `${CDN}/IMG-7011_nobg.png`,
+    image: `/images/gravure-personnalisee.png`,
   },
 ];
 
