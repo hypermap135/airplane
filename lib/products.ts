@@ -123,7 +123,7 @@ export const PRODUCTS: Product[] = [
     // would show an Air France livery for a Transavia title.
     inStock: false,
     comingSoon: true,
-    image: `${CDN}/Airbus_A320_Air_France_nobg.png`,
+    image: `/images/airbus-a320-neo-transavia.png`,
     scale: "1/100",
   },
   {
@@ -137,9 +137,12 @@ export const PRODUCTS: Product[] = [
     inStock: true,
     image: `/images/copie-airbus-a320-echelle-1-85-finition-premium.png`,
     images: [
-      `${CDN}/IMG-7237_nobg.png`,
-      `${CDN}/IMG-7236.png`,
-      `${CDN}/IMG-7235.png`,
+      `/images/airbus-a320-neo-transavia.png`,
+      `/images/airbus-a320-neo-transavia--3quarter-front.png`,
+      `/images/airbus-a320-neo-transavia--3quarter-rear.png`,
+      `/images/airbus-a320-neo-transavia--top.png`,
+      `/images/airbus-a320-neo-transavia--shelf.png`,
+      `/images/airbus-a320-neo-transavia--desk.png`,
     ],
     scale: "1/85",
   },
