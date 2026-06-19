@@ -616,7 +616,6 @@ export const PRODUCTS: Product[] = [
     image: `/images/pack-prestige-air-france.png`,
     images: [
       `/images/pack-prestige-air-france.png`,
-      `/images/pack-prestige-air-france--desk.png`,
       `/images/maquette-avion-maquette-airbus-a380--3quarter-front.png`,
       `/images/maquette-avion-maquette-airbus-a380--desk.png`,
       `/images/maquette-avion-maquette-airbus-a350-airfrance--3quarter-front.png`,
