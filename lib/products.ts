@@ -127,6 +127,14 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a320-neo-transavia.png`,
+    images: [
+      `/images/airbus-a320-neo-transavia.png`,
+      `/images/airbus-a320-neo-transavia--3quarter-front.png`,
+      `/images/airbus-a320-neo-transavia--3quarter-rear.png`,
+      `/images/airbus-a320-neo-transavia--top.png`,
+      `/images/airbus-a320-neo-transavia--shelf.png`,
+      `/images/airbus-a320-neo-transavia--desk.png`,
+    ],
     scale: "1/100",
   },
   {
@@ -180,6 +188,14 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a321-easyjet.png`,
+    images: [
+      `/images/airbus-a321-easyjet.png`,
+      `/images/airbus-a321-easyjet--3quarter-front.png`,
+      `/images/airbus-a321-easyjet--3quarter-rear.png`,
+      `/images/airbus-a321-easyjet--top.png`,
+      `/images/airbus-a321-easyjet--shelf.png`,
+      `/images/airbus-a321-easyjet--desk.png`,
+    ],
     scale: "1/100",
   },
   {

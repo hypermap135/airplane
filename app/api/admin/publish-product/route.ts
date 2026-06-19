@@ -83,8 +83,11 @@ async function rewriteProduct(
   const handleEscaped = handle.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&");
 
   // Rewrite image: line (first occurrence within the matching block).
+  // The lazy quantifier is scoped to [^}] so it can't bleed into the
+  // NEXT product's block (which previously made the rewrite hit the
+  // wrong product when the target had no images:[] of its own).
   const imageRe = new RegExp(
-    `(handle:\\s*"${handleEscaped}",[\\s\\S]*?image:\\s*)(\`[^\`]+\`|"[^"]+")`,
+    `(handle:\\s*"${handleEscaped}",[^}]*?image:\\s*)(\`[^\`]+\`|"[^"]+")`,
     "m",
   );
   let next = source;
@@ -94,9 +97,10 @@ async function rewriteProduct(
     return { ok: false, reason: `no image: line found for handle "${handle}"` };
   }
 
-  // Rewrite (or add) the images: [...] array. Match the same block.
+  // Rewrite (or add) the images: [...] array. Same scope-to-product
+  // safeguard via [^}]*? so we don't replace a neighbor's gallery.
   const imagesRe = new RegExp(
-    `(handle:\\s*"${handleEscaped}",[\\s\\S]*?)(images:\\s*\\[[\\s\\S]*?\\],?)`,
+    `(handle:\\s*"${handleEscaped}",[^}]*?)(images:\\s*\\[[^\\]]*?\\],?)`,
     "m",
   );
   const galleryLines = galleryUrls.map((u) => `      \`${u}\`,`).join("\n");
@@ -107,7 +111,7 @@ async function rewriteProduct(
   } else {
     // No images: field today — inject right after the image: line.
     const insertRe = new RegExp(
-      `(handle:\\s*"${handleEscaped}",[\\s\\S]*?image:\\s*\`[^\`]+\`,?)`,
+      `(handle:\\s*"${handleEscaped}",[^}]*?image:\\s*\`[^\`]+\`,?)`,
       "m",
     );
     next = next.replace(insertRe, `$1\n    ${newImagesBlock}`);
