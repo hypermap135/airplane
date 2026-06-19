@@ -737,15 +737,20 @@ export const PRODUCTS: Product[] = [
       `/images/porte-cle-silhouette-avion-1.png`,
       `/images/porte-cle-silhouette-avion-2.png`,
     ],
+    // Until real Shopify variants are created (via /admin/setup-keychain-variants
+    // once SHOPIFY_ADMIN_TOKEN is set), all 8 designs point to the existing
+    // variant 53842722357588. Orders will all land as the same SKU on Shopify
+    // — fulfilment must read the cart line label ("Porte-clé AirplaneStore ·
+    // CAPTAIN" etc.) to pick the right embroidered design.
     variants: [
-      { id: "53842722357588", label: "AIR FRANCE SkyTeam",       image: "/images/porte-cle-air-france-lhr.png" },
-      { id: "0",              label: "REMOVE BEFORE FLIGHT",      image: "/images/porte-cle-remove-before-flight.png" },
-      { id: "0",              label: "AIR FRANCE Navy",           image: "/images/porte-cle-air-france-navy.png" },
-      { id: "0",              label: "AIR FRANCE Rouge & Navy",   image: "/images/porte-cle-air-france-rouge-navy.png" },
-      { id: "0",              label: "CAPTAIN",                   image: "/images/porte-cle-captain.png" },
-      { id: "0",              label: "PILOT",                     image: "/images/porte-cle-pilot.png" },
-      { id: "0",              label: "Silhouette Avion",          image: "/images/porte-cle-silhouette-avion-1.png" },
-      { id: "0",              label: "Silhouette Constellation",  image: "/images/porte-cle-silhouette-avion-2.png" },
+      { id: "53842722357588", label: "AIR FRANCE SkyTeam",      image: "/images/porte-cle-air-france-lhr.png" },
+      { id: "53842722357588", label: "REMOVE BEFORE FLIGHT",     image: "/images/porte-cle-remove-before-flight.png" },
+      { id: "53842722357588", label: "AIR FRANCE Navy",          image: "/images/porte-cle-air-france-navy.png" },
+      { id: "53842722357588", label: "AIR FRANCE Rouge & Navy",  image: "/images/porte-cle-air-france-rouge-navy.png" },
+      { id: "53842722357588", label: "CAPTAIN",                  image: "/images/porte-cle-captain.png" },
+      { id: "53842722357588", label: "PILOT",                    image: "/images/porte-cle-pilot.png" },
+      { id: "53842722357588", label: "Silhouette Avion",         image: "/images/porte-cle-silhouette-avion-1.png" },
+      { id: "53842722357588", label: "Silhouette Constellation", image: "/images/porte-cle-silhouette-avion-2.png" },
     ],
   },
   {
