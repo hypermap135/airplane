@@ -5,7 +5,26 @@ import { PRODUCTS, type Product } from "./products";
 
 const STORAGE_KEY = "airplanestore.cart.v1";
 
-export type CartLine = { variantId: string; quantity: number };
+export type CartLineAttribute = { key: string; value: string };
+export type CartLine = {
+  variantId: string;
+  quantity: number;
+  /** Per-line attributes forwarded to Shopify as line-item properties.
+   *  Used today for the gravure text the customer types on the PDP. */
+  attributes?: CartLineAttribute[];
+};
+
+/** Two cart lines with the same variant are considered identical only when
+ *  their attributes also match. A second engraving with a different name
+ *  must therefore live on its own line. */
+function attrsKey(attrs?: CartLineAttribute[]): string {
+  if (!attrs || attrs.length === 0) return "";
+  return attrs
+    .slice()
+    .sort((a, b) => a.key.localeCompare(b.key))
+    .map((a) => `${a.key}=${a.value}`)
+    .join("|");
+}
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -55,14 +74,22 @@ export function useCartLines(): CartLine[] {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-export type CartEntry = { product: Product; quantity: number };
+export type CartEntry = {
+  product: Product;
+  quantity: number;
+  attributes?: CartLineAttribute[];
+};
 
 export function useCart(): {
   lines: CartLine[];
   entries: CartEntry[];
   subtotal: number;
   count: number;
-  add: (variantId: string, quantity?: number) => void;
+  add: (
+    variantId: string,
+    quantity?: number,
+    attributes?: CartLineAttribute[],
+  ) => void;
   update: (variantId: string, quantity: number) => void;
   remove: (variantId: string) => void;
   clear: () => void;
@@ -71,24 +98,35 @@ export function useCart(): {
   const entries = lines
     .map((l) => {
       const product = PRODUCTS.find((p) => p.variantId === l.variantId);
-      return product ? { product, quantity: l.quantity } : null;
+      if (!product) return null;
+      const entry: CartEntry = { product, quantity: l.quantity };
+      if (l.attributes && l.attributes.length > 0) entry.attributes = l.attributes;
+      return entry;
     })
     .filter((x): x is CartEntry => x !== null);
   const subtotal = entries.reduce((sum, e) => sum + e.product.price * e.quantity, 0);
   const count = entries.reduce((sum, e) => sum + e.quantity, 0);
 
-  const add = useCallback((variantId: string, quantity = 1) => {
-    const existing = state.find((l) => l.variantId === variantId);
-    if (existing) {
-      state = state.map((l) =>
-        l.variantId === variantId ? { ...l, quantity: l.quantity + quantity } : l,
+  const add = useCallback(
+    (variantId: string, quantity = 1, attributes?: CartLineAttribute[]) => {
+      const key = attrsKey(attributes);
+      const existing = state.find(
+        (l) => l.variantId === variantId && attrsKey(l.attributes) === key,
       );
-    } else {
-      state = [...state, { variantId, quantity }];
-    }
-    persist();
-    emit();
-  }, []);
+      if (existing) {
+        state = state.map((l) =>
+          l === existing ? { ...l, quantity: l.quantity + quantity } : l,
+        );
+      } else {
+        const line: CartLine = { variantId, quantity };
+        if (attributes && attributes.length > 0) line.attributes = attributes;
+        state = [...state, line];
+      }
+      persist();
+      emit();
+    },
+    [],
+  );
 
   const update = useCallback((variantId: string, quantity: number) => {
     if (quantity <= 0) {

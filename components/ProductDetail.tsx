@@ -41,6 +41,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [activeImg, setActiveImg] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [gravure, setGravure] = useState(false);
+  const [gravureText, setGravureText] = useState("");
   const [thumbErrors, setThumbErrors] = useState<Record<number, boolean>>({});
   const [showSticky, setShowSticky] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
@@ -81,10 +82,23 @@ export default function ProductDetail({ product }: { product: Product }) {
   const effectiveVariantId = selectedVariant?.id || product.variantId;
   const variantUnavailable = selectedVariant?.id === "0";
 
+  const trimmedGravure = gravureText.trim();
+  const gravureMissing = gravure && trimmedGravure.length === 0;
+
   const onAdd = () => {
     if (!product.inStock || variantUnavailable) return;
+    if (gravureMissing) {
+      // Don't add anything; the inline error on the input is shown by the
+      // gravureMissing flag below.
+      return;
+    }
     add(effectiveVariantId, 1);
-    if (gravure) add(GRAVURE_VARIANT_ID, 1);
+    if (gravure) {
+      add(GRAVURE_VARIANT_ID, 1, [
+        { key: "Texte à graver", value: trimmedGravure },
+        { key: "Produit concerné", value: product.title },
+      ]);
+    }
     setOpen(true);
     trackMeta("AddToCart", {
       content_ids: [product.id],
@@ -409,6 +423,49 @@ export default function ProductDetail({ product }: { product: Product }) {
                     </p>
                   </div>
                 </button>
+
+                {/* Engraving text input — appears only when the upsell is enabled */}
+                {gravure && (
+                  <div className="mt-2 px-1">
+                    <label
+                      className="block font-mono text-[0.6rem] tracking-[0.2em] uppercase mb-1.5"
+                      style={{ color: "rgba(58,142,255,0.7)" }}
+                    >
+                      Texte à graver
+                    </label>
+                    <input
+                      type="text"
+                      value={gravureText}
+                      onChange={(e) => setGravureText(e.target.value.slice(0, 60))}
+                      placeholder="Ex : Alex · 2024 · F-HRBF"
+                      maxLength={60}
+                      autoFocus
+                      style={{
+                        width: "100%",
+                        padding: "0.7rem 0.9rem",
+                        fontSize: "0.9rem",
+                        borderRadius: 10,
+                        background: "rgba(12,12,26,0.7)",
+                        border: `1px solid ${gravureMissing ? "rgba(255,80,80,0.55)" : "rgba(255,255,255,0.10)"}`,
+                        color: "#fff",
+                        outline: "none",
+                      }}
+                    />
+                    <div
+                      className="flex items-center justify-between mt-1.5 font-mono text-[0.62rem]"
+                      style={{
+                        color: gravureMissing ? "#ff9090" : "rgba(255,255,255,0.35)",
+                      }}
+                    >
+                      <span>
+                        {gravureMissing
+                          ? "Indique le texte avant d’ajouter au panier."
+                          : "Max 60 caractères · gravé laser sur le socle bois"}
+                      </span>
+                      <span>{gravureText.length}/60</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

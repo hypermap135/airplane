@@ -72,7 +72,15 @@ export default function CartDrawer() {
     });
 
     try {
-      const items = entries.map((e) => ({ variantId: e.product.variantId, quantity: e.quantity }));
+      const items = entries.map((e) => {
+        const item: {
+          variantId: string;
+          quantity: number;
+          attributes?: { key: string; value: string }[];
+        } = { variantId: e.product.variantId, quantity: e.quantity };
+        if (e.attributes && e.attributes.length > 0) item.attributes = e.attributes;
+        return item;
+      });
       const appliedDiscount = promoApplied ? promo.trim().toUpperCase() : undefined;
 
       // Try API route first (uses Storefront API if token available, else permalink)

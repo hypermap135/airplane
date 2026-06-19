@@ -4,7 +4,11 @@ import { createCartCheckoutUrl, checkoutUrl } from "@/lib/shopify";
 export const runtime = "edge";
 
 type Body = {
-  items: { variantId: string; quantity: number }[];
+  items: {
+    variantId: string;
+    quantity: number;
+    attributes?: { key: string; value: string }[];
+  }[];
   discount?: string;
 };
 

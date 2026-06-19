@@ -16,9 +16,22 @@ export const DISCOUNT_CODE = "TAKEOFF10";
 // Goes directly to the Shopify-hosted cart page. Shopify will then forward to
 // /checkouts/cn/... once the customer clicks "Checkout".
 export function checkoutUrl(
-  items: { variantId: string; quantity: number }[],
+  items: {
+    variantId: string;
+    quantity: number;
+    /** Cart-permalink URLs cannot carry per-line attributes — these are
+     *  silently dropped here. The Storefront API path (createCartCheckoutUrl)
+     *  is the one that preserves them. */
+    attributes?: { key: string; value: string }[];
+  }[],
   discount?: string | null,
 ): string {
+  if (items.some((i) => i.attributes && i.attributes.length > 0)) {
+    console.warn(
+      "[shopify] cart permalink fallback drops line attributes — " +
+        "configure SHOPIFY_STOREFRONT_TOKEN to preserve gravure text.",
+    );
+  }
   const parts = items
     .filter((i) => i.quantity > 0)
     .map((i) => `${i.variantId}:${i.quantity}`)
@@ -91,12 +104,30 @@ function toGid(variantId: string): string {
 }
 
 export async function createCartCheckoutUrl(
-  items: { variantId: string; quantity: number }[],
+  items: {
+    variantId: string;
+    quantity: number;
+    /** Forwarded to Shopify as line-item `attributes`. Used by the gravure
+     *  upsell to ship the customer-entered engraving text along with the
+     *  cart so it reaches the order properties. */
+    attributes?: { key: string; value: string }[];
+  }[],
   discount?: string | null,
 ): Promise<string | null> {
   const lines = items
     .filter((i) => i.quantity > 0)
-    .map((i) => ({ merchandiseId: toGid(i.variantId), quantity: i.quantity }));
+    .map((i) => {
+      const line: Record<string, unknown> = {
+        merchandiseId: toGid(i.variantId),
+        quantity: i.quantity,
+      };
+      if (i.attributes && i.attributes.length > 0) {
+        line.attributes = i.attributes
+          .filter((a) => a.key && a.value)
+          .map((a) => ({ key: a.key, value: a.value }));
+      }
+      return line;
+    });
 
   const input: Record<string, unknown> = { lines };
   if (discount) input.discountCodes = [discount];
