@@ -1,9 +1,9 @@
 import HeroV4Carousel from "@/components/HeroV4Carousel";
 import TrustBar from "@/components/TrustBar";
-import StatsSection from "@/components/StatsSection";
+import TrustWall from "@/components/TrustWall";
 import CustomModelBanner from "@/components/CustomModelBanner";
 import BestSellers from "@/components/BestSellers";
-import CollectionExplorer from "@/components/CollectionExplorer";
+import CollectionExplorerV2 from "@/components/CollectionExplorerV2";
 import HeroV2BoardingPass from "@/components/HeroV2BoardingPass";
 import UniqueFeatures from "@/components/UniqueFeatures";
 import LEDSection from "@/components/LEDSection";
@@ -18,13 +18,13 @@ export default function HomePage() {
     <>
       <HeroV4Carousel />
       <TrustBar />
-      <StatsSection />
+      <TrustWall />
       {/* Banner "Maquette sur mesure" — teaser juste au-dessus des bestsellers */}
       <CustomModelBanner />
       {/* Notre sélection — 3 bestsellers gold-framed */}
       <BestSellers />
       {/* Toute la flotte — explorer inline avec chips de catégorie */}
-      <CollectionExplorer />
+      <CollectionExplorerV2 />
       {/* Boarding Pass — bloc standalone entre les produits et les features */}
       <HeroV2BoardingPass />
       <UniqueFeatures />
