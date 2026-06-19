@@ -2,6 +2,7 @@ import Link from "next/link";
 import { COLLECTIONS, type Collection } from "@/lib/products";
 import { getProductsAdmin } from "@/lib/products-store";
 import LogoutButton from "./LogoutButton";
+import KeychainSetupButton from "./KeychainSetupButton";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,9 @@ export default async function AdminHome() {
         </div>
         <LogoutButton />
       </header>
+
+      {/* One-shot setup: spin up the Shopify variants for the split keychains */}
+      <KeychainSetupButton />
 
       {/* Grouped product lists */}
       {COLLECTIONS.map((c) => {
