@@ -44,61 +44,105 @@ const VIEWS: Record<string, ViewSpec> = {
     // airplane from tail to nose, left to right. Mixing directions kills
     // the catalog consistency.
     angleClause:
-      "Slight three-quarter side view, NOSE POINTING TO THE RIGHT and tilted ~20° toward the camera, both engines and cockpit windows clearly visible, the airplane sits at a slightly elevated angle (camera ~10° above the wing).",
+      "STANDARD CATALOG VIEW (the cover shot). Camera placed at a slight " +
+      "front-side angle, ~20° off the centerline, ~10° above the wing. " +
+      "Result: we see the LEFT side of the fuselage with the NOSE POINTING " +
+      "TO THE RIGHT of the frame, the cockpit windows visible at the right, " +
+      "the tail at the left, the near wing slightly foreshortened, both " +
+      "engines visible underneath. This is NOT a pure side profile and NOT " +
+      "a front view — it's the slight 3/4 cover shot used as the catalog " +
+      "thumbnail.",
   },
   "3quarter-front": {
     label: "3/4 avant",
     angleClause:
-      "Three-quarter front view: the airplane angled ~35° toward the camera, NOSE POINTING TO THE RIGHT, cockpit windows large and centered.",
+      "STRICT THREE-QUARTER FRONT VIEW (NOT side, NOT rear). Camera positioned " +
+      "IN FRONT of and to the LEFT of the airplane, looking BACK at it " +
+      "from a 35° offset to the centerline, ~12° above the wing. WHAT WE " +
+      "MUST SEE: the cockpit windows LARGE in the upper-right area of the " +
+      "frame, the nose pointing TOWARDS THE CAMERA and slightly to the " +
+      "RIGHT, both engines visible at the front, the entire left side of " +
+      "the fuselage receding toward the tail at the back-left of the frame. " +
+      "The TAIL is small and far away. The COCKPIT is the dominant feature. " +
+      "REJECTED if we cannot see the cockpit windows prominently, or if the " +
+      "tail is closer to the camera than the nose.",
   },
   "3quarter-rear": {
     label: "3/4 arrière",
     angleClause:
-      "Three-quarter rear view from BEHIND the airplane, NOSE STILL POINTING TO THE RIGHT (we're looking at the tail end with the nose visible to the right of frame), tail fin and engines prominent in the foreground.",
+      "STRICT THREE-QUARTER REAR VIEW (NOT side, NOT front, NOT top). Camera " +
+      "positioned BEHIND and to the LEFT of the airplane, looking FORWARD " +
+      "toward the nose from a 35° offset, ~12° above the wing. WHAT WE " +
+      "MUST SEE: the TAIL FIN LARGE and in the foreground (left side of " +
+      "frame), both engine NOZZLES (jet pipes / exhausts) visible from the " +
+      "back, the upper surface of the wings receding toward the nose at " +
+      "the front-right of the frame. The COCKPIT is small and far away in " +
+      "the top-right area. NOSE POINTS TO THE RIGHT but is the FURTHEST " +
+      "point from the camera. REJECTED if we cannot see the tail fin large " +
+      "in the foreground, or if the cockpit is closer to the camera than " +
+      "the tail.",
   },
   top: {
     label: "Dessus",
     angleClause:
-      "Top-down view, fuselage running horizontally across the frame, NOSE POINTING TO THE RIGHT, both wings fully spread.",
+      "STRICT TOP-DOWN PLAN VIEW. Camera placed DIRECTLY ABOVE the airplane, " +
+      "pointing straight down at the wings (bird's eye view, ~90° pitch). " +
+      "WHAT WE MUST SEE: the airplane lying horizontally across the frame, " +
+      "both wings fully spread left-right symmetric, the fuselage running " +
+      "horizontally with the NOSE POINTING TO THE RIGHT and the tail to " +
+      "the LEFT, top of fuselage visible (no side panels, no engines from " +
+      "below). The wooden stand is hidden underneath the airplane (we are " +
+      "looking AT the top of the model). REJECTED if any cockpit window or " +
+      "engine intake is visible (those are side/front features), or if the " +
+      "perspective shows depth (it must be flat top-down).",
   },
   shelf: {
     label: "Sur étagère",
     customPrompt: (plane) =>
       `Re-render this "${plane}" 1:144 scale model in a premium showroom scene.\n\n` +
-      "SCENE — place the airplane (on its wooden display stand) on a single " +
-      "FLOATING DARK WALNUT SHELF (matte, ~4cm thick, clean straight edges) " +
-      "mounted against a deep matte BLACK wall (#080810). Shelf centered " +
-      "horizontally, runs across the lower third of the frame. Soft warm " +
-      "key-light from upper-left, subtle shadow on the shelf.\n\n" +
-      "COMPOSITION — plane fills ~70% of the SQUARE 1:1 frame, slightly " +
-      "elevated viewing angle (~15°), 3/4 front-side with nose pointing " +
-      "to the right.\n\n" +
+      "SCENE (MANDATORY) — the airplane (on its wooden display stand) MUST " +
+      "BE STANDING ON A SINGLE FLOATING DARK WALNUT SHELF — a horizontal " +
+      "wooden plank, ~4cm thick, matte finish, clean straight edges, " +
+      "mounted on the wall as a floating shelf (NO visible brackets). The " +
+      "shelf is CENTERED HORIZONTALLY and runs across the LOWER THIRD of " +
+      "the frame. Behind the shelf: a deep matte BLACK wall (#080810). " +
+      "Soft warm key-light from the upper-left, subtle shadow of the " +
+      "wooden stand on the shelf. REJECTED if there's no visible shelf, " +
+      "if the shelf is missing the floating-edge look, or if the " +
+      "background isn't a uniform black wall.\n\n" +
+      "COMPOSITION — plane fills ~70% of the SQUARE 1:1 frame, slight " +
+      "three-quarter front-side view (camera ~20° off the centerline, " +
+      "~15° above the wing), NOSE POINTING TO THE RIGHT, cockpit windows " +
+      "visible.\n\n" +
       `LIVERY — KEEP EXACTLY as in the source. ${plane} colors, wordmark, ` +
       "tail logo, registration, decals — pixel-perfect. Never invent.\n\n" +
-      "QUALITY — RAZOR-SHARP focus everywhere, no halo, no blur around " +
-      "engines/wings, fully opaque surfaces, premium boutique catalog look. " +
-      "REMOVE floating watermarks, URLs, gold glyphs. NO checker pattern, " +
-      "NO transparency, NO added text.",
+      "QUALITY — sharp focus, no halo, no transparency, fully opaque " +
+      "surfaces, premium boutique catalog look. REMOVE floating watermarks, " +
+      "URLs, gold glyphs. NO checker pattern, NO added text.",
   },
   desk: {
     label: "Sur un bureau",
     customPrompt: (plane) =>
       `Re-render this "${plane}" 1:144 scale model staged on a modern desk.\n\n` +
-      "SCENE — clean matte DARK WALNUT WOOD DESK SURFACE filling the lower " +
-      "half of the frame. Deep blurry background (heavy bokeh, f/2.0): a " +
-      "hint of a closed leather notebook, a small brass lamp out of focus, " +
-      "a neutral charcoal wall. Soft natural daylight from upper-left, warm " +
-      "contact shadow under the wooden stand.\n\n" +
-      "COMPOSITION — plane fills ~65% of the SQUARE 1:1 frame, slightly " +
-      "elevated viewing angle (~15°), 3/4 front-side with nose pointing " +
-      "to the right.\n\n" +
+      "SCENE (MANDATORY) — the airplane (on its wooden display stand) MUST " +
+      "BE STANDING ON A REAL DESK SURFACE: a clean matte DARK WALNUT WOOD " +
+      "horizontal desk that FILLS THE LOWER HALF of the frame, edge of " +
+      "the desk visible at the bottom. In the BACKGROUND (heavily blurred, " +
+      "f/2.0 bokeh, NOT in focus): a closed leather notebook, a small " +
+      "brass desk lamp on the right, a neutral charcoal wall. Soft natural " +
+      "daylight from upper-left (window-style), warm contact shadow under " +
+      "the wooden stand. REJECTED if there's no visible wood desk surface " +
+      "below the airplane, if the background isn't a blurred office scene, " +
+      "or if no notebook/lamp is hinted at in the bokeh.\n\n" +
+      "COMPOSITION — plane fills ~65% of the SQUARE 1:1 frame, slight " +
+      "three-quarter front-side view (camera ~20° off the centerline, " +
+      "~15° above the wing), NOSE POINTING TO THE RIGHT.\n\n" +
       `LIVERY — KEEP EXACTLY as in the source. ${plane} colors, wordmark, ` +
       "tail logo, registration, decals — pixel-perfect. Never invent.\n\n" +
-      "QUALITY — RAZOR-SHARP focus on the airplane (only the BACKGROUND " +
-      "is blurred via depth-of-field), no halo, fully opaque surfaces, " +
-      "premium executive vibe. REMOVE floating watermarks, URLs, gold " +
-      "glyphs. NO checker pattern, NO transparency, NO added text, NO " +
-      "computer screens or visible text in the background.",
+      "QUALITY — sharp focus on the airplane (only the BACKGROUND is " +
+      "blurred), no halo, fully opaque surfaces, premium executive vibe. " +
+      "REMOVE floating watermarks, URLs, gold glyphs. NO checker pattern, " +
+      "NO transparency, NO added text, NO computer screens or visible text.",
   },
 };
 
