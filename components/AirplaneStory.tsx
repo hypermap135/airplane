@@ -67,33 +67,20 @@ export default function AirplaneStorySection({
         L'histoire d'un géant.
       </h2>
 
-      {/* ── Hero image ── */}
+      {/* ── Hero image — full bleed, no card border ── */}
       <div
-        className="relative overflow-hidden mb-10 md:mb-12"
+        className="relative mb-10 md:mb-12"
         style={{
-          borderRadius: 20,
-          aspectRatio: "21/9",
-          background: "linear-gradient(145deg,#0c0c1c,#06060f)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          aspectRatio: "4/3",
         }}
       >
         <Image
           src={heroImage}
           alt={heroAlt}
           fill
-          sizes="(min-width: 1024px) 60vw, 100vw"
+          sizes="(min-width: 1024px) 80vw, 100vw"
           quality={92}
-          className="object-contain"
-          style={{ padding: "4%" }}
-        />
-        {/* Soft bottom vignette for crumb legibility */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(8,8,16,0.55) 0%, transparent 100%)",
-          }}
+          className="object-cover"
         />
       </div>
 
