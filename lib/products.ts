@@ -264,6 +264,14 @@ export const PRODUCTS: Product[] = [
     inStock: false,
     comingSoon: true,
     image: `/images/airbus-a350-emirates.png`,
+    images: [
+      `/images/airbus-a350-emirates.png`,
+      `/images/airbus-a350-emirates--3quarter-front.png`,
+      `/images/airbus-a350-emirates--3quarter-rear.png`,
+      `/images/airbus-a350-emirates--top.png`,
+      `/images/airbus-a350-emirates--shelf.png`,
+      `/images/airbus-a350-emirates--desk.png`,
+    ],
     scale: "1/142",
   },
   {
