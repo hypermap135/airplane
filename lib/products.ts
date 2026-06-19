@@ -9,6 +9,18 @@ export type Collection =
 
 export type ProductSpec = { label: string; value: string };
 
+/**
+ * A single design/colour option of a product. When `variants` is present
+ * on a Product, the PDP shows a chip selector and the add-to-cart line
+ * uses the SELECTED variant's id instead of the product's default one.
+ * `image` becomes the main hero when the variant is active.
+ */
+export type ProductVariant = {
+  id: string;       // Shopify variant id, "0" when not yet created
+  label: string;    // "AIR FRANCE SkyTeam"
+  image: string;    // hero image when this variant is selected
+};
+
 export type Product = {
   id: string;
   variantId: string;
@@ -30,6 +42,10 @@ export type Product = {
   /** Free-form long description editable from /admin. When set, replaces
    *  the marketing block on the product page. */
   description?: string;
+  /** Multi-design product (e.g. the keychain with 8 embroidered models).
+   *  When set, PDP renders a variant chip selector; add-to-cart routes
+   *  through `variants[selected].id`. */
+  variants?: ProductVariant[];
 };
 
 export const COLLECTIONS: { slug: Collection; label: string }[] = [
@@ -696,104 +712,41 @@ export const PRODUCTS: Product[] = [
   // ACCESSOIRES
   // ══════════════════════════════════════════════════════════════════════════
 
-  // ── 8 porte-clés tissu brodé · 4,90 € chacun ────────────────────────
-  // The first keeps the existing Shopify variant (was the unified "Tag-Crew"
-  // listing); the 7 others need their own Shopify variants — once you have
-  // the IDs, swap variantId: "0" + comingSoon for the real ID + inStock: true.
+  // ── Porte-clé AirplaneStore · 1 produit, 8 designs au choix · 4,90 € ──
+  // The customer picks a design from the variant chip selector on the
+  // PDP. The first variant uses the existing Shopify variantId; the 7
+  // others stay at "0" until /admin/setup-keychain-variants is run
+  // against a Shopify Admin token that has write_products scope.
   {
-    id: "portecle-af-skyteam",
-    variantId: "53842722357588",
+    id: "portecle-airplanestore",
+    variantId: "53842722357588",  // default (SkyTeam) — overridden when a variant is picked
     handle: "accessoires-aviation-en-metal",
-    title: "Porte-clé AIR FRANCE SkyTeam",
-    subtitle: "Tissu brodé · livrée rouge & blanc",
+    title: "Porte-clé AirplaneStore",
+    subtitle: "Tissu brodé · 8 designs au choix",
     price: 4.9,
     collection: "accessoires",
     inStock: true,
     image: `/images/porte-cle-air-france-lhr.png`,
-  },
-  {
-    id: "portecle-rbf",
-    variantId: "0",
-    handle: "porte-cle-remove-before-flight",
-    title: "Porte-clé REMOVE BEFORE FLIGHT",
-    subtitle: "Tissu brodé · classique aviation rouge",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-remove-before-flight.png`,
-  },
-  {
-    id: "portecle-af-navy",
-    variantId: "0",
-    handle: "porte-cle-air-france-navy",
-    title: "Porte-clé AIR FRANCE Navy",
-    subtitle: "Tissu brodé · livrée bleu marine compacte",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-air-france-navy.png`,
-  },
-  {
-    id: "portecle-af-rouge-navy",
-    variantId: "0",
-    handle: "porte-cle-air-france-rouge-navy",
-    title: "Porte-clé AIR FRANCE Rouge & Navy",
-    subtitle: "Tissu brodé · bicolore avec logos compagnie",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-air-france-rouge-navy.png`,
-  },
-  {
-    id: "portecle-captain",
-    variantId: "0",
-    handle: "porte-cle-captain",
-    title: "Porte-clé CAPTAIN",
-    subtitle: "Tissu brodé · ailes dorées sur fond noir",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-captain.png`,
-  },
-  {
-    id: "portecle-pilot",
-    variantId: "0",
-    handle: "porte-cle-pilot",
-    title: "Porte-clé PILOT",
-    subtitle: "Tissu brodé · ailes dorées sur fond noir",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-pilot.png`,
-  },
-  {
-    id: "portecle-silhouette-1",
-    variantId: "0",
-    handle: "porte-cle-silhouette-avion-1",
-    title: "Porte-clé Silhouette Avion (jaune)",
-    subtitle: "Tissu brodé · silhouette avion jaune sur fond noir",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-silhouette-avion-1.png`,
-  },
-  {
-    id: "portecle-silhouette-2",
-    variantId: "0",
-    handle: "porte-cle-silhouette-avion-2",
-    title: "Porte-clé Silhouette Avion (constellation)",
-    subtitle: "Tissu brodé · silhouette avion jaune & étoiles",
-    price: 4.9,
-    collection: "accessoires",
-    inStock: false,
-    comingSoon: true,
-    image: `/images/porte-cle-silhouette-avion-2.png`,
+    images: [
+      `/images/porte-cle-air-france-lhr.png`,
+      `/images/porte-cle-remove-before-flight.png`,
+      `/images/porte-cle-air-france-navy.png`,
+      `/images/porte-cle-air-france-rouge-navy.png`,
+      `/images/porte-cle-captain.png`,
+      `/images/porte-cle-pilot.png`,
+      `/images/porte-cle-silhouette-avion-1.png`,
+      `/images/porte-cle-silhouette-avion-2.png`,
+    ],
+    variants: [
+      { id: "53842722357588", label: "AIR FRANCE SkyTeam",       image: "/images/porte-cle-air-france-lhr.png" },
+      { id: "0",              label: "REMOVE BEFORE FLIGHT",      image: "/images/porte-cle-remove-before-flight.png" },
+      { id: "0",              label: "AIR FRANCE Navy",           image: "/images/porte-cle-air-france-navy.png" },
+      { id: "0",              label: "AIR FRANCE Rouge & Navy",   image: "/images/porte-cle-air-france-rouge-navy.png" },
+      { id: "0",              label: "CAPTAIN",                   image: "/images/porte-cle-captain.png" },
+      { id: "0",              label: "PILOT",                     image: "/images/porte-cle-pilot.png" },
+      { id: "0",              label: "Silhouette Avion",          image: "/images/porte-cle-silhouette-avion-1.png" },
+      { id: "0",              label: "Silhouette Constellation",  image: "/images/porte-cle-silhouette-avion-2.png" },
+    ],
   },
   {
     id: "horloge-turbine",

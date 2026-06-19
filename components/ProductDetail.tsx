@@ -74,14 +74,21 @@ export default function ProductDetail({ product }: { product: Product }) {
     });
   }, [product.id, product.title, product.collection, product.price]);
 
+  // When the product is multi-variant (e.g. keychain with 8 designs),
+  // pull the variant matching the currently-shown thumbnail. Falls back
+  // to the product's default variantId when there's no variants array.
+  const selectedVariant = product.variants?.[activeImg];
+  const effectiveVariantId = selectedVariant?.id || product.variantId;
+  const variantUnavailable = selectedVariant?.id === "0";
+
   const onAdd = () => {
-    if (!product.inStock) return;
-    add(product.variantId, 1);
+    if (!product.inStock || variantUnavailable) return;
+    add(effectiveVariantId, 1);
     if (gravure) add(GRAVURE_VARIANT_ID, 1);
     setOpen(true);
     trackMeta("AddToCart", {
       content_ids: [product.id],
-      content_name: product.title,
+      content_name: selectedVariant ? `${product.title} — ${selectedVariant.label}` : product.title,
       content_type: "product",
       contents: [{ id: product.id, quantity: 1, item_price: product.price }],
       currency: "EUR",
@@ -159,20 +166,17 @@ export default function ProductDetail({ product }: { product: Product }) {
                   border: "none",
                 }}
               >
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeImg}
-                    src={images[activeImg]}
-                    alt={product.title}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35, ease: "easeInOut" }}
-                    className="w-full h-full object-contain"
-                    referrerPolicy="no-referrer"
-                    style={{ display: "block", padding: "4%", transform: "scale(1.1) translateY(-6%)" }}
-                  />
-                </AnimatePresence>
+                {/* Plain <img> with a key — re-mounts cleanly when the
+                    selected variant changes. AnimatePresence + motion.img
+                    sometimes left the exit frame stuck at opacity:0 here. */}
+                <img
+                  key={activeImg}
+                  src={images[activeImg]}
+                  alt={product.title}
+                  className="w-full h-full object-contain transition-opacity duration-300"
+                  referrerPolicy="no-referrer"
+                  style={{ display: "block", padding: "4%", transform: "scale(1.1) translateY(-6%)" }}
+                />
 
                 {/* Zoom hint — bottom-left, fades in on hover */}
                 <span
@@ -493,6 +497,68 @@ export default function ProductDetail({ product }: { product: Product }) {
               );
             })()}
 
+            {/* Variant chip selector — only for multi-design products */}
+            {product.variants && product.variants.length > 0 && (
+              <div className="mb-4">
+                <p
+                  className="font-mono uppercase mb-3"
+                  style={{
+                    fontSize: "0.58rem",
+                    letterSpacing: "0.24em",
+                    color: "rgba(255,255,255,0.55)",
+                  }}
+                >
+                  Choisissez votre design ·{" "}
+                  <span style={{ color: "rgba(255,255,255,0.9)" }}>
+                    {selectedVariant?.label}
+                  </span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.variants.map((v, i) => {
+                    const active = i === activeImg;
+                    const unavailable = v.id === "0";
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => setActiveImg(i)}
+                        className="relative transition-all"
+                        style={{
+                          padding: "0.4rem 0.9rem",
+                          borderRadius: 999,
+                          background: active
+                            ? "linear-gradient(135deg,#fff 0%,#e8eaf0 100%)"
+                            : "rgba(255,255,255,0.04)",
+                          border: active
+                            ? "1px solid rgba(255,255,255,0.4)"
+                            : "1px solid rgba(255,255,255,0.10)",
+                          color: active ? "#06060f" : "rgba(255,255,255,0.7)",
+                          fontSize: "0.72rem",
+                          fontWeight: active ? 700 : 500,
+                          cursor: "pointer",
+                          opacity: unavailable && !active ? 0.55 : 1,
+                        }}
+                      >
+                        {v.label}
+                        {unavailable && (
+                          <span
+                            aria-hidden
+                            className="ml-1.5 font-mono"
+                            style={{
+                              fontSize: "0.55rem",
+                              color: active ? "rgba(160,100,30,0.85)" : "rgba(255,180,77,0.85)",
+                              letterSpacing: "0.1em",
+                            }}
+                          >
+                            · bientôt
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Urgency signals — only when in stock */}
             {product.inStock && (
               <div
@@ -537,7 +603,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
             {/* CTA */}
             <div className="mb-4">
-              {product.inStock ? (
+              {product.inStock && !variantUnavailable ? (
                 <motion.button
                   id="primary-add-to-cart"
                   onClick={onAdd}
@@ -564,6 +630,20 @@ export default function ProductDetail({ product }: { product: Product }) {
                     ? `Ajouter au panier — ${formatPrice(product.price + 15)} →`
                     : "Ajouter au panier →"}
                 </motion.button>
+              ) : variantUnavailable ? (
+                <button
+                  disabled
+                  className="w-full font-black text-[0.9rem] tracking-[0.1em] uppercase py-4 px-8"
+                  style={{
+                    borderRadius: "0.875rem",
+                    background: "rgba(255,180,77,0.10)",
+                    color: "rgba(255,180,77,0.85)",
+                    border: "1px solid rgba(255,180,77,0.35)",
+                    cursor: "not-allowed",
+                  }}
+                >
+                  Bientôt disponible — choisissez un autre design
+                </button>
               ) : (
                 <NotifyForm
                   productTitle={product.title}
@@ -672,7 +752,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
       {/* ── Sticky add-to-cart bar (mobile + desktop) ── */}
       <AnimatePresence>
-        {showSticky && product.inStock && (
+        {showSticky && product.inStock && !variantUnavailable && (
           <motion.div
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -690,7 +770,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               {/* Thumb */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={product.image}
+                src={selectedVariant?.image || product.image}
                 alt=""
                 aria-hidden
                 className="w-12 h-12 md:w-14 md:h-14 object-contain rounded-lg shrink-0"
@@ -702,7 +782,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               {/* Title + price */}
               <div className="min-w-0 flex-1">
                 <p className="text-white font-semibold text-[0.85rem] md:text-[0.95rem] truncate">
-                  {product.title}
+                  {product.title}{selectedVariant ? ` · ${selectedVariant.label}` : ""}
                 </p>
                 <p
                   className="font-mono text-[0.65rem] md:text-[0.7rem] mt-0.5"

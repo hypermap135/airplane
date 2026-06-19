@@ -1,20 +1,19 @@
 /**
  * POST /api/admin/setup-keychain-variants
  *
- * One-shot setup: creates 7 Shopify products (one per keychain design)
- * at 4,90 € each so the visible Next.js catalog has real variants to
- * sell. Idempotent — re-running won't duplicate products that already
- * exist (matched by handle).
+ * Turns the existing keychain product (the one behind variant
+ * 53842722357588) into a multi-design product with 8 variants — one
+ * per embroidered design at 4,90 € each. Idempotent — re-running won't
+ * duplicate existing variants (matched by option1 value).
+ *
+ * Steps:
+ *  1. Find the parent product of variant 53842722357588.
+ *  2. Add (or rename) a single product option named "Modèle".
+ *  3. Rename the existing variant to option1 = "AIR FRANCE SkyTeam".
+ *  4. Bulk-create the 7 missing variants at 4,90 €.
+ *  5. Return mapping { label → variantId } for products.ts.
  *
  * Protected by the admin session cookie (handled in middleware.ts).
- *
- * Response:
- *   {
- *     ok: true,
- *     created: number,
- *     skipped: number,
- *     mapping: Record<handle, variantId>  // for products.ts update
- *   }
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -25,19 +24,19 @@ export const maxDuration = 60;
 const STORE   = "y823wg-nz.myshopify.com";
 const API_VER = "2024-07";
 const GQL_URL = `https://${STORE}/admin/api/${API_VER}/graphql.json`;
-
-/** The 7 keychains that need a Shopify variant. */
-const KEYCHAINS = [
-  { handle: "porte-cle-remove-before-flight",   title: "Porte-clé REMOVE BEFORE FLIGHT",        image: "porte-cle-remove-before-flight.png" },
-  { handle: "porte-cle-air-france-navy",        title: "Porte-clé AIR FRANCE Navy",             image: "porte-cle-air-france-navy.png" },
-  { handle: "porte-cle-air-france-rouge-navy",  title: "Porte-clé AIR FRANCE Rouge & Navy",     image: "porte-cle-air-france-rouge-navy.png" },
-  { handle: "porte-cle-captain",                title: "Porte-clé CAPTAIN",                     image: "porte-cle-captain.png" },
-  { handle: "porte-cle-pilot",                  title: "Porte-clé PILOT",                       image: "porte-cle-pilot.png" },
-  { handle: "porte-cle-silhouette-avion-1",     title: "Porte-clé Silhouette Avion (jaune)",    image: "porte-cle-silhouette-avion-1.png" },
-  { handle: "porte-cle-silhouette-avion-2",     title: "Porte-clé Silhouette Avion (constellation)", image: "porte-cle-silhouette-avion-2.png" },
-];
-
+const EXISTING_VARIANT_ID = "53842722357588";   // numeric — gid built below
 const PRICE = "4.90";
+
+const VARIANT_LABELS = [
+  "AIR FRANCE SkyTeam",        // index 0 — the existing one
+  "REMOVE BEFORE FLIGHT",
+  "AIR FRANCE Navy",
+  "AIR FRANCE Rouge & Navy",
+  "CAPTAIN",
+  "PILOT",
+  "Silhouette Avion",
+  "Silhouette Constellation",
+];
 
 async function shopify<T = unknown>(query: string, variables?: Record<string, unknown>): Promise<T> {
   const token = process.env.SHOPIFY_ADMIN_TOKEN;
@@ -55,142 +54,162 @@ async function shopify<T = unknown>(query: string, variables?: Record<string, un
   return (json.data ?? {}) as T;
 }
 
-/** Look up an existing product by handle to make this route idempotent. */
-async function findByHandle(handle: string): Promise<{ id: string; variantId: string } | null> {
-  const data = await shopify<{
-    productByHandle: {
-      id: string;
-      variants: { edges: { node: { id: string } }[] };
-    } | null;
-  }>(
-    `query($handle: String!) {
-      productByHandle(handle: $handle) {
-        id
-        variants(first: 1) { edges { node { id } } }
-      }
-    }`,
-    { handle }
-  );
-  if (!data.productByHandle) return null;
-  const variantId = data.productByHandle.variants.edges[0]?.node?.id;
-  if (!variantId) return null;
-  return {
-    id: data.productByHandle.id,
-    variantId,
-  };
-}
-
-/** Create a brand new product with one default variant priced at 4,90 €. */
-async function createProduct(handle: string, title: string): Promise<{ id: string; variantId: string }> {
-  // 1. Create product
-  const created = await shopify<{
-    productCreate: {
-      product: {
-        id: string;
-        variants: { edges: { node: { id: string } }[] };
-      };
-      userErrors: { field: string[]; message: string }[];
-    };
-  }>(
-    `mutation($product: ProductInput!) {
-      productCreate(product: $product) {
-        product {
-          id
-          variants(first: 1) { edges { node { id } } }
-        }
-        userErrors { field message }
-      }
-    }`,
-    {
-      product: {
-        title,
-        handle,
-        descriptionHtml:
-          `<p>${title} — tissu brodé, double-face, fermoir métal. Idéal sac, ` +
-          `clés ou trousseau crew. <strong>4,90 €</strong>.</p>`,
-        status: "ACTIVE",
-        tags: ["accessoires", "porte-cle"],
-        productType: "Accessoire",
-      },
-    }
-  );
-
-  const errs = created.productCreate.userErrors;
-  if (errs.length > 0) throw new Error(`productCreate ${handle}: ${JSON.stringify(errs)}`);
-
-  const productId = created.productCreate.product.id;
-  const variantId = created.productCreate.product.variants.edges[0]?.node?.id;
-  if (!variantId) throw new Error(`No variant created for ${handle}`);
-
-  // 2. Set the variant price (productCreate doesn't accept price directly
-  //    on the default variant in newer API versions)
-  const priced = await shopify<{
-    productVariantsBulkUpdate: {
-      userErrors: { field: string[]; message: string }[];
-    };
-  }>(
-    `mutation($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        userErrors { field message }
-      }
-    }`,
-    {
-      productId,
-      variants: [{ id: variantId, price: PRICE }],
-    }
-  );
-
-  const priceErrs = priced.productVariantsBulkUpdate.userErrors;
-  if (priceErrs.length > 0) throw new Error(`priceUpdate ${handle}: ${JSON.stringify(priceErrs)}`);
-
-  return { id: productId, variantId };
-}
-
-/** Strip the `gid://shopify/ProductVariant/` prefix → keep just the numeric ID
- *  so it matches the format already used in lib/products.ts. */
-function extractNumericId(gid: string): string {
+const numericId = (gid: string): string => {
   const m = gid.match(/\/(\d+)$/);
   return m ? m[1] : gid;
-}
+};
+const variantGid = (n: string) => `gid://shopify/ProductVariant/${n}`;
+
+type VariantNode = {
+  id: string;
+  title: string;
+  selectedOptions: { name: string; value: string }[];
+};
 
 export async function POST(_req: NextRequest) {
-  const results: { handle: string; status: "created" | "exists" | "error"; variantId?: string; error?: string }[] = [];
-
-  for (const kc of KEYCHAINS) {
-    try {
-      const existing = await findByHandle(kc.handle);
-      if (existing) {
-        results.push({
-          handle: kc.handle,
-          status: "exists",
-          variantId: extractNumericId(existing.variantId),
-        });
-        continue;
+  // ── 1. Look up the parent product + its current variants/options ────
+  const parent = await shopify<{
+    productVariant: {
+      product: {
+        id: string;
+        options: { id: string; name: string; values: string[] }[];
+        variants: { edges: { node: VariantNode }[] };
+      };
+    } | null;
+  }>(
+    `query($id: ID!) {
+      productVariant(id: $id) {
+        product {
+          id
+          options { id name values }
+          variants(first: 50) {
+            edges { node { id title selectedOptions { name value } } }
+          }
+        }
       }
-      const created = await createProduct(kc.handle, kc.title);
-      results.push({
-        handle: kc.handle,
-        status: "created",
-        variantId: extractNumericId(created.variantId),
-      });
-    } catch (err) {
-      results.push({
-        handle: kc.handle,
-        status: "error",
-        error: String(err),
-      });
+    }`,
+    { id: variantGid(EXISTING_VARIANT_ID) }
+  );
+
+  if (!parent.productVariant) {
+    return NextResponse.json(
+      { ok: false, error: `Variant ${EXISTING_VARIANT_ID} not found in Shopify` },
+      { status: 404 }
+    );
+  }
+
+  const productId = parent.productVariant.product.id;
+  const existingVariants = parent.productVariant.product.variants.edges.map((e) => e.node);
+  const currentOption = parent.productVariant.product.options[0];
+
+  // ── 2. Make sure the option is named "Modèle" ──────────────────────
+  // If the default variant is still on "Default Title" / "Title", we
+  // need to rename the option AND set option1 on the existing variant.
+  // productUpdate handles both in one call.
+  if (currentOption.name !== "Modèle") {
+    await shopify<{ productUpdate: { userErrors: unknown[] } }>(
+      `mutation($product: ProductInput!) {
+        productUpdate(product: $product) {
+          userErrors { field message }
+        }
+      }`,
+      {
+        product: {
+          id: productId,
+          options: ["Modèle"],
+          variants: [
+            {
+              id: existingVariants[0].id,
+              options: [VARIANT_LABELS[0]],
+              price: PRICE,
+            },
+          ],
+        },
+      }
+    );
+  }
+
+  // ── 3. Re-fetch to see what option1 values exist NOW (idempotent) ──
+  const after = await shopify<{
+    product: { variants: { edges: { node: VariantNode }[] } };
+  }>(
+    `query($id: ID!) {
+      product(id: $id) {
+        variants(first: 50) {
+          edges { node { id title selectedOptions { name value } } }
+        }
+      }
+    }`,
+    { id: productId }
+  );
+
+  const existingLabels = new Set(
+    after.product.variants.edges
+      .map((e) => e.node.selectedOptions[0]?.value)
+      .filter(Boolean)
+  );
+
+  // ── 4. Bulk-create only the labels that don't exist yet ────────────
+  const toCreate = VARIANT_LABELS.slice(1).filter((l) => !existingLabels.has(l));
+
+  if (toCreate.length > 0) {
+    const created = await shopify<{
+      productVariantsBulkCreate: {
+        productVariants: { id: string; selectedOptions: { name: string; value: string }[] }[];
+        userErrors: { field: string[]; message: string }[];
+      };
+    }>(
+      `mutation($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
+        productVariantsBulkCreate(productId: $productId, variants: $variants) {
+          productVariants {
+            id
+            selectedOptions { name value }
+          }
+          userErrors { field message }
+        }
+      }`,
+      {
+        productId,
+        variants: toCreate.map((label) => ({
+          options: [label],
+          price: PRICE,
+        })),
+      }
+    );
+
+    const errs = created.productVariantsBulkCreate.userErrors;
+    if (errs.length > 0) {
+      return NextResponse.json(
+        { ok: false, error: `bulkCreate: ${JSON.stringify(errs)}` },
+        { status: 500 }
+      );
     }
   }
 
+  // ── 5. Build the mapping { label → variantId } from the final state ─
+  const final = await shopify<{
+    product: { variants: { edges: { node: VariantNode }[] } };
+  }>(
+    `query($id: ID!) {
+      product(id: $id) {
+        variants(first: 50) {
+          edges { node { id title selectedOptions { name value } } }
+        }
+      }
+    }`,
+    { id: productId }
+  );
+
   const mapping: Record<string, string> = {};
-  for (const r of results) if (r.variantId) mapping[r.handle] = r.variantId;
+  for (const edge of final.product.variants.edges) {
+    const label = edge.node.selectedOptions[0]?.value;
+    if (label) mapping[label] = numericId(edge.node.id);
+  }
 
   return NextResponse.json({
-    ok: results.every((r) => r.status !== "error"),
-    created: results.filter((r) => r.status === "created").length,
-    skipped: results.filter((r) => r.status === "exists").length,
-    errors:  results.filter((r) => r.status === "error").length,
-    results,
+    ok: true,
+    created: toCreate.length,
+    skipped: existingLabels.size - 1,   // minus the renamed default
     mapping,
   });
 }
