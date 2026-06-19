@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PRODUCTS, COLLECTIONS, formatPrice, type Product } from "@/lib/products";
@@ -50,8 +50,71 @@ export default function FleetCarousel() {
   const scrollByCards = (dir: 1 | -1) => {
     const el = scrollerRef.current;
     if (!el) return;
+    pauseAutoRef.current = true;
+    window.clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = window.setTimeout(() => {
+      pauseAutoRef.current = false;
+    }, 3500);
     el.scrollBy({ left: dir * Math.max(280, el.clientWidth * 0.6), behavior: "smooth" });
   };
+
+  /* ── Auto-scroll loop ────────────────────────────────────────────────
+     Items are duplicated below, so when scrollLeft passes scrollWidth/2
+     we snap back to 0 — the user never sees a jump because the second
+     half is identical to the first. Pauses on hover, touch, wheel,
+     and after the user uses the arrow buttons (3.5s grace). */
+  const pauseAutoRef = useRef(false);
+  const resumeTimerRef = useRef<number>(0);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const SPEED = 0.4; // px per frame ≈ 24 px/s at 60fps — slow, esthétique
+    let raf = 0;
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      const dt = Math.min(48, now - last);
+      last = now;
+      if (!pauseAutoRef.current && el.scrollWidth > el.clientWidth + 8) {
+        const half = el.scrollWidth / 2;
+        let next = el.scrollLeft + SPEED * (dt / 16.67);
+        if (next >= half) next -= half;
+        el.scrollLeft = next;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    const pause = () => {
+      pauseAutoRef.current = true;
+      window.clearTimeout(resumeTimerRef.current);
+    };
+    const resumeSoon = () => {
+      window.clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = window.setTimeout(() => {
+        pauseAutoRef.current = false;
+      }, 2500);
+    };
+
+    el.addEventListener("mouseenter", pause);
+    el.addEventListener("mouseleave", resumeSoon);
+    el.addEventListener("touchstart", pause, { passive: true });
+    el.addEventListener("touchend", resumeSoon, { passive: true });
+    el.addEventListener("wheel", () => { pause(); resumeSoon(); }, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(resumeTimerRef.current);
+      el.removeEventListener("mouseenter", pause);
+      el.removeEventListener("mouseleave", resumeSoon);
+      el.removeEventListener("touchstart", pause);
+      el.removeEventListener("touchend", resumeSoon);
+    };
+  }, [active]);
 
   return (
     <section
@@ -171,27 +234,38 @@ export default function FleetCarousel() {
         ref={scrollerRef}
         className="overflow-x-auto pb-4 px-6 md:px-12 xl:px-20"
         style={{
-          scrollSnapType: "x proximity",
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
-          maskImage: "linear-gradient(to right, black 96%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to right, black 96%, transparent 100%)",
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
         }}
       >
-        <div className="flex gap-4 md:gap-5">
-          {visible.map((p) => (
-            <FleetThumb key={p.id} product={p} />
-          ))}
-          {visible.length === 0 && (
-            <div
-              className="text-white/40 text-sm py-12"
-              style={{ minWidth: "100%" }}
-            >
-              Aucun modèle disponible dans cette catégorie pour l’instant.
-            </div>
-          )}
-          <div aria-hidden style={{ minWidth: "6vw" }} />
-        </div>
+        {visible.length === 0 ? (
+          <div className="text-white/40 text-sm py-12">
+            Aucun modèle disponible dans cette catégorie pour l’instant.
+          </div>
+        ) : (
+          <div
+            className="grid grid-flow-col gap-x-4 md:gap-x-5 gap-y-8 md:gap-y-10"
+            style={{
+              gridTemplateRows: "repeat(2, auto)",
+              gridAutoColumns: "clamp(180px, 18vw, 240px)",
+            }}
+          >
+            {/* Items rendered twice for seamless auto-scroll loop.
+                The auto-scroll effect snaps back to 0 once scrollLeft
+                reaches scrollWidth/2 — second half is a perfect clone
+                of the first so the jump is invisible. */}
+            {visible.map((p, i) => (
+              <FleetThumb key={`a-${p.id}-${i}`} product={p} />
+            ))}
+            {visible.map((p, i) => (
+              <FleetThumb key={`b-${p.id}-${i}`} product={p} ariaHidden />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── "Voir toute la collection" link ── */}
@@ -217,11 +291,13 @@ export default function FleetCarousel() {
 
 /* ── FleetThumb — compact, no card chrome ──────────────────────────────── */
 
-function FleetThumb({ product }: { product: Product }) {
+function FleetThumb({ product, ariaHidden = false }: { product: Product; ariaHidden?: boolean }) {
   return (
     <Link
       href={`/products/${product.handle}`}
       className="group shrink-0"
+      aria-hidden={ariaHidden || undefined}
+      tabIndex={ariaHidden ? -1 : undefined}
       style={{
         scrollSnapAlign: "start",
         width: "clamp(180px, 18vw, 240px)",
