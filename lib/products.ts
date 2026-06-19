@@ -591,6 +591,10 @@ export const PRODUCTS: Product[] = [
     image: `/images/concorde-airfrance-30cm.png`,
     images: [
       `/images/concorde-airfrance-30cm.png`,
+      `/images/concorde-airfrance-30cm--3quarter-front.png`,
+      `/images/concorde-airfrance-30cm--3quarter-rear.png`,
+      `/images/concorde-airfrance-30cm--top.png`,
+      `/images/concorde-airfrance-30cm--desk.png`,
     ],
     scale: "1/200",
   },
