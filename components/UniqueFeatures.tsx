@@ -126,76 +126,52 @@ export default function UniqueFeatures() {
                 background: "linear-gradient(165deg, #0d0d1a 0%, #07070f 100%)",
                 border: "1px solid rgba(255,255,255,0.06)",
                 transition: "border-color 0.3s ease, transform 0.3s ease",
+                minHeight: "260px",
               }}
             >
-              {/* Image — contained, never cropped */}
-              <div
-                className="relative w-full"
-                style={{
-                  aspectRatio: "4/3",
-                  background:
-                    "radial-gradient(ellipse 70% 70% at 50% 60%, rgba(58,142,255,0.06) 0%, transparent 70%), #0a0a14",
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={f.image}
-                  alt={f.imageAlt}
-                  className="absolute inset-0 w-full h-full object-contain"
-                  style={{ padding: "8% 10%" }}
-                  loading="lazy"
-                />
-                {/* subtle bottom fade so the card title pops */}
-                <div
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0 pointer-events-none"
-                  style={{
-                    height: "30%",
-                    background:
-                      "linear-gradient(to top, rgba(7,7,15,0.85) 0%, transparent 100%)",
-                  }}
-                />
-                {/* tiny number chip */}
-                <div
-                  className="absolute top-4 left-4 font-mono text-[0.55rem] tracking-[0.22em] uppercase px-2 py-1"
-                  style={{
-                    borderRadius: 999,
-                    background: "rgba(8,8,20,0.7)",
-                    border: `1px solid ${f.accent}55`,
-                    color: f.accent,
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  {f.num}
+              <div className="h-full flex flex-col px-7 md:px-8 pt-7 pb-7">
+                {/* Index + accent dot */}
+                <div className="flex items-center gap-2 mb-7">
+                  <span
+                    className="font-mono uppercase"
+                    style={{
+                      fontSize: "0.6rem",
+                      letterSpacing: "0.26em",
+                      padding: "0.3rem 0.65rem",
+                      borderRadius: 999,
+                      background: "rgba(8,8,20,0.7)",
+                      border: `1px solid ${f.accent}55`,
+                      color: f.accent,
+                    }}
+                  >
+                    {f.num}
+                  </span>
+                  <div
+                    aria-hidden
+                    style={{
+                      flex: 1,
+                      height: 1,
+                      background: `linear-gradient(to right, ${f.accent}55, transparent)`,
+                    }}
+                  />
                 </div>
-              </div>
 
-              {/* Text — clean block under the image */}
-              <div className="px-6 pt-5 pb-7">
                 <h3
-                  className="font-black uppercase leading-[1] tracking-tight mb-3"
+                  className="font-black uppercase leading-[1] tracking-tight mb-4"
                   style={{
-                    fontSize: "clamp(1.2rem, 1.9vw, 1.5rem)",
-                    letterSpacing: "-0.015em",
+                    fontSize: "clamp(1.4rem, 2.4vw, 1.8rem)",
+                    letterSpacing: "-0.02em",
                     color: "#f0f2f5",
                   }}
                 >
                   {f.title}
                 </h3>
-                <div
-                  aria-hidden
-                  style={{
-                    width: 32,
-                    height: 1,
-                    background: `linear-gradient(to right, ${f.accent}88, transparent)`,
-                    marginBottom: "0.9rem",
-                  }}
-                />
+
                 <p
-                  className="leading-[1.65]"
+                  className="leading-[1.6]"
                   style={{
-                    fontSize: "0.92rem",
-                    color: "rgba(255,255,255,0.55)",
+                    fontSize: "0.95rem",
+                    color: "rgba(255,255,255,0.65)",
                   }}
                 >
                   {f.body}

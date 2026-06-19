@@ -3,6 +3,7 @@ import TrustBar from "@/components/TrustBar";
 import TrustWall from "@/components/TrustWall";
 import CustomModelBanner from "@/components/CustomModelBanner";
 import BestSellers from "@/components/BestSellers";
+import FleetCarousel from "@/components/FleetCarousel";
 import HeroV2BoardingPass from "@/components/HeroV2BoardingPass";
 import UniqueFeatures from "@/components/UniqueFeatures";
 import LEDSection from "@/components/LEDSection";
@@ -22,6 +23,8 @@ export default function HomePage() {
       <CustomModelBanner />
       {/* Notre sélection — 3 bestsellers gold-framed */}
       <BestSellers />
+      {/* Toute la flotte — filterable horizontal scroll, in-stock only */}
+      <FleetCarousel />
       {/* Boarding Pass — bloc standalone entre les produits et les features */}
       <HeroV2BoardingPass />
       <UniqueFeatures />
