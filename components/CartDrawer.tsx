@@ -100,17 +100,57 @@ export default function CartDrawer() {
         </div>
 
         <div className="px-5 pt-4">
-          <div className="flex items-center justify-between hud text-white/60">
-            <span>Livraison offerte dès 100€</span>
-            <span>
-              {remaining === 0 ? "✓ Offerte" : `Encore ${formatPrice(remaining)}`}
-            </span>
-          </div>
-          <div className="mt-2 h-1 rounded-full bg-ink-500 overflow-hidden">
+          <div
+            className="rounded-xl p-3"
+            style={{
+              background: remaining === 0
+                ? "linear-gradient(135deg, rgba(125,240,159,0.10) 0%, rgba(110,220,140,0.04) 100%)"
+                : "linear-gradient(135deg, rgba(58,142,255,0.08) 0%, rgba(58,142,255,0.02) 100%)",
+              border: remaining === 0
+                ? "1px solid rgba(125,240,159,0.30)"
+                : "1px solid rgba(58,142,255,0.22)",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span aria-hidden style={{ fontSize: "0.95rem" }}>
+                {remaining === 0 ? "🎉" : "🚚"}
+              </span>
+              <p
+                className="font-semibold text-white"
+                style={{ fontSize: "0.78rem", lineHeight: 1.3 }}
+              >
+                {remaining === 0
+                  ? "Livraison offerte débloquée !"
+                  : (
+                    <>
+                      Plus que{" "}
+                      <span style={{ color: "rgb(120,180,255)", fontWeight: 800 }}>
+                        {formatPrice(remaining)}
+                      </span>{" "}
+                      pour la livraison offerte
+                    </>
+                  )}
+              </p>
+            </div>
+
             <div
-              className="h-full bg-chrome-grad transition-all"
-              style={{ width: `${progress}%` }}
-            />
+              className="relative h-2 rounded-full overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.06)" }}
+            >
+              <div
+                className="absolute inset-y-0 left-0 transition-all duration-500"
+                style={{
+                  width: `${progress}%`,
+                  background: remaining === 0
+                    ? "linear-gradient(90deg, #7df09f 0%, #4cd97d 100%)"
+                    : "linear-gradient(90deg, rgba(58,142,255,0.95) 0%, rgba(120,180,255,1) 100%)",
+                  boxShadow: remaining === 0
+                    ? "0 0 12px rgba(125,240,159,0.55)"
+                    : "0 0 10px rgba(58,142,255,0.45)",
+                  borderRadius: 999,
+                }}
+              />
+            </div>
           </div>
         </div>
 

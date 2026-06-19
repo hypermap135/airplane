@@ -8,6 +8,7 @@ import { formatPrice, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
 import { useWishlist } from "@/lib/wishlist";
 import { useState } from "react";
+import QuickViewModal from "./QuickViewModal";
 
 /**
  * `priority` should be true ONLY for cards rendered above the fold on the
@@ -26,12 +27,19 @@ export default function ProductCard({
   const { setOpen }  = useCartDrawer();
   const wishlist     = useWishlist();
   const [imgError, setImgError] = useState(false);
+  const [quickOpen, setQuickOpen] = useState(false);
   const liked = wishlist.has(product.handle);
 
   const onToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     wishlist.toggle(product.handle);
+  };
+
+  const onQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setQuickOpen(true);
   };
 
   const onAdd = (e: React.MouseEvent) => {
@@ -51,6 +59,7 @@ export default function ProductCard({
   };
 
   return (
+    <>
     <motion.div
       whileHover={{ scale: 1.025 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
@@ -112,6 +121,31 @@ export default function ProductCard({
               style={{ borderRadius: 6, background: "#fff", color: "#010108" }}>
               –{Math.round(100 - (product.price / product.compareAt) * 100)}%
             </div>
+          )}
+
+          {/* Quick view button — bottom-left of the image area, hover-revealed */}
+          {product.inStock && (
+            <button
+              onClick={onQuickView}
+              aria-label="Aperçu rapide"
+              className="absolute bottom-3 left-3 px-2.5 py-1.5 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all"
+              style={{
+                borderRadius: 999,
+                background: "rgba(8,8,20,0.78)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                backdropFilter: "blur(8px)",
+                color: "rgba(255,255,255,0.9)",
+                cursor: "pointer",
+              }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span className="font-mono uppercase" style={{ fontSize: "0.55rem", letterSpacing: "0.18em" }}>
+                Aperçu
+              </span>
+            </button>
           )}
 
           {/* Wishlist heart — bottom-right of the image area */}
@@ -217,5 +251,12 @@ export default function ProductCard({
         </div>
       </Link>
     </motion.div>
+
+    <QuickViewModal
+      product={product}
+      open={quickOpen}
+      onClose={() => setQuickOpen(false)}
+    />
+    </>
   );
 }

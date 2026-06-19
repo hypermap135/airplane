@@ -4,9 +4,19 @@ import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart, useCartDrawer } from "@/lib/cart";
-import { formatPrice, related, type Product } from "@/lib/products";
+import { formatPrice, related, getProduct, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
 import ProductCard from "./ProductCard";
+
+// For each plane handle, the pack to up-sell on its detail page.
+const PACK_UPSELL: Record<string, string> = {
+  "a320-neo": "pack-trio-airbus-premium-a320-a350-a380",
+  "maquette-avion-maquette-airbus-a350-airfrance": "pack-prestige-air-france",
+  "maquette-avion-maquette-airbus-a380": "pack-prestige-air-france",
+  "boeing-787": "pack-collection-boeing",
+  "maquette-avion-maquette-boeing-747": "pack-collection-boeing",
+  "boeing-777": "pack-collection-boeing",
+};
 
 /** Default spec sheet used when a product hasn't overridden its own.
  *  Editable per-product via /admin/[handle]. */
@@ -364,6 +374,79 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </button>
               </div>
             )}
+
+            {/* Cross-sell pack — appears for planes that belong to a pack */}
+            {(() => {
+              const packHandle = PACK_UPSELL[product.handle];
+              if (!packHandle) return null;
+              const pack = getProduct(packHandle);
+              if (!pack || !pack.inStock) return null;
+              const savings =
+                pack.compareAt && pack.compareAt > pack.price
+                  ? Math.round(100 - (pack.price / pack.compareAt) * 100)
+                  : null;
+              return (
+                <Link
+                  href={`/products/${pack.handle}`}
+                  className="block mb-4 rounded-xl px-4 py-3 transition-all hover:scale-[1.01]"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(255,180,77,0.10) 0%, rgba(255,140,66,0.05) 100%)",
+                    border: "1px solid rgba(255,180,77,0.35)",
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={pack.image}
+                      alt=""
+                      aria-hidden
+                      className="w-14 h-14 object-contain rounded-lg shrink-0"
+                      style={{
+                        background: "#0a0a14",
+                        border: "1px solid rgba(255,180,77,0.2)",
+                      }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className="font-mono uppercase mb-0.5"
+                        style={{
+                          fontSize: "0.58rem",
+                          letterSpacing: "0.22em",
+                          color: "rgba(255,180,77,0.95)",
+                        }}
+                      >
+                        💡 Économisez avec le pack
+                      </p>
+                      <p className="text-white font-semibold text-[0.88rem] truncate">
+                        {pack.title}
+                      </p>
+                      <p
+                        className="font-mono text-[0.7rem] mt-0.5"
+                        style={{ color: "rgba(255,255,255,0.7)" }}
+                      >
+                        {formatPrice(pack.price)}
+                        {savings && (
+                          <span
+                            className="ml-2"
+                            style={{ color: "#7df09f", fontWeight: 700 }}
+                          >
+                            −{savings}%
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <span
+                      aria-hidden
+                      className="font-mono"
+                      style={{ color: "rgba(255,180,77,0.85)", fontSize: "1.1rem" }}
+                    >
+                      →
+                    </span>
+                  </div>
+                </Link>
+              );
+            })()}
 
             {/* Urgency signals — only when in stock */}
             {product.inStock && (
