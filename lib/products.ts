@@ -89,6 +89,10 @@ export const PRODUCTS: Product[] = [
     scale: "1/100",
   },
   {
+    // Discontinué sur Shopify (variantId invalide). Gardé pour SEO/redirects
+    // mais bloqué en achat. Si le client relance ce modèle, mettre à jour
+    // variantId + inStock. Cf. sync stock live: si Shopify réinstalle un
+    // variant à cet id, applyShopifyInventory bascule inStock automatiquement.
     id: "a320-af",
     variantId: "53357075595604",
     handle: "a320-neo",
@@ -96,7 +100,7 @@ export const PRODUCTS: Product[] = [
     subtitle: "Moyen-courrier de référence — livrée Air France",
     price: 99,
     collection: "airbus",
-    inStock: true,
+    inStock: false,
     image: `/images/a320-neo.png`,
     images: [
       `/images/a320-neo.png`,
@@ -155,7 +159,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a320-qatar-psg",
-    variantId: "53519416721748",
+    variantId: "56057708577108",
     handle: "copie-airbus-a320-echelle-1-85-finition-premium",
     title: "Airbus A320 Qatar PSG Livery",
     subtitle: "Livrée sponsor — édition Paris Saint-Germain",
@@ -175,7 +179,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a321-af",
-    variantId: "50902114730324",
+    variantId: "56057898434900",
     handle: "a-321",
     title: "Airbus A321 Air France",
     subtitle: "Version allongée — livrée Air France",
