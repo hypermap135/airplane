@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { PRODUCTS, formatPrice, type Product } from "@/lib/products";
+import { formatPrice, type Product } from "@/lib/products";
 
 /**
  * CollectionExplorerV2 — spec-sheet rows + category strip.
@@ -34,14 +34,14 @@ const CATEGORY_TILES: { slug: string; label: string; accent: string }[] = [
   { slug: "jet",      label: "Jet privé", accent: "#a78bfa" },
 ];
 
-export default function CollectionExplorerV2() {
+export default function CollectionExplorerV2({ catalogue }: { catalogue: Product[] }) {
   const rows: Product[] = PREFERRED_HANDLES
-    .map((h) => PRODUCTS.find((p) => p.handle === h))
+    .map((h) => catalogue.find((p) => p.handle === h))
     .filter((p): p is Product => Boolean(p) && p!.inStock && !p!.comingSoon)
     .slice(0, 8);
 
   const countByCollection = (slug: string) =>
-    PRODUCTS.filter((p) => p.collection === slug && p.inStock).length;
+    catalogue.filter((p) => p.collection === slug && p.inStock).length;
 
   return (
     <section

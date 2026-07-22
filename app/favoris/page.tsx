@@ -1,5 +1,5 @@
 import FavorisClient from "./FavorisClient";
-import { PRODUCTS } from "@/lib/products";
+import { getProducts } from "@/lib/products-store";
 
 export const metadata = {
   title: "Mes favoris — AirplaneStore",
@@ -7,11 +7,9 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function FavorisPage() {
-  // We hand the full catalogue down to the client component. The client
-  // reads the favorite handles from localStorage and filters server-side
-  // data on render — no extra fetch, no flash of empty list.
-  const products = PRODUCTS.map((p) => ({
+export default async function FavorisPage() {
+  const catalogue = await getProducts();
+  const products = catalogue.map((p) => ({
     handle: p.handle,
     title: p.title,
     subtitle: p.subtitle,

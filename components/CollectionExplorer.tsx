@@ -5,10 +5,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProductCard from "./ProductCard";
 import {
-  PRODUCTS,
   COLLECTIONS,
   sortForDisplay,
   type Collection,
+  type Product,
 } from "@/lib/products";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -37,7 +37,7 @@ const FILTERS: { key: FilterKey; label: string }[] = [
     .map((c) => ({ key: c.slug as FilterKey, label: c.label })),
 ];
 
-export default function CollectionExplorer() {
+export default function CollectionExplorer({ catalogue }: { catalogue: Product[] }) {
   const [active, setActive]   = useState<FilterKey>("all");
   const sectionRef            = useRef<HTMLElement>(null);
   const headingRef            = useRef<HTMLDivElement>(null);
@@ -49,9 +49,9 @@ export default function CollectionExplorer() {
   const visibleProducts = useMemo(
     () =>
       sortForDisplay(
-        PRODUCTS.filter((p) => p.collection !== "accessoires"),
+        catalogue.filter((p) => p.collection !== "accessoires"),
       ),
-    [],
+    [catalogue],
   );
 
   // Apply the active filter.

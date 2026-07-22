@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { PRODUCTS, COLLECTIONS, formatPrice, type Product } from "@/lib/products";
+import { COLLECTIONS, formatPrice, type Product } from "@/lib/products";
 
 /**
  * FleetCarousel — filterable horizontal scroll of the available fleet.
@@ -30,12 +30,12 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "jet",      label: "Jet privé" },
 ];
 
-export default function FleetCarousel() {
+export default function FleetCarousel({ catalogue }: { catalogue: Product[] }) {
   const [active, setActive] = useState<FilterKey>("all");
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const visible: Product[] = useMemo(() => {
-    return PRODUCTS
+    return catalogue
       .filter((p) => p.inStock && !p.comingSoon)
       .filter((p) => {
         if (active === "all") {
@@ -45,7 +45,7 @@ export default function FleetCarousel() {
         }
         return p.collection === active;
       });
-  }, [active]);
+  }, [active, catalogue]);
 
   const scrollByCards = (dir: 1 | -1) => {
     const el = scrollerRef.current;

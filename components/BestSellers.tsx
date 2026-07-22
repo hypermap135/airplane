@@ -5,11 +5,11 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProductCard from "./ProductCard";
-import { PRODUCTS, sortForDisplay } from "@/lib/products";
+import { sortForDisplay, type Product } from "@/lib/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function BestSellers() {
+export default function BestSellers({ catalogue }: { catalogue: Product[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const ctaRef     = useRef<HTMLDivElement>(null);
@@ -17,7 +17,7 @@ export default function BestSellers() {
   // Notre sélection — only the 3 hand-picked bestsellers (gold-framed).
   // All other products live in <CollectionExplorer /> below.
   const products = sortForDisplay(
-    PRODUCTS.filter((p) => p.inStock && p.bestseller),
+    catalogue.filter((p) => p.inStock && p.bestseller),
   );
 
   useEffect(() => {

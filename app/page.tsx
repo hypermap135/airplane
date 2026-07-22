@@ -12,8 +12,10 @@ import ManifestoSection from "@/components/ManifestoSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import CTASection from "@/components/CTASection";
 import SEOFooter from "@/components/SEOFooter";
+import { getProducts } from "@/lib/products-store";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const catalogue = await getProducts();
   return (
     <>
       <HeroV4Carousel />
@@ -22,9 +24,9 @@ export default function HomePage() {
       {/* Banner "Maquette sur mesure" — teaser juste au-dessus des bestsellers */}
       <CustomModelBanner />
       {/* Notre sélection — 3 bestsellers gold-framed */}
-      <BestSellers />
+      <BestSellers catalogue={catalogue} />
       {/* Toute la flotte — filterable horizontal scroll, in-stock only */}
-      <FleetCarousel />
+      <FleetCarousel catalogue={catalogue} />
       {/* Boarding Pass — bloc standalone entre les produits et les features */}
       <HeroV2BoardingPass />
       <UniqueFeatures />

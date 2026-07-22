@@ -14,6 +14,7 @@
 
 import { unstable_cache, revalidateTag } from "next/cache";
 import { PRODUCTS, type Product, type ProductSpec, type Collection } from "@/lib/products";
+import { getShopifyInventory } from "@/lib/shopify-inventory";
 
 const BLOB_OVERRIDES_KEY = "products-overrides.json";
 const REVALIDATE_SECONDS = 30;
@@ -86,21 +87,56 @@ function applyOverride(base: Product, ov: ProductOverride | undefined): Product 
   };
 }
 
-/** Public: full catalogue with overrides applied; soft-hidden products are dropped. */
+/**
+ * Apply Shopify's live availability on top of the (base + admin override).
+ *
+ * Priority (from lowest to highest):
+ *   1. PRODUCTS[i].inStock                — hardcoded default
+ *   2. Shopify products.json `available`  — live inventory, wins over #1
+ *   3. Admin override `inStock`           — explicit override, wins over all
+ *
+ * Skipped when variantId is "0" (placeholder — product not yet on Shopify).
+ * `comingSoon` products stay `inStock: false` regardless of Shopify (a
+ * pre-launched sku on Shopify shouldn't accidentally go live here).
+ */
+function applyShopifyInventory(
+  p: Product,
+  inventory: Record<string, boolean>,
+  adminInStock: boolean | undefined,
+): Product {
+  // Admin explicit override always wins — merchant can force OFF even if
+  // Shopify says available (e.g. paused sales, missing packaging, etc.).
+  if (adminInStock !== undefined) return { ...p, inStock: adminInStock };
+  if (p.comingSoon) return p;
+  if (p.variantId === "0") return p;
+  const shopifyAvailable = inventory[p.variantId];
+  if (shopifyAvailable === undefined) return p;
+  return { ...p, inStock: shopifyAvailable };
+}
+
+/** Public: full catalogue with overrides + Shopify inventory applied; hidden dropped. */
 export async function getProducts(): Promise<Product[]> {
-  const overrides = await getOverridesCached();
+  const [overrides, inventory] = await Promise.all([
+    getOverridesCached(),
+    getShopifyInventory(),
+  ]);
   return PRODUCTS
     .filter((p) => !(overrides[p.id]?.hidden === true))
-    .map((p) => applyOverride(p, overrides[p.id]));
+    .map((p) => applyOverride(p, overrides[p.id]))
+    .map((p) => applyShopifyInventory(p, inventory, overrides[p.id]?.inStock));
 }
 
 /** Public: same as `getProducts` but does not drop hidden products — for /admin only. */
 export async function getProductsAdmin(): Promise<Array<Product & { hidden?: boolean }>> {
-  const overrides = await getOverridesCached();
-  return PRODUCTS.map((p) => ({
-    ...applyOverride(p, overrides[p.id]),
-    hidden: overrides[p.id]?.hidden === true,
-  }));
+  const [overrides, inventory] = await Promise.all([
+    getOverridesCached(),
+    getShopifyInventory(),
+  ]);
+  return PRODUCTS.map((p) => {
+    const withOv = applyOverride(p, overrides[p.id]);
+    const final = applyShopifyInventory(withOv, inventory, overrides[p.id]?.inStock);
+    return { ...final, hidden: overrides[p.id]?.hidden === true };
+  });
 }
 
 /** Public: single product by handle, with override applied (or undefined). */

@@ -1,6 +1,6 @@
 import CatalogueGrid from "@/components/CatalogueGrid";
 import SectionHeading from "@/components/SectionHeading";
-import { PRODUCTS } from "@/lib/products";
+import { getProducts } from "@/lib/products-store";
 
 export const metadata = {
   title: "Collection complète — Maquettes d'avion en résine premium",
@@ -8,7 +8,8 @@ export const metadata = {
     "Airbus, Boeing, Concorde, Jets privés, Packs et Accessoires. Livraison France & Europe.",
 };
 
-export default function AllCollectionsPage() {
+export default async function AllCollectionsPage() {
+  const products = await getProducts();
   return (
     <section className="pt-28 pb-24" style={{ background: "#010108", minHeight: "100vh" }}>
       <div className="mx-auto max-w-[1440px] px-6 md:px-12 xl:px-20">
@@ -18,7 +19,7 @@ export default function AllCollectionsPage() {
           subtitle="Airbus · Boeing · Concorde · Jets privés · Packs · Accessoires."
         />
         <div className="mt-10">
-          <CatalogueGrid products={PRODUCTS} />
+          <CatalogueGrid products={products} />
         </div>
       </div>
     </section>
