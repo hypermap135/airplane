@@ -48,9 +48,9 @@ export default function SEOFooter() {
               mains.
             </p>
             <p>
-              Notre spécialité : la <strong className="text-ink-900">personnalisation
-              d&apos;entreprise à partir de 30 exemplaires</strong> — livrée à
-              vos couleurs, gravure de vos noms et logos, écrin avec plaque
+              Notre spécialité : le <strong className="text-ink-900">forfait
+              entreprise personnalisé sur devis</strong> — livrée à vos
+              couleurs, gravure de vos noms et logos, écrin avec plaque
               gravée. Idéal cadeau clients, séminaire, remerciement partenaires.
             </p>
             <p>

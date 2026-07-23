@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 /**
- * B2B hero — client's stated pivot. Personalisation d'entreprise à partir
- * de 30 exemplaires en avant, catalogue standard en secondaire.
+ * B2B hero — client's stated pivot. Personalisation entreprise sur devis
+ * en avant, catalogue standard en secondaire.
  *
  * Design : airmodels-inspired, blanc / gris / bleu, zéro animation.
  * Layout : deux colonnes desktop, empilé mobile.
@@ -26,15 +26,16 @@ export default function HeroB2B() {
             >
               Vos maquettes d'avion
               <br />
-              <span className="text-brand">personnalisées</span> à partir de
+              <span className="text-brand">personnalisées</span>
               <br />
-              <span className="text-brand">30 exemplaires.</span>
+              — <span className="text-brand">forfait entreprise sur devis.</span>
             </h1>
 
             <p className="mt-5 text-base md:text-lg text-ink-500 max-w-xl leading-relaxed">
-              Livrée sur-mesure, gravure de vos noms & logos, écrin avec plaque
-              gravée. Idéal pour un cadeau client, un remerciement partenaires,
-              ou un événement d'entreprise mémorable.
+              Livrée sur-mesure à vos couleurs, gravure de vos noms & logos,
+              écrin avec plaque gravée. Idéal cadeau client, remerciement
+              partenaires ou événement d'entreprise. Chaque projet est chiffré
+              individuellement — parlons du vôtre.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -49,7 +50,7 @@ export default function HeroB2B() {
             {/* Micro trust row */}
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-ink-500">
               <span className="flex items-center gap-2"><span className="text-brand" aria-hidden>✓</span> Fait en France</span>
-              <span className="flex items-center gap-2"><span className="text-brand" aria-hidden>✓</span> Livraison 4–6 semaines</span>
+              <span className="flex items-center gap-2"><span className="text-brand" aria-hidden>✓</span> Devis sous 24 h</span>
               <span className="flex items-center gap-2"><span className="text-brand" aria-hidden>✓</span> Écrin & plaque incluse</span>
             </div>
           </div>

@@ -3,16 +3,16 @@ import Link from "next/link";
 export const metadata = {
   title: "À propos — AirplaneStore, la maison",
   description:
-    "AirplaneStore : maquettes d'avion personnalisées à partir de 30 exemplaires, résine monobloc peinte main, pensées et éditées en France.",
+    "AirplaneStore : maquettes d'avion personnalisées, forfait entreprise sur devis, résine monobloc peinte main, pensées et éditées en France.",
   alternates: { canonical: "/a-propos" },
 };
 
 const PILLARS = [
   {
     n: "01", eyebrow: "Personnalisation",
-    title: "Sur-mesure à partir de 30 exemplaires.",
+    title: "Forfait entreprise sur devis.",
     body:
-      "Nous produisons des maquettes personnalisées pour entreprises : livrée à vos couleurs, gravure de vos noms et logos, écrin avec plaque gravée. Idéal cadeau clients, séminaire, remerciement partenaires.",
+      "Nous produisons des maquettes personnalisées pour entreprises, chiffrées au projet : livrée à vos couleurs, gravure de vos noms et logos, écrin avec plaque gravée. Idéal cadeau clients, séminaire, remerciement partenaires.",
   },
   {
     n: "02", eyebrow: "Fabrication",
@@ -38,7 +38,7 @@ const TIMELINE = [
   { year: "2023", event: "Lancement d'AirplaneStore — Airbus A380 Air France comme premier modèle." },
   { year: "2024", event: "Élargissement à la collection Boeing — 747, 777, 787 Dreamliner." },
   { year: "2025", event: "Ajout du Concorde, des jets privés et des packs collection." },
-  { year: "2026", event: "Pivot vers la personnalisation d'entreprise à partir de 30 exemplaires." },
+  { year: "2026", event: "Pivot vers le forfait entreprise personnalisé sur devis." },
 ];
 
 export default function AboutPage() {
@@ -89,8 +89,9 @@ export default function AboutPage() {
           </p>
           <p>
             Aujourd&apos;hui, nous éditons aussi des séries personnalisées pour
-            entreprises — 30 exemplaires minimum, livrée à vos couleurs, plaque
-            gravée. Cadeaux clients, remerciement partenaires, événements.
+            entreprises, chiffrées au projet — livrée à vos couleurs, plaque
+            gravée, écrin premium. Cadeaux clients, remerciement partenaires,
+            événements.
           </p>
         </div>
       </section>

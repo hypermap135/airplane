@@ -60,8 +60,8 @@ export default function Footer() {
               <span className="uppercase tracking-wide">Airplanestore</span>
             </Link>
             <p className="mt-4 text-sm text-ink-500 max-w-md">
-              Maquettes d'avion premium et personnalisation d'entreprise à
-              partir de 30 exemplaires. Fait en France.
+              Maquettes d'avion premium et forfaits entreprise personnalisés
+              sur devis. Fait en France.
             </p>
           </div>
 

@@ -11,15 +11,15 @@ const LOGOS = [
 
 const CASES = [
   {
-    company: "Cadeau clients — 50 exemplaires",
+    company: "Cadeau clients — série sur mesure",
     detail: "Airbus A320 aux couleurs de leur compagnie, plaque gravée nominative.",
   },
   {
-    company: "Séminaire annuel — 120 exemplaires",
+    company: "Séminaire annuel — édition événement",
     detail: "Boeing 787 mini-format, écrin premium, remise sur estrade.",
   },
   {
-    company: "Remerciement partenaires — 30 exemplaires",
+    company: "Remerciement partenaires — édition limitée",
     detail: "Concorde édition limitée, gravure logo + année.",
   },
 ];
@@ -34,7 +34,7 @@ export default function CorporateShowcase() {
             Ils nous ont fait confiance
           </div>
           <h2 className="h-display" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)" }}>
-            De 30 à 500 exemplaires, sur-mesure.
+            Forfait entreprise sur devis, 100% sur-mesure.
           </h2>
           <p className="mt-3 text-ink-500">
             Cadeaux clients, séminaires, événements — nous produisons des
