@@ -5,6 +5,7 @@ import { getInventorySnapshot } from "@/lib/shopify-admin-inventory";
 import { DISCOUNT_CODE } from "@/lib/shopify";
 import LogoutButton from "./LogoutButton";
 import CopyPill from "./CopyPill";
+import SyncPricesButton from "./SyncPricesButton";
 
 export const dynamic = "force-dynamic";
 
@@ -84,7 +85,10 @@ export default async function AdminHome() {
             description, photos, disponibilité.
           </p>
         </div>
-        <LogoutButton />
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <SyncPricesButton />
+          <LogoutButton />
+        </div>
       </header>
 
       {/* Health strip */}
