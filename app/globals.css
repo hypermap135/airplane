@@ -2,569 +2,201 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; }
+/* Airmodels-inspired light theme. Base = pure white, primary = royal blue,
+   photo tiles = neutral gray, buttons = solid black. No chrome, no glow,
+   no gradients on structural elements. */
+
+:root {
+  color-scheme: light;
+  --brand-blue: #1c7ee6;
+  --brand-blue-dark: #175fb0;
+  --brand-blue-light: #eaf3fc;
+  --tile-gray: #eeeeee;
+  --tile-gray-dark: #e2e4e8;
+  --ink-900: #0a0a14;
+  --ink-700: #2a2a35;
+  --ink-500: #5c6270;
+  --ink-300: #b0b5c0;
+  --line: rgba(10, 10, 20, 0.08);
+  --accent-yellow: #f0c040;
+  --status-green: #12a55b;
+}
 
 html, body {
-  background: #010108;
-  color: #ffffff;
+  background: #ffffff;
+  color: var(--ink-900);
 }
 
 body {
-  background: #010108;
   min-height: 100vh;
   font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Typography ─────────────────────────────────────── */
-
-.display {
-  font-family: var(--font-space), var(--font-inter), sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.chrome-text {
-  background: linear-gradient(175deg, #ffffff 0%, #d0d4da 55%, #a8adb8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.led-text {
-  background: linear-gradient(135deg, #3a8eff 0%, #6aafff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* ─── HUD utilities ───────────────────────────────────── */
-
-.hud {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  color: #a0a4b0;
-}
-
-/* Subtle tech grid overlay */
-.grid-hud {
-  background-image:
-    linear-gradient(rgba(58,142,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(58,142,255,0.03) 1px, transparent 1px);
-  background-size: 80px 80px;
-}
-
-.grid-hud-dense {
-  background-image:
-    linear-gradient(rgba(58,142,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(58,142,255,0.025) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* ─── Buttons ─────────────────────────────────────────── */
-
-.btn-chrome {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.9rem 1.75rem;
-  font-family: var(--font-space), var(--font-inter), sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #0a0a14;
-  background: linear-gradient(135deg, #d0d4da 0%, #f0f2f5 50%, #ffffff 100%);
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 10px 30px -10px rgba(58, 142, 255, 0.3);
-  overflow: hidden;
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.3s ease,
-              scale 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-
-.btn-chrome:hover {
-  transform: translateY(-2px);
-  scale: 1.02;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.25),
-    0 20px 60px -14px rgba(58, 142, 255, 0.6),
-    0 0 40px rgba(58, 142, 255, 0.15);
-}
-
-.btn-chrome:active {
-  transform: translateY(0px);
-  scale: 0.98;
-}
-
-.btn-chrome::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.75) 50%,
-    transparent 70%
-  );
-  transform: translateX(-130%);
-  transition: transform 0.75s ease;
-  pointer-events: none;
-}
-
-.btn-chrome:hover::after {
-  transform: translateX(130%);
-}
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  font-family: var(--font-space), var(--font-inter), sans-serif;
-  font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.07);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px -8px rgba(58, 142, 255, 0.25);
-}
-
-/* LED CTA button */
-.btn-led {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.9rem 2rem;
-  font-family: var(--font-space), var(--font-inter), sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #ffffff;
-  background: linear-gradient(135deg, rgba(58,142,255,0.25) 0%, rgba(58,142,255,0.12) 100%);
-  border-radius: 999px;
-  border: 1px solid rgba(58,142,255,0.5);
-  box-shadow: 0 0 20px rgba(58,142,255,0.2);
-  overflow: hidden;
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.3s ease,
-              border-color 0.3s;
-}
-
-.btn-led:hover {
-  transform: translateY(-2px);
-  border-color: rgba(58,142,255,0.8);
-  box-shadow: 0 0 40px rgba(58,142,255,0.45), 0 0 80px rgba(58,142,255,0.15);
-}
-
-/* ─── Cards ───────────────────────────────────────────── */
-
-.card-chrome {
-  position: relative;
-  background: linear-gradient(160deg, #12121c 0%, #14141f 100%);
-  border: 1px solid #2a2a3a;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  transition: border-color 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
-}
-
-.card-chrome:hover {
-  border-color: rgba(208, 212, 218, 0.3);
-  transform: translateY(-3px);
-  box-shadow:
-    0 20px 60px -20px rgba(58, 142, 255, 0.4),
-    0 0 0 1px rgba(255,255,255,0.06);
-}
-
-.card-chrome::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.07) 50%,
-    transparent 70%
-  );
-  transform: translateX(-200%);
-  transition: transform 0.9s ease;
-  pointer-events: none;
-}
-
-.card-chrome:hover::before {
-  transform: translateX(260%);
-}
-
-/* Bento card variant */
-.card-bento {
-  position: relative;
-  background: linear-gradient(145deg, #12121c 0%, #0f0f1a 100%);
-  border: 1px solid #2a2a3a;
-  border-radius: 1.5rem;
-  overflow: hidden;
-  transition: border-color 0.35s ease, box-shadow 0.35s ease;
-}
-
-.card-bento::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(58,142,255,0.06), transparent 60%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-.card-bento:hover::after {
-  opacity: 1;
-}
-
-.card-bento:hover {
-  border-color: rgba(58,142,255,0.25);
-  box-shadow: 0 0 0 1px rgba(58,142,255,0.1), 0 20px 60px -20px rgba(58,142,255,0.3);
-}
-
-/* ─── Hublot image frame ─────────────────────────────── */
-
-.hublot {
-  border-radius: 1.5rem;
-  overflow: hidden;
-  position: relative;
-  background: radial-gradient(circle at 30% 25%, #1a1a28 0%, #0a0a14 80%);
-}
-
-.hublot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    inset 0 0 80px rgba(58, 142, 255, 0.06);
-  pointer-events: none;
-}
-
-/* ─── Noise texture ───────────────────────────────────── */
-
-.noise::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.08'/></svg>");
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  opacity: 0.45;
-}
-
-/* ─── Dividers ────────────────────────────────────────── */
-
-.divider-glow {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(208, 212, 218, 0.35) 50%,
-    transparent 100%
-  );
-}
-
-.divider-led {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(58, 142, 255, 0.5) 50%,
-    transparent 100%
-  );
-  box-shadow: 0 0 10px rgba(58,142,255,0.3);
-}
-
-/* ─── Marquee ─────────────────────────────────────────── */
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 32s linear infinite;
-}
-
-.marquee-track-slow {
-  display: flex;
-  width: max-content;
-  animation: marquee 50s linear infinite;
-}
-
-/* ─── Spotlight glow ──────────────────────────────────── */
-
-.glow-sm { box-shadow: 0 0 20px rgba(58,142,255,0.3); }
-.glow-md { box-shadow: 0 0 50px rgba(58,142,255,0.5), 0 0 100px rgba(58,142,255,0.2); }
-.glow-lg { box-shadow: 0 0 80px rgba(58,142,255,0.65), 0 0 160px rgba(58,142,255,0.3); }
-
-/* ─── Section utilities ───────────────────────────────── */
-
-.section-pad { padding-top: 6rem; padding-bottom: 6rem; }
-@media (min-width: 768px) { .section-pad { padding-top: 9rem; padding-bottom: 9rem; } }
-
-/* ─── Scrollbar ───────────────────────────────────────── */
-
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0a0a14; }
-::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 999px; border: 2px solid #0a0a14; }
-::-webkit-scrollbar-thumb:hover { background: #3a4060; }
-
-
-/* ─── Misc keyframes ──────────────────────────────────── */
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.15; }
-}
-
-@keyframes radarScan {
-  0%   { transform: translateY(0); opacity: 1; }
-  90%  { transform: translateY(264px); opacity: 0.6; }
-  100% { transform: translateY(0); opacity: 0; }
-}
-
-@keyframes scrollBounce {
-  0%, 100% { transform: translateY(0); opacity: 0.65; }
-  50%       { transform: translateY(14px); opacity: 0.18; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* ─── LED window pulse ────────────────────────────────── */
-@keyframes windowPulse {
-  0%, 100% { opacity: 0.62; }
-  50%       { opacity: 0.98; }
-}
-.window-led {
-  animation: windowPulse var(--wd, 3s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
-}
-
-/* ─── LED section pulse overlay ──────────────────────── */
-@keyframes ledPulse {
-  0%, 100% {
-    background:
-      radial-gradient(ellipse 70% 50% at 50% 55%, rgba(255,180,77,0.32) 0%, rgba(255,140,40,0.12) 40%, transparent 75%),
-      linear-gradient(180deg, rgba(8,4,2,0.25) 0%, rgba(4,2,8,0.55) 100%);
-  }
-  50% {
-    background:
-      radial-gradient(ellipse 90% 65% at 50% 55%, rgba(255,200,100,0.5) 0%, rgba(255,140,40,0.18) 40%, transparent 70%),
-      linear-gradient(180deg, rgba(8,4,2,0.18) 0%, rgba(4,2,8,0.5) 100%);
-  }
-}
-
-@keyframes ledHalo {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.06); }
-}
-
-/* ─── Reduce motion ───────────────────────────────────── */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-
-  .marquee-track,
-  .marquee-track-slow {
-    animation: none !important;
-  }
-}
-
-/* ── Selection color ── */
-::selection { background: rgba(58,142,255,0.25); color: #fff; }
-
-/* ── Scrollbar (webkit) — override with tighter design ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #010108; }
-::-webkit-scrollbar-thumb { background: rgba(58,142,255,0.25); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(58,142,255,0.45); }
-
-/* ── Hero float animation ── */
-@keyframes heroFloat {
-  0%, 100% { transform: translateY(0px) rotate(-1deg); }
-  50%       { transform: translateY(-14px) rotate(-1deg); }
-}
-
-/* ── Text clip reveal (for future use) ── */
-.clip-reveal { overflow: hidden; }
-
-/* ── Hero entry animations (used by Flight Deck + Boarding Pass heroes) ── */
-@keyframes heroFadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.hero-fade-up {
-  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 0.15s;
-}
-
-.hero-fade-up-delayed {
-  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 0.45s;
-}
-.clip-reveal > * { display: block; }
-
-/* ── Image loading ──
-   Images are visible by default. The previous opacity:0 + .loaded-class
-   mechanism caused images to stay permanently invisible whenever the JS
-   onLoad handler missed its timing (cached images, hydration races, or
-   imgs with loading="" but no .loaded wiring). Visibility must never
-   depend on JS — keep it CSS-only and safe. */
-img { transition: opacity 0.35s ease; }
+/* Fluid selection */
+::selection { background: var(--brand-blue); color: #fff; }
+
+/* Slim scrollbar, discreet */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #fafafa; }
+::-webkit-scrollbar-thumb { background: #c8ccd2; border-radius: 999px; border: 2px solid #fafafa; }
+::-webkit-scrollbar-thumb:hover { background: #a0a5ae; }
+
+/* Legacy image-fade guard — keep so already-shipped code doesn't break */
+img { transition: opacity 0.25s ease; }
 img.loaded { opacity: 1; }
 
-/* ── Font display headings ── */
-.font-display { font-family: var(--font-space), var(--font-inter), sans-serif; font-weight: 900; letter-spacing: -0.02em; }
-
-/* ── Glass card ── */
-.glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); backdrop-filter: blur(12px); }
-
-/* ── Gradient text ── */
-.text-gradient { background: linear-gradient(135deg, #fff 0%, rgba(200,210,255,0.8) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-/* ── Horizontal marquee (named differently to avoid duplicate keyframe conflict) ── */
-@keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.marquee-track { animation: marqueeScroll 28s linear infinite; }
-.marquee-track:hover { animation-play-state: paused; }
-
-/* ── Reduced motion (expanded) ── */
+/* Reduced motion — kills any lingering animation across the codebase */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  @keyframes heroFloat { 0%, 100% { transform: translateY(0px) rotate(-1deg); } }
 }
 
-/* ─── Bestseller gold animated frame ──────────────────
-   Rotating conic-gradient ring around bestseller product cards.
-   Uses @property for smooth angle animation. */
-@property --gold-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+/* ─── Airmodels-style primary button ─────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.6rem;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--ink-900);
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s ease;
 }
+.btn-primary:hover { background: #000; }
+.btn-primary:disabled { background: #b0b5c0; cursor: not-allowed; }
 
-@keyframes goldRotate {
-  to { --gold-angle: 360deg; }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.5rem;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-900);
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid var(--ink-900);
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
 }
+.btn-secondary:hover { background: var(--ink-900); color: #ffffff; }
 
-@keyframes goldHalo {
-  0%, 100% { opacity: 0.55; }
-  50%       { opacity: 0.95; }
+/* Airmodels-style pastel status pill */
+.status-in-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--status-green);
 }
-
-.gold-frame {
-  position: relative;
-  border-radius: 1.4rem;
-  isolation: isolate;
-}
-
-/* The rotating gold ring */
-.gold-frame::before {
+.status-in-stock::before {
   content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  padding: 2px;
-  background: conic-gradient(
-    from var(--gold-angle, 0deg),
-    rgba(184, 140, 58, 0.0)  0deg,
-    rgba(243, 210, 122, 0.95) 60deg,
-    rgba(255, 233, 163, 1)    100deg,
-    rgba(243, 210, 122, 0.95) 140deg,
-    rgba(184, 140, 58, 0.25)  220deg,
-    rgba(201, 161, 74, 0.5)   300deg,
-    rgba(184, 140, 58, 0.0)   360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  animation: goldRotate 5s linear infinite;
-  pointer-events: none;
-  z-index: 2;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-green);
 }
 
-/* Soft pulsing gold halo behind */
-.gold-frame::after {
+.status-out {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #a0a5ae;
+}
+.status-out::before {
   content: "";
-  position: absolute;
-  inset: -8px;
-  border-radius: 1.7rem;
-  background: radial-gradient(closest-side, rgba(243, 210, 122, 0.22), transparent 72%);
-  filter: blur(12px);
-  pointer-events: none;
-  z-index: -1;
-  animation: goldHalo 3.5s ease-in-out infinite;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a0a5ae;
 }
 
-/* On hover: brighter halo, faster ring */
-.gold-frame:hover::before {
-  animation-duration: 2.5s;
-}
-.gold-frame:hover::after {
-  background: radial-gradient(closest-side, rgba(255, 230, 150, 0.42), transparent 70%);
-  filter: blur(16px);
-}
-
-/* Fallback for browsers without @property support */
-@supports not (background: paint(something)) {
-  @media (prefers-reduced-motion: no-preference) {
-    .gold-frame::before {
-      animation: none;
-      background: conic-gradient(
-        from 45deg,
-        #c9a14a, #ffe9a3, #f3d27a, #c9a14a, #b88c3a, #c9a14a
-      );
-    }
-  }
+/* Featured badge (yellow) */
+.badge-featured {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  background: var(--accent-yellow);
+  color: var(--ink-900);
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: 4px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .gold-frame::before { animation: none; }
-  .gold-frame::after  { animation: none; opacity: 0.5; }
+/* Card container for product tiles — airmodels style */
+.tile {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.tile:hover {
+  border-color: var(--ink-300);
+  transform: translateY(-2px);
+}
+
+.tile-image {
+  background: var(--tile-gray);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.tile-body {
+  padding: 1rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Section utility */
+.section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .section { padding-top: 6rem; padding-bottom: 6rem; }
+}
+
+/* Compact fluid heading */
+.h-display {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  line-height: 1.05;
+}
+
+/* Kill legacy body-locking animations that dark pages relied on */
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+/* Keep .font-display working (some legacy components use it) */
+.font-display {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
