@@ -18,7 +18,7 @@ export default function CatalogueGrid({
   activeCollection?: string;
   showFilters?: boolean;
 }) {
-  const [sort, setSort] = useState<SortKey>("default");
+  const [sort, setSort]   = useState<SortKey>("default");
   const [stock, setStock] = useState<StockKey>("all");
   const [price, setPrice] = useState<PriceKey>("all");
 
@@ -35,59 +35,44 @@ export default function CatalogueGrid({
     const base = sortForDisplay(filtered);
     if (sort === "asc") {
       const inStock = base.filter((p) => p.inStock).sort((a, b) => a.price - b.price);
-      const out = base.filter((p) => !p.inStock).sort((a, b) => a.price - b.price);
+      const out     = base.filter((p) => !p.inStock).sort((a, b) => a.price - b.price);
       return [...inStock, ...out];
     }
     if (sort === "desc") {
       const inStock = base.filter((p) => p.inStock).sort((a, b) => b.price - a.price);
-      const out = base.filter((p) => !p.inStock).sort((a, b) => b.price - a.price);
+      const out     = base.filter((p) => !p.inStock).sort((a, b) => b.price - a.price);
       return [...inStock, ...out];
     }
     return base;
   }, [filtered, sort]);
 
-  const activeFilterCount =
-    (stock !== "all" ? 1 : 0) + (price !== "all" ? 1 : 0);
+  const activeFilterCount = (stock !== "all" ? 1 : 0) + (price !== "all" ? 1 : 0);
 
   return (
     <div>
       {showFilters && (
-        <div
-          className="pb-6 mb-2 space-y-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
-        >
-          {/* ── Collection filters + sort (existing row) ────────────── */}
+        <div className="pb-5 mb-6 border-b border-ink-line space-y-4">
+          {/* Collection chips + sort */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
-              <FilterChip href="/collections/all" active={!activeCollection}>
-                Tout
-              </FilterChip>
+              <ChipLink href="/collections/all" active={!activeCollection}>Tout</ChipLink>
               {COLLECTIONS.map((c) => (
-                <FilterChip
+                <ChipLink
                   key={c.slug}
                   href={`/collections/${c.slug}`}
                   active={activeCollection === c.slug}
                 >
                   {c.label}
-                </FilterChip>
+                </ChipLink>
               ))}
             </div>
 
-            <label className="flex items-center gap-3">
-              <span className="font-mono text-[0.58rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
-                Trier
-              </span>
+            <label className="flex items-center gap-2 text-sm">
+              <span className="text-ink-500">Trier :</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
-                className="text-[0.78rem] outline-none cursor-pointer"
-                style={{
-                  background: "rgba(12,12,26,0.9)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 999,
-                  padding: "0.5rem 1rem",
-                  color: "rgba(255,255,255,0.8)",
-                }}
+                className="text-sm outline-none cursor-pointer bg-white text-ink-900 border border-ink-line rounded px-2.5 py-1.5 focus:border-brand"
               >
                 <option value="default">Défaut</option>
                 <option value="asc">Prix croissant</option>
@@ -96,48 +81,30 @@ export default function CatalogueGrid({
             </label>
           </div>
 
-          {/* ── Stock + price filter row ────────────────────────────── */}
+          {/* Stock + price pills */}
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            {/* Stock */}
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[0.58rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
-                Stock
-              </span>
-              <PillButton active={stock === "all"} onClick={() => setStock("all")}>
-                Tous
-              </PillButton>
-              <PillButton active={stock === "in-stock"} onClick={() => setStock("in-stock")}>
-                Disponibles
-              </PillButton>
+              <span className="text-xs uppercase tracking-wider text-ink-500">Stock</span>
+              <ChipButton active={stock === "all"} onClick={() => setStock("all")}>Tous</ChipButton>
+              <ChipButton active={stock === "in-stock"} onClick={() => setStock("in-stock")}>Disponibles</ChipButton>
             </div>
 
-            {/* Price */}
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[0.58rem] tracking-[0.2em] uppercase" style={{ color: "#3a4055" }}>
-                Prix
-              </span>
-              <PillButton active={price === "all"}    onClick={() => setPrice("all")}>Tous</PillButton>
-              <PillButton active={price === "lt50"}   onClick={() => setPrice("lt50")}>&lt; 50€</PillButton>
-              <PillButton active={price === "50-100"} onClick={() => setPrice("50-100")}>50–100€</PillButton>
-              <PillButton active={price === "gt100"}  onClick={() => setPrice("gt100")}>&gt; 100€</PillButton>
+              <span className="text-xs uppercase tracking-wider text-ink-500">Prix</span>
+              <ChipButton active={price === "all"}    onClick={() => setPrice("all")}>Tous</ChipButton>
+              <ChipButton active={price === "lt50"}   onClick={() => setPrice("lt50")}>&lt; 50€</ChipButton>
+              <ChipButton active={price === "50-100"} onClick={() => setPrice("50-100")}>50–100€</ChipButton>
+              <ChipButton active={price === "gt100"}  onClick={() => setPrice("gt100")}>&gt; 100€</ChipButton>
             </div>
 
-            {/* Result count + reset */}
-            <div className="ml-auto flex items-center gap-3">
-              <span className="font-mono text-[0.58rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.45)" }}>
-                {sorted.length} résultat{sorted.length > 1 ? "s" : ""}
-              </span>
+            <div className="ml-auto flex items-center gap-3 text-xs text-ink-500">
+              <span>{sorted.length} résultat{sorted.length > 1 ? "s" : ""}</span>
               {activeFilterCount > 0 && (
                 <button
+                  type="button"
                   onClick={() => { setStock("all"); setPrice("all"); }}
-                  className="font-mono text-[0.58rem] tracking-[0.2em] uppercase transition"
-                  style={{
-                    color: "rgba(58,142,255,0.85)",
-                    cursor: "pointer",
-                    background: "none",
-                    border: "none",
-                    textDecoration: "underline",
-                  }}
+                  className="text-brand hover:text-brand-dark underline"
+                  style={{ background: "none", border: "none", cursor: "pointer" }}
                 >
                   Réinitialiser
                 </button>
@@ -147,21 +114,22 @@ export default function CatalogueGrid({
         </div>
       )}
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 md:gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {sorted.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
 
       {sorted.length === 0 && (
-        <div className="mt-20 text-center space-y-4">
-          <div className="font-mono text-[0.65rem] tracking-[0.25em] uppercase" style={{ color: "#3a4055" }}>
-            Aucun produit ne correspond à ces filtres
+        <div className="mt-16 text-center space-y-4">
+          <div className="text-ink-500 text-sm">
+            Aucun produit ne correspond à ces filtres.
           </div>
           {activeFilterCount > 0 && (
             <button
+              type="button"
               onClick={() => { setStock("all"); setPrice("all"); }}
-              className="btn-ghost"
+              className="btn-secondary"
             >
               Réinitialiser les filtres
             </button>
@@ -172,7 +140,7 @@ export default function CatalogueGrid({
   );
 }
 
-function FilterChip({
+function ChipLink({
   href,
   active,
   children,
@@ -184,18 +152,13 @@ function FilterChip({
   return (
     <Link
       href={href}
-      className="inline-flex items-center font-mono text-[0.6rem] tracking-[0.16em] uppercase transition-all duration-200"
+      className="inline-flex items-center text-xs font-semibold uppercase tracking-wider transition-colors rounded-full"
       style={{
         padding: "0.45rem 1rem",
-        borderRadius: 999,
-        border: active
-          ? "1px solid rgba(255,255,255,0.4)"
-          : "1px solid rgba(255,255,255,0.08)",
-        background: active
-          ? "linear-gradient(135deg, #d0d4da 0%, #f0f2f5 50%, #ffffff 100%)"
-          : "rgba(255,255,255,0.03)",
-        color: active ? "#010108" : "rgba(255,255,255,0.45)",
-        fontWeight: active ? 700 : 500,
+        border: active ? "1px solid var(--brand-blue)" : "1px solid var(--line)",
+        background: active ? "var(--brand-blue)" : "#fff",
+        color: active ? "#fff" : "var(--ink-700)",
+        textDecoration: "none",
       }}
     >
       {children}
@@ -203,7 +166,7 @@ function FilterChip({
   );
 }
 
-function PillButton({
+function ChipButton({
   active,
   onClick,
   children,
@@ -214,19 +177,14 @@ function PillButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="inline-flex items-center font-mono text-[0.58rem] tracking-[0.16em] uppercase transition-all duration-200"
+      className="inline-flex items-center text-xs font-semibold uppercase tracking-wider transition-colors rounded-full"
       style={{
         padding: "0.4rem 0.85rem",
-        borderRadius: 999,
-        border: active
-          ? "1px solid rgba(58,142,255,0.45)"
-          : "1px solid rgba(255,255,255,0.08)",
-        background: active
-          ? "rgba(58,142,255,0.14)"
-          : "rgba(255,255,255,0.03)",
-        color: active ? "rgba(120,180,255,1)" : "rgba(255,255,255,0.5)",
-        fontWeight: active ? 700 : 500,
+        border: active ? "1px solid var(--brand-blue)" : "1px solid var(--line)",
+        background: active ? "var(--brand-blue-light)" : "#fff",
+        color: active ? "var(--brand-blue-dark)" : "var(--ink-500)",
         cursor: "pointer",
       }}
     >

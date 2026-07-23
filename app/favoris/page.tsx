@@ -25,33 +25,18 @@ export default async function FavorisPage() {
   }));
 
   return (
-    <div className="min-h-screen pt-24 md:pt-32 pb-24" style={{ background: "#06060f" }}>
-      <div className="mx-auto max-w-7xl px-6 md:px-12">
-        <div className="flex items-center gap-3 mb-8">
-          <div aria-hidden style={{ width: 28, height: 1, background: "rgba(226,75,74,0.6)" }} />
-          <span
-            className="font-mono uppercase"
-            style={{
-              fontSize: "0.62rem",
-              letterSpacing: "0.28em",
-              color: "rgba(255,180,180,0.8)",
-            }}
-          >
+    <div className="bg-white min-h-screen">
+      {/* ── Compact hero ── */}
+      <div className="bg-brand-light border-b border-ink-line">
+        <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-10 md:py-14">
+          <div className="text-xs font-semibold uppercase tracking-widest text-brand-dark mb-2">
             ♥ Vos favoris
-          </span>
+          </div>
+          <h1 className="h-display text-3xl md:text-4xl">Mes favoris</h1>
         </div>
+      </div>
 
-        <h1
-          className="font-black text-white mb-10"
-          style={{
-            fontSize: "clamp(2rem, 4.5vw, 3.6rem)",
-            letterSpacing: "-0.025em",
-            lineHeight: 1,
-          }}
-        >
-          Mes favoris.
-        </h1>
-
+      <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-8 md:py-12">
         <FavorisClient products={products} />
       </div>
     </div>
