@@ -1,15 +1,8 @@
 import Link from "next/link";
 
 /**
- * SEO footer block — a final content section before the global <Footer />.
- *
- * Goals:
- *   - High-density keyword paragraph for crawlers without harming UX
- *     (kept visually subtle, low-key for human visitors).
- *   - Internal-link mesh that points to every collection page so PageRank
- *     flows from the homepage to category pages.
- *   - Server component (no "use client") so the markup is in the initial
- *     HTML payload and crawlable on first paste.
+ * SEO footer block — keyword-rich paragraph + internal-link mesh, in the
+ * new light theme. Server-rendered so crawlers get it on first paint.
  */
 
 const COLLECTIONS_LINKS = [
@@ -38,122 +31,79 @@ export default function SEOFooter() {
   return (
     <section
       aria-label="À propos d'AirplaneStore"
-      className="relative overflow-hidden"
-      style={{ background: "#020208" }}
+      className="bg-[#f6f7fa] border-t border-ink-line"
     >
-      {/* Top rim */}
-      <div
-        aria-hidden
-        className="absolute top-0 left-0 right-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(58,142,255,0.15), transparent)",
-        }}
-      />
-
-      <div className="relative mx-auto max-w-6xl px-6 md:px-12 py-16 md:py-20">
-        {/* Intro paragraph — keyword-rich but readable */}
-        <div className="mb-14">
-          <h2
-            className="font-bold mb-4"
-            style={{
-              fontSize: "clamp(1.4rem, 2.4vw, 2rem)",
-              color: "rgba(255,255,255,0.85)",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            Maquettes d&apos;avion en résine premium · Fait en France
+      <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-14 md:py-16">
+        {/* Intro paragraph */}
+        <div className="mb-12 max-w-3xl">
+          <h2 className="h-display text-xl md:text-2xl mb-4">
+            Maquettes d&apos;avion en résine premium · Personnalisation entreprise
           </h2>
-          <div
-            className="space-y-4 leading-relaxed"
-            style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.93rem", maxWidth: 760 }}
-          >
+          <div className="space-y-3 text-ink-700 text-sm md:text-base leading-relaxed">
             <p>
-              <strong style={{ color: "rgba(255,255,255,0.7)" }}>AirplaneStore</strong> conçoit et édite des
-              maquettes d&apos;avion en résine monobloc, peintes à la main et posées sur un socle
-              en bois massif. Chaque pièce intègre un éclairage LED activable au tap sur le fuselage
-              ou au clap des mains — une vingtaine de secondes de lumière studio, puis extinction
-              automatique pour préserver la batterie lithium rechargeable par USB.
+              <strong className="text-ink-900">AirplaneStore</strong> conçoit et
+              édite des maquettes d&apos;avion en résine monobloc, peintes à la
+              main et posées sur un socle en bois massif. Chaque pièce intègre
+              un éclairage LED activable au tap sur le fuselage ou au clap des
+              mains.
             </p>
             <p>
-              Notre catalogue couvre toute la famille
-              {" "}<Link href="/collections/airbus" className="underline hover:text-white">Airbus</Link>
-              {" "}(A220, A320, A321, A350, A380),
-              {" "}<Link href="/collections/boeing" className="underline hover:text-white">Boeing</Link>
-              {" "}(737, 747, 777, 787 Dreamliner, Air Force One), le légendaire
-              {" "}<Link href="/collections/concorde" className="underline hover:text-white">Concorde</Link>
-              {" "}en livrées Air France et British Airways, et les
-              {" "}<Link href="/collections/jet" className="underline hover:text-white">jets privés</Link>
-              {" "}comme le Gulfstream G650. Échelles 1/85 à 1/200 selon les modèles, 30 à 50 cm
-              d&apos;envergure.
+              Notre spécialité : la <strong className="text-ink-900">personnalisation
+              d&apos;entreprise à partir de 30 exemplaires</strong> — livrée à
+              vos couleurs, gravure de vos noms et logos, écrin avec plaque
+              gravée. Idéal cadeau clients, séminaire, remerciement partenaires.
             </p>
             <p>
-              Livraison suivie et offerte dès 100€ d&apos;achat en France, Belgique, Suisse, Luxembourg
-              et toute l&apos;Union européenne. Satisfait ou remboursé pendant 30 jours. Code{" "}
-              <strong style={{ color: "rgba(255,180,77,0.85)" }}>TAKEOFF10</strong> = −10% sur votre
+              Le catalogue standard couvre toute la famille{" "}
+              <Link href="/collections/airbus" className="text-brand underline hover:text-brand-dark">Airbus</Link>{" "}
+              (A220, A320, A321, A350, A380),{" "}
+              <Link href="/collections/boeing" className="text-brand underline hover:text-brand-dark">Boeing</Link>{" "}
+              (737, 747, 777, 787 Dreamliner), le{" "}
+              <Link href="/collections/concorde" className="text-brand underline hover:text-brand-dark">Concorde</Link>{" "}
+              et les{" "}
+              <Link href="/collections/jet" className="text-brand underline hover:text-brand-dark">jets privés</Link>.
+              Livraison offerte dès 100€. Code{" "}
+              <strong className="text-brand">TAKEOFF10</strong> = −10% sur la
               première commande.
             </p>
           </div>
         </div>
 
-        {/* Internal-link mesh — collections */}
-        <div className="mb-12">
-          <h3
-            className="font-mono uppercase mb-5"
-            style={{
-              fontSize: "0.62rem",
-              letterSpacing: "0.28em",
-              color: "rgba(58,142,255,0.6)",
-            }}
-          >
+        {/* Collections mesh */}
+        <div className="mb-10">
+          <div className="text-xs font-semibold uppercase tracking-widest text-brand mb-4">
             Explorer par collection
-          </h3>
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-3">
+          </div>
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {COLLECTIONS_LINKS.map((c) => (
               <li key={c.href}>
                 <Link
                   href={c.href}
                   className="block group"
-                  style={{ color: "rgba(255,255,255,0.7)" }}
+                  style={{ textDecoration: "none" }}
                 >
-                  <div className="text-[0.86rem] font-semibold group-hover:text-white transition-colors">
+                  <div className="text-sm font-semibold text-ink-900 group-hover:text-brand transition-colors">
                     {c.label}
                   </div>
-                  <div
-                    className="text-[0.7rem] mt-0.5"
-                    style={{ color: "rgba(255,255,255,0.32)" }}
-                  >
-                    {c.detail}
-                  </div>
+                  <div className="text-xs text-ink-500 mt-0.5">{c.detail}</div>
                 </Link>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Internal-link mesh — popular products */}
+        {/* Popular products chips */}
         <div>
-          <h3
-            className="font-mono uppercase mb-5"
-            style={{
-              fontSize: "0.62rem",
-              letterSpacing: "0.28em",
-              color: "rgba(58,142,255,0.6)",
-            }}
-          >
+          <div className="text-xs font-semibold uppercase tracking-widest text-brand mb-4">
             Modèles populaires
-          </h3>
-          <ul className="flex flex-wrap gap-x-3 gap-y-2">
+          </div>
+          <ul className="flex flex-wrap gap-2">
             {POPULAR_LINKS.map((p) => (
               <li key={p.href}>
                 <Link
                   href={p.href}
-                  className="inline-block px-3 py-1.5 rounded-full text-[0.74rem] transition-colors"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    color: "rgba(255,255,255,0.6)",
-                  }}
+                  className="inline-block px-3 py-1.5 rounded-full text-xs text-ink-700 bg-white border border-ink-line hover:border-brand hover:text-brand transition-colors"
+                  style={{ textDecoration: "none" }}
                 >
                   {p.label}
                 </Link>
