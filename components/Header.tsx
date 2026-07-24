@@ -33,13 +33,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-brand text-white">
-      {/* ── Top row : logo, search hint, actions ── */}
-      <div className="mx-auto flex h-[64px] max-w-[1400px] items-center gap-4 md:gap-10 px-4 md:px-8">
-        {/* Hamburger (mobile) */}
+      {/* ── Row 1 : logo center, actions right ─────────── */}
+      <div className="mx-auto flex h-[60px] max-w-[1400px] items-center px-4 md:px-8">
+        {/* Hamburger left (mobile only) */}
         <button
           onClick={() => setMenuOpen(v => !v)}
           aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          className="md:hidden inline-grid w-10 h-10 place-items-center rounded"
+          className="md:hidden inline-grid w-10 h-10 place-items-center rounded shrink-0"
           style={{ background: "rgba(255,255,255,0.08)" }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -58,46 +58,26 @@ export default function Header() {
           </svg>
         </button>
 
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 font-extrabold text-white shrink-0"
-          style={{ textDecoration: "none", fontSize: "1.1rem", letterSpacing: "0.02em" }}
-        >
-          <span
-            aria-hidden
-            className="inline-grid place-items-center rounded-full bg-white text-brand"
-            style={{ width: 30, height: 30, fontSize: "0.95rem", fontWeight: 900 }}
+        {/* Logo centered — flex-1 pushes it away from edges */}
+        <div className="flex-1 flex items-center justify-center md:justify-start">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2.5 font-extrabold text-white"
+            style={{ textDecoration: "none", fontSize: "1.15rem", letterSpacing: "0.03em" }}
           >
-            ✈
-          </span>
-          <span className="hidden xs:inline sm:inline uppercase tracking-wide">Airplanestore</span>
-        </Link>
+            <span
+              aria-hidden
+              className="inline-grid place-items-center rounded-full bg-white text-brand"
+              style={{ width: 32, height: 32, fontSize: "1rem", fontWeight: 900 }}
+            >
+              ✈
+            </span>
+            <span className="uppercase tracking-wide">Airplanestore</span>
+          </Link>
+        </div>
 
-        {/* Desktop nav — spacer pushes actions right, nav breathes */}
-        <nav className="hidden md:flex flex-1 items-center gap-7">
-          {NAV_LINKS.map(l => {
-            const active = pathname === l.href || pathname?.startsWith(l.href + "/");
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-sm font-medium text-white/90 hover:text-white transition-colors"
-                style={{
-                  textDecoration: "none",
-                  opacity: active ? 1 : 0.82,
-                  borderBottom: active ? "2px solid #fff" : "2px solid transparent",
-                  paddingBottom: 3,
-                }}
-              >
-                {l.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Right actions */}
-        <div className="flex items-center gap-2 md:gap-3 md:ml-auto shrink-0">
+        {/* Actions right */}
+        <div className="flex items-center gap-2 md:gap-3 shrink-0">
           <Link
             href="/favoris"
             aria-label={`Favoris${wishlist.count ? ` (${wishlist.count})` : ""}`}
@@ -133,6 +113,35 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      {/* ── Row 2 : nav (desktop only) ─────────────────── */}
+      <nav
+        className="hidden md:flex items-center justify-center gap-8 border-t"
+        style={{
+          borderTopColor: "rgba(255,255,255,0.15)",
+          background: "rgba(0,0,0,0.05)",
+          padding: "0.7rem 1rem",
+        }}
+      >
+        {NAV_LINKS.map(l => {
+          const active = pathname === l.href || pathname?.startsWith(l.href + "/");
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="text-sm font-medium text-white/90 hover:text-white transition-colors"
+              style={{
+                textDecoration: "none",
+                opacity: active ? 1 : 0.82,
+                borderBottom: active ? "2px solid #fff" : "2px solid transparent",
+                paddingBottom: 3,
+              }}
+            >
+              {l.label}
+            </Link>
+          );
+        })}
+      </nav>
 
       {/* ── Mobile menu panel ── */}
       {menuOpen && (

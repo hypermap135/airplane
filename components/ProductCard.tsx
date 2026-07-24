@@ -114,11 +114,21 @@ export default function ProductCard({
           </svg>
         </button>
 
-        {/* Out of stock veil */}
+        {/* Out of stock veil — very visible so users know instantly */}
         {outOfStock && (
-          <div className="absolute inset-0 grid place-items-center bg-white/60">
-            <span className="text-xs font-semibold uppercase tracking-widest text-ink-500">
-              {product.comingSoon ? "Bientôt disponible" : "Épuisé"}
+          <div
+            className="absolute inset-0 grid place-items-center"
+            style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(2px)" }}
+          >
+            <span
+              className="text-xs font-bold uppercase tracking-widest px-3 py-2 rounded"
+              style={{
+                background: product.comingSoon ? "#f0c040" : "#c93030",
+                color: "#fff",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              }}
+            >
+              {product.comingSoon ? "Bientôt" : "Épuisé"}
             </span>
           </div>
         )}
@@ -138,16 +148,28 @@ export default function ProductCard({
           )}
         </div>
         <div className={outOfStock ? "status-out" : "status-in-stock"}>
-          {outOfStock ? (product.comingSoon ? "Bientôt" : "Épuisé") : "En stock"}
+          {outOfStock ? (product.comingSoon ? "Bientôt disponible" : "Épuisé") : "En stock"}
         </div>
-        <button
-          type="button"
-          onClick={onAdd}
-          disabled={outOfStock}
-          className="btn-primary mt-2 w-full text-xs disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {outOfStock ? "Indisponible" : "Ajouter au panier"}
-        </button>
+        {outOfStock ? (
+          <div
+            className="mt-2 w-full text-xs text-center font-semibold uppercase tracking-widest py-3 rounded"
+            style={{
+              background: product.comingSoon ? "rgba(240,192,64,0.15)" : "rgba(201,48,48,0.10)",
+              color: product.comingSoon ? "#8a6f0d" : "#c93030",
+              border: `1px solid ${product.comingSoon ? "#f0c040" : "#c93030"}55`,
+            }}
+          >
+            {product.comingSoon ? "Nous prévenir" : "Prévenez-moi"}
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={onAdd}
+            className="btn-primary mt-2 w-full text-xs"
+          >
+            Ajouter au panier
+          </button>
+        )}
       </div>
     </Link>
   );

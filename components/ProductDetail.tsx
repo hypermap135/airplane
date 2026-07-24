@@ -294,14 +294,22 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
 
-            {/* CTA */}
+            {/* CTA — passé en gold pour visibilité (feedback client 00.18.05) */}
             <div className="mt-6">
               {product.inStock && !variantUnavailable ? (
                 <button
                   id="primary-add-to-cart"
                   type="button"
                   onClick={onAdd}
-                  className="btn-primary w-full"
+                  className="w-full inline-flex items-center justify-center gap-2 font-black uppercase text-sm tracking-widest text-ink-900 transition-transform hover:scale-[1.01] active:scale-[0.99]"
+                  style={{
+                    padding: "1.1rem 1.5rem",
+                    borderRadius: 999,
+                    background: "linear-gradient(135deg, #ffdc73 0%, #f0c040 60%, #d9a52d 100%)",
+                    border: "1px solid #d9a52d",
+                    boxShadow: "0 6px 20px rgba(240,192,64,0.4)",
+                    cursor: "pointer",
+                  }}
                 >
                   {gravure ? `Ajouter au panier — ${formatPrice(totalPrice)} →` : "Ajouter au panier →"}
                 </button>
@@ -403,24 +411,41 @@ export default function ProductDetail({ product }: { product: Product }) {
         )}
       </div>
 
-      {/* Sticky mini add-to-cart on scroll */}
+      {/* Sticky mini add-to-cart — very visible sur mobile */}
       {showSticky && product.inStock && !variantUnavailable && (
         <div
-          className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-ink-line shadow-lg"
-          style={{ padding: "0.75rem 1rem" }}
+          className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t"
+          style={{
+            padding: "0.7rem 1rem",
+            borderTopColor: "var(--line)",
+            boxShadow: "0 -8px 24px rgba(0,0,0,0.10)",
+          }}
         >
-          <div className="mx-auto max-w-[1400px] flex items-center gap-4">
-            <div className="hidden sm:block flex-1 min-w-0">
+          <div className="mx-auto max-w-[1400px] flex items-center gap-3">
+            <div className="flex-1 min-w-0">
               <div className="font-semibold text-ink-900 text-sm truncate">
                 {product.title}
               </div>
               <div className="text-xs text-ink-500">
-                {formatPrice(totalPrice)}{gravure ? " · gravure incluse" : ""}
+                <span className="font-bold text-ink-900">{formatPrice(totalPrice)}</span>
+                {gravure ? " · gravure incluse" : ""}
               </div>
             </div>
-            <button onClick={onAdd} className="btn-primary shrink-0">
-              <span className="hidden md:inline">Ajouter au panier →</span>
-              <span className="md:hidden">Ajouter →</span>
+            <button
+              onClick={onAdd}
+              className="shrink-0 inline-flex items-center gap-1.5 font-black uppercase text-xs tracking-widest text-ink-900 transition-transform active:scale-[0.98]"
+              style={{
+                padding: "0.85rem 1.3rem",
+                borderRadius: 999,
+                background: "linear-gradient(135deg, #ffdc73 0%, #f0c040 60%, #d9a52d 100%)",
+                border: "1px solid #d9a52d",
+                boxShadow: "0 4px 14px rgba(240,192,64,0.4)",
+                cursor: "pointer",
+              }}
+            >
+              <span className="hidden sm:inline">Ajouter au panier</span>
+              <span className="sm:hidden">Ajouter</span>
+              <span aria-hidden>→</span>
             </button>
           </div>
         </div>
