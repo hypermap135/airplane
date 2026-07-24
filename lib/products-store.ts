@@ -150,6 +150,26 @@ export async function readOverrides(): Promise<OverridesMap> {
   return getOverridesCached();
 }
 
+/** Admin: probe if the blob store is writable. Returns error message when down.
+ *  Used by /admin dashboard to show a banner when save is broken. */
+export async function checkBlobHealth(): Promise<{ ok: boolean; reason?: string }> {
+  try {
+    const { list } = await import("@vercel/blob");
+    // list() also fails when the store is suspended — cheapest signal
+    await list({ prefix: "__healthcheck__", limit: 1 });
+    return { ok: true };
+  } catch (err) {
+    const msg = String(err);
+    if (msg.includes("suspended") || msg.includes("Inactive")) {
+      return { ok: false, reason: "suspended" };
+    }
+    if (msg.includes("No blob credentials")) {
+      return { ok: false, reason: "no_credentials" };
+    }
+    return { ok: false, reason: msg.slice(0, 200) };
+  }
+}
+
 /** Admin: replace the entire overrides map and revalidate the site.
  *
  *  IMPORTANT: `revalidateTag` invalidates the data cache used by

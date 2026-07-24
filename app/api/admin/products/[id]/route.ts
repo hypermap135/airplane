@@ -128,8 +128,21 @@ export async function PATCH(
     await patchProductOverride(id, patch);
   } catch (err) {
     console.error("[admin] patch failed:", err);
+    const detail = String(err);
+    // Special-case le blob suspendu — message actionnable pour l'UI plutôt
+    // qu'une erreur technique cryptique
+    if (detail.includes("suspended") || detail.includes("Inactive")) {
+      return NextResponse.json(
+        {
+          error: "blob_suspended",
+          userMessage:
+            "Le stockage Vercel Blob est suspendu (plan facturation inactif). Réactivez-le sur vercel.com/hypermappro/airplane/stores pour que l'admin puisse sauvegarder.",
+        },
+        { status: 503 },
+      );
+    }
     return NextResponse.json(
-      { error: "blob_write_failed", detail: String(err) },
+      { error: "blob_write_failed", detail },
       { status: 500 },
     );
   }

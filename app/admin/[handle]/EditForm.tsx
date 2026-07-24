@@ -93,7 +93,9 @@ export default function EditForm({ product, hidden, collections }: Props) {
         });
         if (!res.ok) {
           const j = await res.json().catch(() => ({}));
-          setErrorMsg(j?.error ?? "Erreur d'enregistrement.");
+          // Message utilisateur prioritaire (blob suspendu etc.) — sinon
+          // fallback sur le code d'erreur brut
+          setErrorMsg(j?.userMessage ?? j?.error ?? "Erreur d'enregistrement.");
           return;
         }
         setSavedMsg("Enregistré ✓ — visible sur le site dans ~30 s");

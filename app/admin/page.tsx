@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { COLLECTIONS, type Collection } from "@/lib/products";
-import { getProductsAdmin } from "@/lib/products-store";
+import { getProductsAdmin, checkBlobHealth } from "@/lib/products-store";
 import { getInventorySnapshot } from "@/lib/shopify-admin-inventory";
 import { DISCOUNT_CODE } from "@/lib/shopify";
 import LogoutButton from "./LogoutButton";
@@ -16,9 +16,10 @@ const SHOPIFY_PUBLIC_DOMAIN =
   "y823wg-nz.myshopify.com";
 
 export default async function AdminHome() {
-  const [products, inventory] = await Promise.all([
+  const [products, inventory, blobHealth] = await Promise.all([
     getProductsAdmin(),
     getInventorySnapshot(),
+    checkBlobHealth(),
   ]);
 
   // Group by collection for a cleaner overview.
@@ -91,6 +92,39 @@ export default async function AdminHome() {
           <LogoutButton />
         </div>
       </header>
+
+      {/* Alerte blob suspendu — bloque toute sauvegarde admin, donc affichée
+          en priorité au dessus du reste avec un lien direct vers Vercel */}
+      {!blobHealth.ok && (
+        <div
+          style={{
+            marginBottom: 16,
+            padding: "14px 18px",
+            borderRadius: 12,
+            background: "linear-gradient(135deg, rgba(255,90,90,0.15), rgba(255,90,90,0.05))",
+            border: "1px solid rgba(255,90,90,0.40)",
+            color: "#ffb0b0",
+            fontSize: "0.85rem",
+            lineHeight: 1.5,
+          }}
+        >
+          <div style={{ fontWeight: 700, marginBottom: 6, color: "#ff8080" }}>
+            ⚠ Sauvegarde admin désactivée — stockage Vercel Blob {blobHealth.reason === "suspended" ? "suspendu" : "indisponible"}
+          </div>
+          <div style={{ color: "rgba(255,255,255,0.75)" }}>
+            Tu peux consulter le catalogue et voir les stocks, mais toute
+            modification (prix, description, photos) échouera tant que le
+            store n'est pas réactivé.{" "}
+            <Link
+              href="https://vercel.com/hypermappro-7673s-projects/~/stores/blob"
+              target="_blank"
+              style={{ color: "#3a8eff", textDecoration: "underline" }}
+            >
+              Ouvrir le dashboard Vercel Blob ↗
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Health strip */}
       <HealthStrip
