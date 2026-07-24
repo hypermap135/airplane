@@ -64,16 +64,22 @@ export default function HeroB2B() {
             style={{ background: "var(--tile-gray)", aspectRatio: "5 / 4" }}
           >
             <Image
-              src="/images/a380-emirates.png"
-              alt="Maquette Airbus A380 Emirates personnalisée avec plaque gravée"
+              src="/images/maquette-avion-maquette-airbus-a380.webp"
+              alt="Maquette Airbus A380 Air France, résine premium peinte main, socle bois gravé"
               fill
               priority
               sizes="(min-width: 1024px) 640px, 100vw"
               style={{ objectFit: "contain", padding: "6% 8%" }}
             />
-            {/* Small floating badge, airmodels-style */}
+            {/* Featured badge */}
             <span className="badge-featured absolute top-4 left-4">
-              <span aria-hidden>★</span> Featured
+              <span aria-hidden>★</span> Signature
+            </span>
+            {/* Subtle label bottom */}
+            <span
+              className="absolute bottom-4 right-4 bg-white/90 text-ink-700 text-xs font-semibold px-2.5 py-1 rounded"
+            >
+              Ex : A380 Air France
             </span>
           </div>
         </div>

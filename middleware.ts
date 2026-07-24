@@ -32,6 +32,24 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const pathname = url.pathname;
 
+  // ── 0. Maintenance mode — /admin reste accessible pour dépanner ──────
+  // Activation : Vercel env var MAINTENANCE_MODE=1 (redeploy pour propager).
+  // Bypass query ?bypass=<ADMIN_SESSION_SECRET> pour prévisualiser.
+  if (
+    process.env.MAINTENANCE_MODE === "1" &&
+    !pathname.startsWith("/admin") &&
+    !pathname.startsWith("/api/admin") &&
+    !pathname.startsWith("/api/lead") &&
+    !pathname.startsWith("/api/whatsapp") &&
+    pathname !== "/maintenance"
+  ) {
+    const bypass = url.searchParams.get("bypass");
+    if (bypass !== process.env.ADMIN_SESSION_SECRET) {
+      const maintUrl = new URL("/maintenance", url);
+      return NextResponse.rewrite(maintUrl);
+    }
+  }
+
   // ── 1. Admin gate ────────────────────────────────────────────────────
   const isAdminPage = pathname.startsWith("/admin") && pathname !== "/admin/login";
   const isAdminApi  = pathname.startsWith("/api/admin") && pathname !== "/api/admin/login";

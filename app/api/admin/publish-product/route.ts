@@ -7,11 +7,11 @@
  *
  * Publishes ONE product:
  *   1. Copies each .tmp/preview/{handle}--{view}.png (or {handle}.png for
- *      "profile") to public/images/, named {handle}.png for the cover view
+ *      "profile") to public/images/, named {handle}.webp for the cover view
  *      and {handle}--{view}.png for the gallery views.
  *   2. Rewrites the product entry in lib/products.ts:
- *        - image: `/images/{handle}.png`
- *        - images: ["/images/{handle}.png", "/images/{handle}--{view}.png", ...]
+ *        - image: `/images/{handle}.webp`
+ *        - images: ["/images/{handle}.webp", "/images/{handle}--{view}.webp", ...]
  *   3. Stages + commits + triggers `vercel --prod --yes`.
  *
  * Local dev only.
@@ -63,12 +63,12 @@ function publicFile(handle: string, view: string): string {
 
 function publicUrl(handle: string, view: string): string {
   const slug = view === "profile" ? handle : `${handle}--${view}`;
-  return `/images/${slug}.png`;
+  return `/images/${slug}.webp`;
 }
 
 /**
  * Rewrite the product entry in lib/products.ts:
- *   - image:  `/images/{handle}.png`
+ *   - image:  `/images/{handle}.webp`
  *   - images: [<the gallery>]
  */
 async function rewriteProduct(

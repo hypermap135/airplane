@@ -3,7 +3,7 @@
  *
  * Reads .tmp/approved.json (list of handles whose new photos have been
  * promoted to public/images/), updates lib/products.ts so each product's
- * `image:` (and the first entry of `images:`) points to /images/{handle}.png,
+ * `image:` (and the first entry of `images:`) points to /images/{handle}.webp,
  * commits the change, and triggers a Vercel production deploy.
  *
  * Local dev only — needs the local git + vercel CLI.
@@ -30,7 +30,7 @@ async function readApproved(): Promise<string[]> {
 
 /**
  * For each handle, rewrite the first `image: ...` line within the matching
- * product block to /images/{handle}.png. Conservative regex: only the
+ * product block to /images/{handle}.webp. Conservative regex: only the
  * first image line per product block is rewritten so we don't touch the
  * `images: [ ... ]` gallery array (operator can curate that manually if
  * they want to keep the older photos as additional gallery shots).
@@ -49,7 +49,7 @@ async function rewriteProductsTs(handles: string[]): Promise<{ updated: string[]
       "m",
     );
     if (re.test(next)) {
-      next = next.replace(re, `$1\`/images/${h}.png\``);
+      next = next.replace(re, `$1\`/images/${h}.webp\``);
       updated.push(h);
     } else {
       missing.push(h);
@@ -87,7 +87,7 @@ export async function POST(_req: NextRequest) {
     );
   }
 
-  // Sanity: ensure every approved handle has its public/images/{handle}.png
+  // Sanity: ensure every approved handle has its public/images/{handle}.webp
   const missingFiles: string[] = [];
   for (const h of approved) {
     try {
@@ -108,7 +108,7 @@ export async function POST(_req: NextRequest) {
   // Stage + commit only what changed (products.ts + the new images).
   const filesToAdd = [
     "lib/products.ts",
-    ...approved.map((h) => `public/images/${h}.png`),
+    ...approved.map((h) => `public/images/${h}.webp`),
   ];
   const add = await runCmd("git", ["add", ...filesToAdd]);
   if (add.code !== 0) {

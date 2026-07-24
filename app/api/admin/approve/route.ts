@@ -4,7 +4,7 @@
  * Body: { handle: string, previewSlug?: string }
  *
  * Promotes .tmp/preview/{previewSlug ?? handle}.png to
- * public/images/{handle}.png (the canonical product image) so the live
+ * public/images/{handle}.webp (the canonical product image) so the live
  * card uses the new photo on next deploy.
  *
  * Logs the handle to .tmp/approved.json — the batch deploy endpoint then
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    publicPath: `/images/${handle}.png`,
+    publicPath: `/images/${handle}.webp`,
     sourceSlug: slug,
   });
 }

@@ -18,7 +18,7 @@ const CASES = [
     title: "Série sur mesure — Airbus A320",
     body:
       "Réplique Airbus A320 aux couleurs exactes de leur compagnie. Livrée personnalisée, plaque nominative gravée au socle avec le nom de chaque destinataire. Écrin en carton renforcé imprimé aux couleurs de la marque.",
-    image: "/images/airbus-a320-echelle-1-85-finition-premium.png",
+    image: "/images/airbus-a320-echelle-1-85-finition-premium.webp",
     accent: "#3a8eff",
   },
   {
@@ -26,7 +26,7 @@ const CASES = [
     title: "Édition événement — Boeing 787",
     body:
       "Version mini-format du Dreamliner offerte aux 120 participants du séminaire annuel. Livrée dans un écrin premium avec plaque gravée au nom de l'événement et de l'année. Remise sur scène par le dirigeant.",
-    image: "/images/boeing-787.png",
+    image: "/images/boeing-787.webp",
     accent: "#e8c048",
   },
   {
@@ -41,8 +41,26 @@ const CASES = [
 
 export default function CorporateShowcase() {
   return (
-    <section className="bg-[#f6f7fa] border-y border-ink-line section">
-      <div className="mx-auto max-w-[1400px] px-4 md:px-8">
+    <section className="relative overflow-hidden bg-[#f6f7fa] border-y border-ink-line section">
+      {/* Subtle plane silhouette watermark background — client feedback:
+          "le fond gris est amateur, mettre une image de fond en transparence" */}
+      <div
+        aria-hidden
+        className="absolute pointer-events-none select-none"
+        style={{
+          top: "50%",
+          right: "-8%",
+          transform: "translateY(-50%) rotate(-8deg)",
+          width: "60%",
+          height: "80%",
+          backgroundImage: "url('/images/maquette-avion-maquette-airbus-a380.webp')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          backgroundSize: "contain",
+          opacity: 0.06,
+        }}
+      />
+      <div className="relative mx-auto max-w-[1400px] px-4 md:px-8">
         {/* Section head */}
         <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
           <div className="text-xs font-semibold uppercase tracking-widest text-brand mb-2">

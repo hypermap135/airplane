@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 w-full bg-brand text-white">
       {/* ── Top row : logo, search hint, actions ── */}
-      <div className="mx-auto flex h-[64px] max-w-[1400px] items-center justify-between px-4 md:px-8">
+      <div className="mx-auto flex h-[64px] max-w-[1400px] items-center gap-4 md:gap-10 px-4 md:px-8">
         {/* Hamburger (mobile) */}
         <button
           onClick={() => setMenuOpen(v => !v)}
@@ -61,7 +61,7 @@ export default function Header() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-extrabold text-white"
+          className="flex items-center gap-2.5 font-extrabold text-white shrink-0"
           style={{ textDecoration: "none", fontSize: "1.1rem", letterSpacing: "0.02em" }}
         >
           <span
@@ -74,8 +74,8 @@ export default function Header() {
           <span className="hidden xs:inline sm:inline uppercase tracking-wide">Airplanestore</span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop nav — spacer pushes actions right, nav breathes */}
+        <nav className="hidden md:flex flex-1 items-center gap-7">
           {NAV_LINKS.map(l => {
             const active = pathname === l.href || pathname?.startsWith(l.href + "/");
             return (
@@ -97,7 +97,7 @@ export default function Header() {
         </nav>
 
         {/* Right actions */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-2 md:gap-3 md:ml-auto shrink-0">
           <Link
             href="/favoris"
             aria-label={`Favoris${wishlist.count ? ` (${wishlist.count})` : ""}`}
