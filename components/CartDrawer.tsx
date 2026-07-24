@@ -322,9 +322,24 @@ export default function CartDrawer() {
           <button
             onClick={onCheckout}
             disabled={entries.length === 0 || loading}
-            className="btn-primary w-full disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full inline-flex items-center justify-center gap-2 font-black uppercase text-sm tracking-widest text-ink-900 disabled:opacity-40 disabled:cursor-not-allowed transition-transform hover:scale-[1.01] active:scale-[0.99]"
+            style={{
+              padding: "1rem 1.5rem",
+              borderRadius: 999,
+              background: entries.length === 0
+                ? "#e5e7ea"
+                : "linear-gradient(135deg, #ffdc73 0%, #f0c040 60%, #d9a52d 100%)",
+              border: "1px solid #d9a52d",
+              boxShadow: entries.length === 0 ? "none" : "0 6px 20px rgba(240,192,64,0.4)",
+              cursor: entries.length === 0 || loading ? "not-allowed" : "pointer",
+            }}
           >
-            {loading ? "Redirection…" : "Commander →"}
+            {loading ? "Redirection…" : (
+              <>
+                <span>Commander</span>
+                <span aria-hidden>→</span>
+              </>
+            )}
           </button>
           <div className="text-[11px] text-ink-500 text-center">
             Paiement sécurisé Shopify · Checkout invité disponible

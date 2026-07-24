@@ -12,7 +12,7 @@
  * appear within a few seconds without a redeploy.
  */
 
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache, revalidateTag, revalidatePath } from "next/cache";
 import { PRODUCTS, type Product, type ProductSpec, type Collection } from "@/lib/products";
 import { getShopifyInventory } from "@/lib/shopify-inventory";
 
@@ -150,7 +150,15 @@ export async function readOverrides(): Promise<OverridesMap> {
   return getOverridesCached();
 }
 
-/** Admin: replace the entire overrides map and revalidate the site. */
+/** Admin: replace the entire overrides map and revalidate the site.
+ *
+ *  IMPORTANT: `revalidateTag` invalidates the data cache used by
+ *  `getOverridesCached`, but the /collections/[slug] and /products/[handle]
+ *  pages are prerendered as STATIC HTML at build time. Without
+ *  `revalidatePath`, the static HTML sticks around until the next deploy —
+ *  which is exactly the "j'ai modifié dans l'admin mais rien change côté
+ *  collection" bug the client reported.
+ */
 export async function writeOverrides(next: OverridesMap): Promise<void> {
   const { put } = await import("@vercel/blob");
   await put(BLOB_OVERRIDES_KEY, JSON.stringify(next, null, 2), {
@@ -160,6 +168,12 @@ export async function writeOverrides(next: OverridesMap): Promise<void> {
     allowOverwrite: true,
   });
   revalidateTag(PRODUCTS_TAG);
+  // Force full re-render of the static pages that consume the catalogue.
+  revalidatePath("/", "layout");
+  revalidatePath("/collections/[collection]", "page");
+  revalidatePath("/collections/all", "page");
+  revalidatePath("/products/[handle]", "page");
+  revalidatePath("/favoris", "page");
 }
 
 /** Admin: patch one product's override. Pass `null` for a field to clear it. */

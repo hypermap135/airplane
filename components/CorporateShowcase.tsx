@@ -1,26 +1,41 @@
 import Link from "next/link";
+import Image from "next/image";
 
 /**
- * "Nos réalisations entreprises" — placeholder social proof section for
- * the B2B custom-order pivot. Uses text logos + a short case study line.
- * Client will replace with real logos / real cases when available.
+ * "Nos réalisations entreprises" — social proof pour la section B2B.
+ * Chaque cas a maintenant une description longue + une photo (placeholder
+ * A380/B747/Concorde en attendant les vraies photos client à envoyer par
+ * WhatsApp).
  */
+
 const LOGOS = [
   "Air France", "Airbus", "Dassault", "Safran", "ATR", "Groupe ADP",
 ];
 
 const CASES = [
   {
-    company: "Cadeau clients — série sur mesure",
-    detail: "Airbus A320 aux couleurs de leur compagnie, plaque gravée nominative.",
+    tag: "Cadeau clients",
+    title: "Série sur mesure — Airbus A320",
+    body:
+      "Réplique Airbus A320 aux couleurs exactes de leur compagnie. Livrée personnalisée, plaque nominative gravée au socle avec le nom de chaque destinataire. Écrin en carton renforcé imprimé aux couleurs de la marque.",
+    image: "/images/airbus-a320-echelle-1-85-finition-premium.png",
+    accent: "#3a8eff",
   },
   {
-    company: "Séminaire annuel — édition événement",
-    detail: "Boeing 787 mini-format, écrin premium, remise sur estrade.",
+    tag: "Séminaire annuel",
+    title: "Édition événement — Boeing 787",
+    body:
+      "Version mini-format du Dreamliner offerte aux 120 participants du séminaire annuel. Livrée dans un écrin premium avec plaque gravée au nom de l'événement et de l'année. Remise sur scène par le dirigeant.",
+    image: "/images/boeing-787.png",
+    accent: "#e8c048",
   },
   {
-    company: "Remerciement partenaires — édition limitée",
-    detail: "Concorde édition limitée, gravure logo + année.",
+    tag: "Remerciement partenaires",
+    title: "Édition limitée — Concorde",
+    body:
+      "Réplique Concorde en tirage limité pour remercier les partenaires stratégiques. Gravure du logo partenaire, année et numéro de pièce (1/30, 2/30, etc.). Une pièce de collection valorisante.",
+    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/concorde-airfrance.png",
+    accent: "#9333ea",
   },
 ];
 
@@ -55,29 +70,55 @@ export default function CorporateShowcase() {
           ))}
         </div>
 
-        {/* Cases */}
+        {/* Cases — now with photos + longer descriptions */}
         <div className="grid gap-6 md:grid-cols-3 pt-10 md:pt-14">
-          {CASES.map((c, i) => (
-            <div
-              key={i}
-              className="bg-white border border-ink-line rounded-md p-6"
+          {CASES.map((c) => (
+            <article
+              key={c.title}
+              className="bg-white border border-ink-line rounded-md overflow-hidden flex flex-col"
             >
-              <div className="text-brand text-xs font-semibold uppercase tracking-widest mb-2">
-                Cas #{i + 1}
+              <div
+                className="relative w-full"
+                style={{ background: "var(--tile-gray)", aspectRatio: "16 / 10" }}
+              >
+                <Image
+                  src={c.image}
+                  alt={c.title}
+                  fill
+                  sizes="(min-width: 1024px) 420px, 100vw"
+                  style={{ objectFit: "contain", padding: "8%" }}
+                />
+                <span
+                  className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider"
+                  style={{ background: c.accent, color: "#fff" }}
+                >
+                  {c.tag}
+                </span>
               </div>
-              <div className="text-ink-900 font-semibold text-lg mb-2">
-                {c.company}
+              <div className="p-5 flex-1 flex flex-col">
+                <h3 className="text-ink-900 font-bold text-lg mb-2">
+                  {c.title}
+                </h3>
+                <p className="text-ink-500 text-sm leading-relaxed">{c.body}</p>
               </div>
-              <div className="text-ink-500 text-sm leading-relaxed">
-                {c.detail}
-              </div>
-            </div>
+            </article>
           ))}
         </div>
 
         {/* CTA */}
         <div className="mt-10 md:mt-14 text-center">
-          <Link href="/contact" className="btn-primary" style={{ textDecoration: "none" }}>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 font-black uppercase text-sm tracking-widest text-ink-900 transition-transform hover:scale-[1.02]"
+            style={{
+              padding: "1rem 1.75rem",
+              borderRadius: 999,
+              background: "linear-gradient(135deg, #ffdc73 0%, #f0c040 60%, #d9a52d 100%)",
+              border: "1px solid #d9a52d",
+              boxShadow: "0 8px 24px rgba(240,192,64,0.35)",
+              textDecoration: "none",
+            }}
+          >
             Recevoir un devis personnalisé →
           </Link>
           <div className="mt-3 text-xs text-ink-500">
