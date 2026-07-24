@@ -6,6 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import CartDrawer from "./CartDrawer";
 import WhatsAppButton from "./WhatsAppButton";
+import Toaster from "./Toaster";
 
 /**
  * Wraps every page with the public-site chrome (header / footer / cart
@@ -26,6 +27,7 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
       <Footer />
       <CartDrawer />
       <WhatsAppButton />
+      <Toaster />
     </>
   );
 }

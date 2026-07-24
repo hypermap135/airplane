@@ -6,6 +6,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, related, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
+import { pushToast } from "@/lib/toast";
 
 /**
  * Airmodels-inspired product detail. White base, gray photo tile, black
@@ -36,6 +37,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [gravure, setGravure] = useState(false);
   const [gravureText, setGravureText] = useState("");
   const [showSticky, setShowSticky] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const { add } = useCart();
   const { setOpen } = useCartDrawer();
 
@@ -85,6 +87,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         { key: "Produit concerné", value: product.title },
       ]);
     }
+    pushToast(`${product.title} ajouté au panier`);
     setOpen(true);
     trackMeta("AddToCart", {
       content_ids: [product.id],
@@ -120,9 +123,12 @@ export default function ProductDetail({ product }: { product: Product }) {
         <div className="grid gap-8 md:gap-12 lg:grid-cols-[1.05fr_1fr]">
           {/* LEFT : image gallery */}
           <div>
-            <div
-              className="relative overflow-hidden rounded-md"
-              style={{ background: "var(--tile-gray)", aspectRatio: "1 / 1" }}
+            <button
+              type="button"
+              onClick={() => setZoomOpen(true)}
+              aria-label="Zoomer la photo"
+              className="relative overflow-hidden rounded-md w-full group"
+              style={{ background: "var(--tile-gray)", aspectRatio: "1 / 1", cursor: "zoom-in", border: 0, padding: 0 }}
             >
               <Image
                 src={images[activeImg]}
@@ -142,7 +148,18 @@ export default function ProductDetail({ product }: { product: Product }) {
                   Échelle {product.scale}
                 </span>
               )}
-            </div>
+              <span
+                aria-hidden
+                className="absolute top-4 right-4 grid place-items-center rounded-full bg-white/90 text-ink-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ width: 36, height: 36, boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M21 21l-4.3-4.3" />
+                  <path d="M11 8v6M8 11h6" />
+                </svg>
+              </span>
+            </button>
 
             {/* Thumbnail strip */}
             {images.length > 1 && (
@@ -330,20 +347,21 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </div>
 
-            {/* Payment logos + reassurance */}
-            <div className="mt-6 space-y-2 text-xs text-ink-500">
-              <div className="flex items-center gap-4">
-                <span>Paiement :</span>
+            {/* Rassurance icons — visibles près du CTA */}
+            <ReassuranceRow />
+
+            {/* Livraison estimée dynamique */}
+            {product.inStock && !variantUnavailable && <DeliveryEstimate />}
+
+            {/* Payment methods */}
+            <div className="mt-4 flex items-center gap-3 text-xs text-ink-500">
+              <span>Paiement sécurisé :</span>
+              <div className="flex flex-wrap items-center gap-1.5">
                 {["Visa", "MC", "CB", "PayPal", "Apple Pay"].map((p) => (
-                  <span key={p} className="px-2 py-0.5 rounded border border-ink-line text-ink-700">
+                  <span key={p} className="px-2 py-0.5 rounded border border-ink-line text-ink-700 bg-white text-[11px] font-semibold">
                     {p}
                   </span>
                 ))}
-              </div>
-              <div className="flex flex-wrap gap-x-5 gap-y-1">
-                <span>✓ Livraison France 7-15 j</span>
-                <span>✓ Retour gratuit 30 j</span>
-                <span>✓ Fait en France</span>
               </div>
             </div>
           </div>
@@ -373,6 +391,9 @@ export default function ProductDetail({ product }: { product: Product }) {
             ))}
           </div>
         </div>
+
+        {/* ─── Mini-FAQ inline ─── */}
+        <MiniFAQ />
 
         {/* ─── Related ─── */}
         {relatedItems.length > 0 && (
@@ -410,6 +431,15 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         )}
       </div>
+
+      {/* Zoom lightbox */}
+      {zoomOpen && (
+        <ImageZoom
+          src={images[activeImg]}
+          alt={product.title}
+          onClose={() => setZoomOpen(false)}
+        />
+      )}
 
       {/* Sticky mini add-to-cart — very visible sur mobile */}
       {showSticky && product.inStock && !variantUnavailable && (
@@ -450,6 +480,142 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── Rassurance icons row (près du CTA) ────────────────────────────── */
+
+function ReassuranceRow() {
+  const items = [
+    { icon: "🚚", label: "Livraison offerte", sub: "dès 50€ en France" },
+    { icon: "↩", label: "Retour 30 jours", sub: "satisfait ou remboursé" },
+    { icon: "🇫🇷", label: "Fait en France", sub: "peint main atelier" },
+    { icon: "🔒", label: "Paiement sécurisé", sub: "SSL · 3D-Secure" },
+  ];
+  return (
+    <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-2 p-3 rounded border border-ink-line bg-[#fafbfc]">
+      {items.map((it) => (
+        <div key={it.label} className="flex items-start gap-2 min-w-0">
+          <span aria-hidden className="text-lg leading-none pt-0.5">{it.icon}</span>
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-ink-900 truncate">{it.label}</div>
+            <div className="text-[11px] text-ink-500 truncate">{it.sub}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Delivery estimate — dates dynamiques ───────────────────────────── */
+
+function DeliveryEstimate() {
+  const fmt = (d: Date) =>
+    d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  const now = new Date();
+  const min = new Date(now); min.setDate(now.getDate() + 7);
+  const max = new Date(now); max.setDate(now.getDate() + 15);
+  return (
+    <div className="mt-3 flex items-center gap-2 text-xs text-ink-700">
+      <span aria-hidden className="text-brand">📦</span>
+      Livraison estimée :{" "}
+      <strong className="text-ink-900">{fmt(min)} — {fmt(max)}</strong>
+    </div>
+  );
+}
+
+/* ── Mini FAQ inline ─────────────────────────────────────────────────── */
+
+const MINI_FAQ = [
+  {
+    q: "Combien de temps pour recevoir ma commande ?",
+    a: "7 à 15 jours ouvrés pour la France métropolitaine. Suivi envoyé par email dès l'expédition.",
+  },
+  {
+    q: "Puis-je personnaliser aux couleurs de mon entreprise ?",
+    a: "Oui — via un devis. Nos artisans reproduisent votre livrée, votre logo ou une plaque gravée. Comptez 3 à 6 semaines pour une série personnalisée.",
+  },
+  {
+    q: "La maquette est-elle fragile ?",
+    a: "Résine monobloc peinte main, socle bois massif. Emballage double-carton avec calage mousse. Retour gratuit 30 jours si problème.",
+  },
+  {
+    q: "Puis-je retourner ma commande ?",
+    a: "Oui, sous 30 jours dès réception, sans justificatif. Remboursement intégral.",
+  },
+];
+
+function MiniFAQ() {
+  return (
+    <div className="mt-16">
+      <h2 className="h-display text-xl md:text-2xl mb-4">Questions fréquentes</h2>
+      <div className="divide-y divide-ink-line border border-ink-line rounded max-w-3xl">
+        {MINI_FAQ.map((item, i) => (
+          <details key={i} className="group">
+            <summary
+              className="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-semibold text-ink-900 hover:bg-[#fafbfc]"
+              style={{ listStyle: "none" }}
+            >
+              <span>{item.q}</span>
+              <span aria-hidden className="text-ink-500 transition-transform group-open:rotate-45 text-lg leading-none">+</span>
+            </summary>
+            <div className="px-4 pb-4 text-sm text-ink-700 leading-relaxed">
+              {item.a}
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Image zoom lightbox ─────────────────────────────────────────────── */
+
+function ImageZoom({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Photo agrandie"
+      onClick={onClose}
+      className="fixed inset-0 z-50 grid place-items-center p-4"
+      style={{ background: "rgba(0,0,0,0.85)", cursor: "zoom-out" }}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Fermer"
+        className="absolute top-4 right-4 w-11 h-11 grid place-items-center rounded-full text-white text-xl font-bold"
+        style={{ background: "rgba(255,255,255,0.15)", cursor: "pointer" }}
+      >
+        ✕
+      </button>
+      <div
+        className="relative w-full max-w-5xl"
+        style={{ aspectRatio: "1/1", maxHeight: "90vh" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="90vw"
+          style={{ objectFit: "contain" }}
+          priority
+        />
+      </div>
     </div>
   );
 }

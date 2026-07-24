@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import ProductCard from "./ProductCard";
 import { COLLECTIONS, type Product, sortForDisplay } from "@/lib/products";
 
@@ -21,15 +22,27 @@ export default function CatalogueGrid({
   const [sort, setSort]   = useState<SortKey>("default");
   const [stock, setStock] = useState<StockKey>("all");
   const [price, setPrice] = useState<PriceKey>("all");
+  const searchParams = useSearchParams();
+  const urlQ = searchParams?.get("q") ?? "";
+  const [manualQ, setManualQ] = useState<string | null>(null);
+  const q = manualQ ?? urlQ;
+  const setQ = (v: string) => setManualQ(v);
 
   const filtered = useMemo(() => {
     let res = products;
+    const needle = q.trim().toLowerCase();
+    if (needle) {
+      res = res.filter((p) => {
+        const hay = [p.title, p.subtitle ?? "", p.collection, p.handle].join(" ").toLowerCase();
+        return hay.includes(needle);
+      });
+    }
     if (stock === "in-stock") res = res.filter((p) => p.inStock);
     if (price === "lt50")     res = res.filter((p) => p.price < 50);
     if (price === "50-100")   res = res.filter((p) => p.price >= 50 && p.price <= 100);
     if (price === "gt100")    res = res.filter((p) => p.price > 100);
     return res;
-  }, [products, stock, price]);
+  }, [products, stock, price, q]);
 
   const sorted = useMemo(() => {
     const base = sortForDisplay(filtered);
@@ -50,6 +63,26 @@ export default function CatalogueGrid({
 
   return (
     <div>
+      {q && (
+        <div className="mb-4 flex items-center gap-2 text-sm">
+          <span className="text-ink-500">Recherche :</span>
+          <span
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold"
+            style={{ background: "var(--brand-blue-light)", color: "var(--brand-blue-dark)" }}
+          >
+            « {q} »
+            <button
+              type="button"
+              onClick={() => setQ("")}
+              aria-label="Effacer la recherche"
+              className="text-brand-dark hover:text-brand"
+              style={{ background: "none", border: 0, cursor: "pointer", fontSize: 14, lineHeight: 1 }}
+            >
+              ✕
+            </button>
+          </span>
+        </div>
+      )}
       {showFilters && (
         <div className="pb-5 mb-6 border-b border-ink-line space-y-4">
           {/* Collection chips + sort */}

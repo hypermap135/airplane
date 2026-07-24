@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import CatalogueGrid from "@/components/CatalogueGrid";
 import { getProducts } from "@/lib/products-store";
 
@@ -25,7 +26,9 @@ export default async function AllCollectionsPage() {
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-8 md:py-12">
-        <CatalogueGrid products={products} />
+        <Suspense fallback={null}>
+          <CatalogueGrid products={products} />
+        </Suspense>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice, type Product } from "@/lib/products";
 import { trackMeta } from "@/lib/meta";
 import { useWishlist } from "@/lib/wishlist";
+import { pushToast } from "@/lib/toast";
 import { useState } from "react";
 
 /**
@@ -37,6 +38,7 @@ export default function ProductCard({
     e.preventDefault();
     if (outOfStock) return;
     add(product.variantId, 1);
+    pushToast(`${product.title} ajouté au panier`);
     setOpen(true);
     trackMeta("AddToCart", {
       content_ids: [product.id],

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
 
@@ -21,7 +21,18 @@ export default function Header() {
   const { toggle } = useCartDrawer();
   const wishlist   = useWishlist();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [q, setQ] = useState("");
   const pathname = usePathname();
+  const router = useRouter();
+
+  const submitSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = q.trim();
+    if (!query) return;
+    setSearchOpen(false);
+    router.push(`/collections/all?q=${encodeURIComponent(query)}`);
+  };
 
   useEffect(() => {
     if (menuOpen) document.body.style.overflow = "hidden";
@@ -85,6 +96,18 @@ export default function Header() {
 
         {/* Right slot : actions */}
         <div className="flex items-center gap-2 md:gap-3 justify-end">
+          <button
+            onClick={() => setSearchOpen(v => !v)}
+            aria-label="Rechercher"
+            aria-expanded={searchOpen}
+            className="inline-grid w-10 h-10 place-items-center rounded"
+            style={{ background: "rgba(255,255,255,0.08)" }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" />
+            </svg>
+          </button>
           <Link
             href="/favoris"
             aria-label={`Favoris${wishlist.count ? ` (${wishlist.count})` : ""}`}
@@ -120,6 +143,42 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      {/* ── Search panel (togglable) ─────────────────── */}
+      {searchOpen && (
+        <div className="border-t border-white/15 bg-brand-dark">
+          <form
+            onSubmit={submitSearch}
+            className="mx-auto max-w-[1400px] px-4 md:px-8 py-3 flex items-center gap-2"
+          >
+            <input
+              type="search"
+              autoFocus
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Rechercher un modèle — A380, Concorde, Air France…"
+              className="flex-1 px-4 py-2.5 rounded-full text-sm text-ink-900 outline-none bg-white"
+              style={{ border: "1px solid rgba(255,255,255,0.25)" }}
+            />
+            <button
+              type="submit"
+              className="px-4 py-2.5 rounded-full text-xs font-black uppercase tracking-widest bg-white text-brand"
+              style={{ border: 0, cursor: "pointer" }}
+            >
+              Chercher
+            </button>
+            <button
+              type="button"
+              onClick={() => { setSearchOpen(false); setQ(""); }}
+              aria-label="Fermer"
+              className="text-white/80 hover:text-white text-xl px-2"
+              style={{ background: "none", border: 0, cursor: "pointer" }}
+            >
+              ✕
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* ── Row 2 : nav (desktop only) ─────────────────── */}
       <nav
