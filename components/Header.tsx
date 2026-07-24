@@ -33,51 +33,58 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-brand text-white">
-      {/* ── Row 1 : logo center, actions right ─────────── */}
-      <div className="mx-auto flex h-[60px] max-w-[1400px] items-center px-4 md:px-8">
-        {/* Hamburger left (mobile only) */}
-        <button
-          onClick={() => setMenuOpen(v => !v)}
-          aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          className="md:hidden inline-grid w-10 h-10 place-items-center rounded shrink-0"
-          style={{ background: "rgba(255,255,255,0.08)" }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            {menuOpen ? (
-              <>
-                <path d="M4 4L20 20" />
-                <path d="M20 4L4 20" />
-              </>
-            ) : (
-              <>
-                <path d="M3 6h18" />
-                <path d="M3 12h18" />
-                <path d="M3 18h18" />
-              </>
-            )}
-          </svg>
-        </button>
-
-        {/* Logo centered — flex-1 pushes it away from edges */}
-        <div className="flex-1 flex items-center justify-center md:justify-start">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2.5 font-extrabold text-white"
-            style={{ textDecoration: "none", fontSize: "1.15rem", letterSpacing: "0.03em" }}
+      {/* ── Row 1 : logo AU CENTRE, actions à droite (feedback client 00.13.02) ── */}
+      <div
+        className="mx-auto h-[60px] max-w-[1400px] px-4 md:px-8"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+        }}
+      >
+        {/* Left slot : hamburger (mobile only) */}
+        <div className="flex items-center">
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            className="md:hidden inline-grid w-10 h-10 place-items-center rounded"
+            style={{ background: "rgba(255,255,255,0.08)" }}
           >
-            <span
-              aria-hidden
-              className="inline-grid place-items-center rounded-full bg-white text-brand"
-              style={{ width: 32, height: 32, fontSize: "1rem", fontWeight: 900 }}
-            >
-              ✈
-            </span>
-            <span className="uppercase tracking-wide">Airplanestore</span>
-          </Link>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {menuOpen ? (
+                <>
+                  <path d="M4 4L20 20" />
+                  <path d="M20 4L4 20" />
+                </>
+              ) : (
+                <>
+                  <path d="M3 6h18" />
+                  <path d="M3 12h18" />
+                  <path d="M3 18h18" />
+                </>
+              )}
+            </svg>
+          </button>
         </div>
 
-        {/* Actions right */}
-        <div className="flex items-center gap-2 md:gap-3 shrink-0">
+        {/* Center slot : logo */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2.5 font-extrabold text-white"
+          style={{ textDecoration: "none", fontSize: "1.15rem", letterSpacing: "0.03em" }}
+        >
+          <span
+            aria-hidden
+            className="inline-grid place-items-center rounded-full bg-white text-brand"
+            style={{ width: 32, height: 32, fontSize: "1rem", fontWeight: 900 }}
+          >
+            ✈
+          </span>
+          <span className="uppercase tracking-wide">Airplanestore</span>
+        </Link>
+
+        {/* Right slot : actions */}
+        <div className="flex items-center gap-2 md:gap-3 justify-end">
           <Link
             href="/favoris"
             aria-label={`Favoris${wishlist.count ? ` (${wishlist.count})` : ""}`}
