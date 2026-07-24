@@ -32,6 +32,8 @@ export default function Header() {
     if (!query) return;
     setSearchOpen(false);
     router.push(`/collections/all?q=${encodeURIComponent(query)}`);
+    // Notify CatalogueGrid if we're already on a collection page
+    setTimeout(() => window.dispatchEvent(new Event("search-query-changed")), 50);
   };
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function Header() {
             onClick={() => setSearchOpen(v => !v)}
             aria-label="Rechercher"
             aria-expanded={searchOpen}
-            className="inline-grid w-10 h-10 place-items-center rounded"
+            className="hidden md:inline-grid w-10 h-10 place-items-center rounded"
             style={{ background: "rgba(255,255,255,0.08)" }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -212,6 +214,28 @@ export default function Header() {
       {/* ── Mobile menu panel ── */}
       {menuOpen && (
         <nav className="md:hidden bg-brand-dark border-t border-white/10 py-2">
+          <form
+            onSubmit={submitSearch}
+            className="px-4 pt-2 pb-3 flex items-center gap-2"
+          >
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Rechercher un modèle…"
+              className="flex-1 px-3 py-2 rounded-full text-sm text-ink-900 outline-none bg-white"
+            />
+            <button
+              type="submit"
+              aria-label="Chercher"
+              className="w-10 h-10 grid place-items-center rounded-full bg-white text-brand"
+              style={{ border: 0, cursor: "pointer" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" />
+              </svg>
+            </button>
+          </form>
           {NAV_LINKS.map(l => {
             const active = pathname === l.href || pathname?.startsWith(l.href + "/");
             return (

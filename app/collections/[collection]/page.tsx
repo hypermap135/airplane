@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import CatalogueGrid from "@/components/CatalogueGrid";
 import { COLLECTIONS, type Collection, type Product } from "@/lib/products";
@@ -95,9 +94,7 @@ export default async function CollectionPage({ params }: { params: { collection:
 
       {/* ── Products grid ── */}
       <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-8 md:py-12">
-        <Suspense fallback={null}>
-          <CatalogueGrid products={products} activeCollection={match.slug} />
-        </Suspense>
+        <CatalogueGrid products={products} activeCollection={match.slug} />
       </div>
     </div>
   );

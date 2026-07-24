@@ -52,7 +52,9 @@ export const COLLECTIONS: { slug: Collection; label: string }[] = [
   { slug: "airbus",      label: "Airbus" },
   { slug: "boeing",      label: "Boeing" },
   { slug: "concorde",    label: "Concorde" },
-  { slug: "chasse",      label: "Aviation militaire" },
+  // "chasse" (Aviation militaire) retiré tant qu'aucun modèle Rafale/Mirage/F16
+  // n'est en catalogue — sinon la page apparaît vide et casse la confiance.
+  // Réactiver dès qu'au moins un produit est ajouté avec collection: "chasse".
   { slug: "jet",         label: "Jet privé" },
   { slug: "packs",       label: "Packs" },
   { slug: "accessoires", label: "Accessoires" },

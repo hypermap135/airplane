@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import ProductCard from "./ProductCard";
 import { COLLECTIONS, type Product, sortForDisplay } from "@/lib/products";
 
@@ -22,11 +21,28 @@ export default function CatalogueGrid({
   const [sort, setSort]   = useState<SortKey>("default");
   const [stock, setStock] = useState<StockKey>("all");
   const [price, setPrice] = useState<PriceKey>("all");
-  const searchParams = useSearchParams();
-  const urlQ = searchParams?.get("q") ?? "";
-  const [manualQ, setManualQ] = useState<string | null>(null);
-  const q = manualQ ?? urlQ;
-  const setQ = (v: string) => setManualQ(v);
+  // Read `?q=` from URL client-side only — keeps the page fully SSR (Google
+  // indexes all products in the initial HTML). If we used useSearchParams,
+  // Next 14 would force the whole grid under a Suspense boundary that
+  // renders `null` server-side — collection pages would appear empty to
+  // crawlers. Small trade-off: with `?q=`, there's a brief moment where all
+  // products flash before the filter applies. Acceptable.
+  const [q, setQ] = useState("");
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => {
+      const params = new URLSearchParams(window.location.search);
+      setQ(params.get("q") ?? "");
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    // Custom event fired by Header search so same-page nav also updates
+    window.addEventListener("search-query-changed", sync as EventListener);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("search-query-changed", sync as EventListener);
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     let res = products;

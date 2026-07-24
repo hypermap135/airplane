@@ -27,6 +27,30 @@ const DEFAULT_SPECS: { label: string; value: string }[] = [
   { label: "Batterie",             value: "75 mAh · USB ~1h · auto-off" },
 ];
 
+// Specs par défaut pour les accessoires — un porte-clé n'a pas de batterie LED.
+const ACCESSOIRE_SPECS_BY_HANDLE: Record<string, { label: string; value: string }[]> = {
+  "accessoires-aviation-en-metal": [
+    { label: "Type",     value: "Porte-clé brodé" },
+    { label: "Matière",  value: "Tissu brodé haute densité + anneau métal" },
+    { label: "Dimensions", value: "~5 × 3 cm" },
+    { label: "Designs",  value: "8 modèles au choix" },
+  ],
+  "horloge-mural": [
+    { label: "Type",       value: "Horloge murale" },
+    { label: "Motif",      value: "Réplique de réacteur / turbine" },
+    { label: "Diamètre",   value: "~30 cm" },
+    { label: "Alimentation", value: "1 pile AA (non fournie)" },
+    { label: "Cadran",     value: "Chiffres phosphorescents" },
+  ],
+  "gravure-personnalisee": [
+    { label: "Type",       value: "Prestation de personnalisation" },
+    { label: "Technique",  value: "Gravure laser" },
+    { label: "Support",    value: "Plaque métal sur socle bois" },
+    { label: "Longueur",   value: "60 caractères max." },
+    { label: "Délai",      value: "+2 à 3 jours ouvrés" },
+  ],
+};
+
 export default function ProductDetail({ product }: { product: Product }) {
   const images = product.images && product.images.length > 0
     ? product.images
@@ -49,7 +73,9 @@ export default function ProductDetail({ product }: { product: Product }) {
   const gravureMissing = gravure && trimmedGravure.length === 0;
 
   const relatedItems = related(product, 4);
-  const specs = product.specs && product.specs.length > 0 ? product.specs : DEFAULT_SPECS;
+  const specs = product.specs && product.specs.length > 0
+    ? product.specs
+    : (ACCESSOIRE_SPECS_BY_HANDLE[product.handle] ?? DEFAULT_SPECS);
   const collectionLabel = product.collection.charAt(0).toUpperCase() + product.collection.slice(1);
 
   // Meta ViewContent
@@ -261,7 +287,9 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
 
-            {/* Gravure upsell */}
+            {/* Gravure upsell — masqué sur la fiche gravure elle-même (sinon
+                le client paierait 15€ deux fois pour la même prestation) */}
+            {product.handle !== "gravure-personnalisee" && (
             <div
               className="mt-6 p-4 rounded border"
               style={{
@@ -310,6 +338,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </div>
               )}
             </div>
+            )}
 
             {/* CTA — passé en gold pour visibilité (feedback client 00.18.05) */}
             <div className="mt-6">
@@ -368,12 +397,12 @@ export default function ProductDetail({ product }: { product: Product }) {
         </div>
 
         {/* ─── Description block ─── */}
-        {product.description && (
+        {(product.description || buildFallbackDescription(product)) && (
           <div className="mt-16 grid gap-8 md:grid-cols-[2fr_1fr]">
             <div>
               <h2 className="h-display text-xl md:text-2xl mb-4">Description</h2>
               <div className="prose prose-sm md:prose-base max-w-none text-ink-700 leading-relaxed whitespace-pre-line">
-                {product.description}
+                {product.description || buildFallbackDescription(product)}
               </div>
             </div>
           </div>
@@ -482,6 +511,59 @@ export default function ProductDetail({ product }: { product: Product }) {
       )}
     </div>
   );
+}
+
+/* ── Fallback description ────────────────────────────────────────────
+ * Si aucune description manuelle n'est renseignée, on en compose une
+ * cohérente à partir du titre + subtitle + collection. Bien mieux que
+ * de laisser un espace blanc où le client attend un discours produit. */
+
+function buildFallbackDescription(product: Product): string {
+  const isAccessoire = product.collection === "accessoires";
+  const isPack       = product.collection === "packs";
+
+  if (product.handle === "gravure-personnalisee") {
+    return [
+      "Ajoutez une touche personnelle à votre maquette : un prénom, une date, un numéro d'immatriculation, une phrase courte.",
+      "Notre atelier grave le texte au laser sur la plaque du socle. Fini net, tenue dans le temps, contraste lisible même à distance.",
+      "60 caractères max. La gravure prolonge le délai de livraison de 2 à 3 jours ouvrés.",
+    ].join("\n\n");
+  }
+  if (product.handle === "horloge-mural") {
+    return [
+      "Horloge murale motif turbine : la réplique du réacteur en version décorative pour le bureau ou l'atelier.",
+      "Cadran phosphorescent lisible dans la pénombre, mécanisme silencieux, fixation murale standard.",
+      "Idéale pour habiller un mur de bureau à thème aviation ou compléter une vitrine de maquettes.",
+    ].join("\n\n");
+  }
+  if (product.handle === "accessoires-aviation-en-metal") {
+    return [
+      "Porte-clé brodé aux codes de l'aviation civile : AIR FRANCE SkyTeam, REMOVE BEFORE FLIGHT, silhouettes d'avion, insignes CAPTAIN / PILOT.",
+      "Broderie haute densité, anneau métal solide, format compact qui tient dans la poche.",
+      "Cadeau parfait pour un passionné, un pilote, un contrôleur, un enfant fan d'avions — ou pour se faire plaisir.",
+    ].join("\n\n");
+  }
+  if (isPack) {
+    return [
+      `${product.title} — une sélection de maquettes réunies dans un pack cohérent pour constituer d'un seul geste le noyau d'une collection.`,
+      "Chaque maquette est peinte à la main dans nos ateliers en France, montée sur socle bois massif avec plaque gravée AirplaneStore. Emballage double-carton, calage mousse, livraison suivie.",
+      "Idéal comme cadeau collectionneur, décoration de bureau ou pièce à offrir à un client / collaborateur passionné d'aviation.",
+    ].join("\n\n");
+  }
+  if (isAccessoire) {
+    return `${product.subtitle ?? product.title} — pièce à l'attention des passionnés d'aviation, fabriquée dans nos ateliers en France.`;
+  }
+
+  // Maquette (Airbus, Boeing, Concorde, Jet)
+  const family = product.collection === "concorde" ? "un supersonique de légende"
+                : product.collection === "jet"     ? "un jet d'affaires haut de gamme"
+                : `un ${product.collection.charAt(0).toUpperCase() + product.collection.slice(1)} en résine premium`;
+  return [
+    `${product.title} — ${family}, sculpté d'une seule pièce dans une résine haute densité pour un rendu net et durable.`,
+    "Peint à la main dans nos ateliers en France : livrée fidèle, filets nets, insignes reproduits avec soin. Chaque maquette est unique dans les micro-détails de finition.",
+    "Livrée avec son socle bois massif et sa plaque gravée AirplaneStore. LED intégré activable au tap ou au clap pour mettre en valeur la maquette la nuit (batterie rechargeable en USB, auto-off).",
+    "Emballage double-carton avec calage mousse. Livraison France 7 à 15 jours. Retour gratuit sous 30 jours.",
+  ].join("\n\n");
 }
 
 /* ── Rassurance icons row (près du CTA) ────────────────────────────── */
