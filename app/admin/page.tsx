@@ -6,6 +6,7 @@ import { DISCOUNT_CODE } from "@/lib/shopify";
 import LogoutButton from "./LogoutButton";
 import CopyPill from "./CopyPill";
 import SyncPricesButton from "./SyncPricesButton";
+import CatalogueFilter from "./CatalogueFilter";
 
 export const dynamic = "force-dynamic";
 
@@ -102,12 +103,22 @@ export default async function AdminHome() {
         fetchedAgo={fetchedAgo}
       />
 
+      {/* Sticky filter bar : recherche + statut + collection + liens rapides.
+          Filtrage 100% client sur les data-attrs des cards ci-dessous. */}
+      <CatalogueFilter
+        brokenCount={brokenPayment.length}
+        outCount={outOfStock.length}
+        comingCount={products.filter((p) => p.comingSoon).length}
+        hiddenCount={products.filter((p) => p.hidden).length}
+        totalCount={products.length}
+      />
+
       {/* Grouped product lists */}
       {COLLECTIONS.map((c) => {
         const list = grouped[c.slug] ?? [];
         if (list.length === 0) return null;
         return (
-          <section key={c.slug} style={{ marginBottom: "2rem" }}>
+          <section key={c.slug} data-admin-section style={{ marginBottom: "2rem" }}>
             <h2
               style={{
                 fontSize: "0.7rem",
@@ -137,10 +148,22 @@ export default async function AdminHome() {
                 const paymentLink = variantValid
                   ? `https://${SHOPIFY_PUBLIC_DOMAIN}/cart/${p.variantId}:1?discount=${DISCOUNT_CODE}`
                   : null;
+                // Compose status keys pour le filtre client (CSV dans data-status)
+                const statusKeys: string[] = [];
+                if (!variantValid) statusKeys.push("broken");
+                if (p.hidden) statusKeys.push("hidden");
+                if (!p.inStock && !p.comingSoon) statusKeys.push("out");
+                if (p.comingSoon) statusKeys.push("coming");
+                if (variantValid && p.inStock && !p.hidden && !p.comingSoon) statusKeys.push("onsale");
                 return (
                   <Link
                     key={p.id}
                     href={`/admin/${p.handle}`}
+                    data-admin-card
+                    data-title={p.title}
+                    data-handle={p.handle}
+                    data-collection={p.collection}
+                    data-status={statusKeys.join(",")}
                     style={{
                       position: "relative",
                       display: "flex",
@@ -155,6 +178,33 @@ export default async function AdminHome() {
                       transition: "border-color 0.18s, transform 0.18s",
                     }}
                   >
+                    {/* Bouton "voir fiche publique" — accessible sans passer par l'éditeur */}
+                    <a
+                      href={`/products/${p.handle}`}
+                      target="_blank"
+                      rel="noopener"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Voir la fiche publique de ${p.title}`}
+                      title="Voir la fiche publique dans un nouvel onglet"
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        width: 28,
+                        height: 28,
+                        display: "grid",
+                        placeItems: "center",
+                        borderRadius: 8,
+                        background: "rgba(58,142,255,0.15)",
+                        color: "rgba(58,142,255,0.9)",
+                        border: "1px solid rgba(58,142,255,0.35)",
+                        fontSize: 14,
+                        textDecoration: "none",
+                        zIndex: 2,
+                      }}
+                    >
+                      ↗
+                    </a>
                     {/* Image preview */}
                     <div
                       style={{
