@@ -129,20 +129,31 @@ export async function PATCH(
   } catch (err) {
     console.error("[admin] patch failed:", err);
     const detail = String(err);
-    // Special-case le blob suspendu — message actionnable pour l'UI plutôt
-    // qu'une erreur technique cryptique
-    if (detail.includes("suspended") || detail.includes("Inactive")) {
+    // Storage-not-configured : message actionnable pour l'UI plutôt qu'une
+    // erreur technique cryptique (arrive quand les env vars GITHUB_TOKEN etc.
+    // ne sont pas encore setées sur Vercel).
+    if (detail.includes("GitHub storage not configured")) {
       return NextResponse.json(
         {
-          error: "blob_suspended",
+          error: "storage_not_configured",
           userMessage:
-            "Le stockage Vercel Blob est suspendu (plan facturation inactif). Réactivez-le sur vercel.com/hypermappro/airplane/stores pour que l'admin puisse sauvegarder.",
+            "Sauvegarde indisponible : configure GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO sur Vercel.",
+        },
+        { status: 503 },
+      );
+    }
+    if (detail.includes("401") || detail.includes("403")) {
+      return NextResponse.json(
+        {
+          error: "github_auth_failed",
+          userMessage:
+            "Token GitHub invalide ou sans droit Contents:write sur ce repo. Regénère un fine-grained PAT.",
         },
         { status: 503 },
       );
     }
     return NextResponse.json(
-      { error: "blob_write_failed", detail },
+      { error: "write_failed", detail },
       { status: 500 },
     );
   }

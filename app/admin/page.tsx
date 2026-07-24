@@ -109,18 +109,17 @@ export default async function AdminHome() {
           }}
         >
           <div style={{ fontWeight: 700, marginBottom: 6, color: "#ff8080" }}>
-            ⚠ Sauvegarde admin désactivée — stockage Vercel Blob {blobHealth.reason === "suspended" ? "suspendu" : "indisponible"}
+            ⚠ Sauvegarde admin désactivée — {blobHealth.reason ?? "stockage indisponible"}
           </div>
           <div style={{ color: "rgba(255,255,255,0.75)" }}>
-            Tu peux consulter le catalogue et voir les stocks, mais toute
-            modification (prix, description, photos) échouera tant que le
-            store n'est pas réactivé.{" "}
+            Configure les env vars <code>GITHUB_TOKEN</code>, <code>GITHUB_OWNER</code>,
+            <code>GITHUB_REPO</code> sur Vercel pour activer la sauvegarde.{" "}
             <Link
-              href="https://vercel.com/hypermappro-7673s-projects/~/stores/blob"
+              href="https://vercel.com/hypermappro-7673s-projects/airplane/settings/environment-variables"
               target="_blank"
               style={{ color: "#3a8eff", textDecoration: "underline" }}
             >
-              Ouvrir le dashboard Vercel Blob ↗
+              Ouvrir env vars Vercel ↗
             </Link>
           </div>
         </div>

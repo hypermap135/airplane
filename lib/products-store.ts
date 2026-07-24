@@ -15,8 +15,15 @@
 import { unstable_cache, revalidateTag, revalidatePath } from "next/cache";
 import { PRODUCTS, type Product, type ProductSpec, type Collection } from "@/lib/products";
 import { getShopifyInventory } from "@/lib/shopify-inventory";
+import {
+  isGitHubStorageConfigured,
+  readJsonFromRepo,
+  writeJsonToRepo,
+  checkGitHubStorage,
+} from "@/lib/github-storage";
+import bundledOverrides from "@/data/products-overrides.json";
 
-const BLOB_OVERRIDES_KEY = "products-overrides.json";
+const OVERRIDES_REPO_PATH = "data/products-overrides.json";
 const REVALIDATE_SECONDS = 30;
 export const PRODUCTS_TAG = "products";
 
@@ -40,23 +47,31 @@ export type ProductOverride = Partial<{
 
 export type OverridesMap = Record<string, ProductOverride>;
 
-/** Fetch the overrides JSON from Vercel Blob. Empty object if absent. */
+/**
+ * Fetch the overrides JSON.
+ *
+ * Strategy:
+ *   1. If GITHUB_TOKEN is configured → fetch live from GitHub API (always
+ *      returns the latest committed state, even before Vercel redeploys).
+ *   2. Fallback → use the bundled `data/products-overrides.json` (baked
+ *      into the build). Works even without any env var set.
+ *
+ * The bundled fallback matters : during a build, the GitHub API call may
+ * fail (no token in build env), and we still want the previous overrides
+ * to survive the redeploy.
+ */
 async function fetchOverridesFresh(): Promise<OverridesMap> {
-  try {
-    const { list } = await import("@vercel/blob");
-    const { blobs } = await list({ prefix: BLOB_OVERRIDES_KEY });
-    const match = blobs.find((b) => b.pathname === BLOB_OVERRIDES_KEY);
-    if (!match) return {};
-
-    const res = await fetch(match.url, { cache: "no-store" });
-    if (!res.ok) return {};
-    return (await res.json()) as OverridesMap;
-  } catch (err) {
-    // Blob may be unconfigured in dev — log once, return empty so the
-    // base catalogue still renders.
-    console.warn("[products-store] overrides fetch failed:", err);
-    return {};
+  if (isGitHubStorageConfigured()) {
+    try {
+      const result = await readJsonFromRepo<OverridesMap>(OVERRIDES_REPO_PATH);
+      if (result) return result.data;
+      return {};
+    } catch (err) {
+      console.warn("[products-store] GitHub read failed, falling back to bundled:", err);
+    }
   }
+  // Bundled at build time via static import
+  return (bundledOverrides as OverridesMap) ?? {};
 }
 
 /** Cached overrides reader — revalidates by tag from the admin PATCH route. */
@@ -150,24 +165,11 @@ export async function readOverrides(): Promise<OverridesMap> {
   return getOverridesCached();
 }
 
-/** Admin: probe if the blob store is writable. Returns error message when down.
+/** Admin: probe if the storage is writable. Returns error message when down.
  *  Used by /admin dashboard to show a banner when save is broken. */
 export async function checkBlobHealth(): Promise<{ ok: boolean; reason?: string }> {
-  try {
-    const { list } = await import("@vercel/blob");
-    // list() also fails when the store is suspended — cheapest signal
-    await list({ prefix: "__healthcheck__", limit: 1 });
-    return { ok: true };
-  } catch (err) {
-    const msg = String(err);
-    if (msg.includes("suspended") || msg.includes("Inactive")) {
-      return { ok: false, reason: "suspended" };
-    }
-    if (msg.includes("No blob credentials")) {
-      return { ok: false, reason: "no_credentials" };
-    }
-    return { ok: false, reason: msg.slice(0, 200) };
-  }
+  // Backwards-compat alias — kept so admin/page.tsx still works.
+  return checkGitHubStorage();
 }
 
 /** Admin: replace the entire overrides map and revalidate the site.
@@ -180,15 +182,23 @@ export async function checkBlobHealth(): Promise<{ ok: boolean; reason?: string 
  *  collection" bug the client reported.
  */
 export async function writeOverrides(next: OverridesMap): Promise<void> {
-  const { put } = await import("@vercel/blob");
-  await put(BLOB_OVERRIDES_KEY, JSON.stringify(next, null, 2), {
-    access: "public",
-    addRandomSuffix: false,
-    contentType: "application/json",
-    allowOverwrite: true,
-  });
+  if (!isGitHubStorageConfigured()) {
+    throw new Error(
+      "GitHub storage not configured — set GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO env vars on Vercel",
+    );
+  }
+  // Commit the new state to the repo. The push triggers Vercel's auto-deploy,
+  // which rebuilds with the new bundled JSON. The change is live after ~1-2 min.
+  const nowIso = new Date().toISOString();
+  await writeJsonToRepo(
+    OVERRIDES_REPO_PATH,
+    next,
+    `admin: update products-overrides (${nowIso})`,
+  );
+  // Tag revalidation still useful — for the current serverless functions that
+  // are already running, the next read via `fetchOverridesFresh` will hit
+  // GitHub API and see the fresh state without waiting for redeploy.
   revalidateTag(PRODUCTS_TAG);
-  // Force full re-render of the static pages that consume the catalogue.
   revalidatePath("/", "layout");
   revalidatePath("/collections/[collection]", "page");
   revalidatePath("/collections/all", "page");
