@@ -23,11 +23,11 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ["gsap"],
-    // NOTE : ne PAS exclure public/images/** — l'optimiseur next/image lit
-    // les sources depuis le bundle de la fonction. Excluded, il renvoie 400
-    // sur /_next/image?url=/images/... et les hero images restent grises.
-    // Si le bundle serverless dépasse 250 MB, chercher d'autres cibles.
+    // NOTE : public/images/** ne DOIT PAS être exclu globalement — le
+    // handler /_next/image (serverless sur Vercel) lit les sources depuis
+    // le trace du bundle, sinon renvoie 400 et les Image restent grises.
+    // On l'exclut UNIQUEMENT des routes admin où on n'en a pas besoin,
+    // pour tenir sous la limite de 250 MB par fonction.
     outputFileTracingExcludes: {
       "*": [
         ".tmp/**",
@@ -36,6 +36,8 @@ const nextConfig = {
         "node_modules/@next/swc-*/**",
         "node_modules/@esbuild/**",
       ],
+      "/admin/**":     ["public/images/**"],
+      "/api/admin/**": ["public/images/**"],
     },
   },
 };
