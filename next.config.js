@@ -24,16 +24,12 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ["gsap"],
-    // Keep serverless function bundles small: public/images/ is served
-    // as static assets by Vercel's CDN, never read from inside any
-    // route, so tracing must not slurp it into every function's
-    // payload. Same for .tmp/ (local-only) and the Python script
-    // (executed via spawn at runtime, not bundled). Without these
-    // excludes, admin routes crossed the 250MB unzipped function
-    // limit. For Next 14.x this MUST live under `experimental`.
+    // NOTE : ne PAS exclure public/images/** — l'optimiseur next/image lit
+    // les sources depuis le bundle de la fonction. Excluded, il renvoie 400
+    // sur /_next/image?url=/images/... et les hero images restent grises.
+    // Si le bundle serverless dépasse 250 MB, chercher d'autres cibles.
     outputFileTracingExcludes: {
       "*": [
-        "public/images/**",
         ".tmp/**",
         "scripts/**",
         ".next/cache/**",

@@ -24,12 +24,15 @@ export default function HeroB2B() {
               className="mt-5 h-display"
               style={{ fontSize: "clamp(2.2rem, 5vw, 3.5rem)" }}
             >
-              Vos maquettes d'avion
+              Maquettes d'avion
               <br />
               <span className="text-brand">personnalisées</span>
               <br />
-              — <span className="text-brand">forfait entreprise sur devis.</span>
+              pour <span className="text-brand">votre entreprise.</span>
             </h1>
+            <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-ink-500">
+              Forfait sur devis — chiffré à votre projet
+            </p>
 
             <p className="mt-5 text-base md:text-lg text-ink-500 max-w-xl leading-relaxed">
               Livrée sur-mesure à vos couleurs, gravure de vos noms & logos,
