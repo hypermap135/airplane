@@ -2,20 +2,17 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
 import Header from "./Header";
 import Footer from "./Footer";
-import CartDrawer from "./CartDrawer";
-import WhatsAppButton from "./WhatsAppButton";
-import Toaster from "./Toaster";
 
-/**
- * Wraps every page with the public-site chrome (header / footer / cart
- * drawer) EXCEPT on /admin/*.
- *
- * ScrollProgress + SmoothScroll (Lenis) + ExitIntentModal removed as part
- * of the client-requested "épuré" redesign — they were dark-themed
- * gadgets that clashed with the airmodels-style light theme.
- */
+// Composants non critiques au premier rendu — chargés après hydratation.
+// CartDrawer ne s'affiche qu'à l'ouverture ; WhatsAppButton est ancré en
+// bas de page ; Toaster est vide tant qu'on n'a pas déclenché de toast.
+const CartDrawer     = dynamic(() => import("./CartDrawer"),     { ssr: false });
+const WhatsAppButton = dynamic(() => import("./WhatsAppButton"), { ssr: false });
+const Toaster        = dynamic(() => import("./Toaster"),        { ssr: false });
+
 export default function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");

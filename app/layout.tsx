@@ -181,6 +181,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://y823wg-nz.myshopify.com" />
 
+        {/* Preload du LCP (hero) — Next/Image l'optimise via /_next/image,
+            donc on préfère laisser le loader gérer. Tag priority sur <Image>
+            suffit pour ce cas. */}
+
         {/* JSON-LD statique — inline dans <head>, pas bloquant (parsed as data) */}
         <script
           type="application/ld+json"

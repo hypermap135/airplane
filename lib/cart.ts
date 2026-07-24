@@ -66,8 +66,9 @@ function getSnapshot(): CartLine[] {
   return state;
 }
 
+const EMPTY_SNAPSHOT: CartLine[] = [];
 function getServerSnapshot(): CartLine[] {
-  return [];
+  return EMPTY_SNAPSHOT;
 }
 
 export function useCartLines(): CartLine[] {
