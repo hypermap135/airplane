@@ -34,7 +34,7 @@ const CASES = [
     title: "Édition limitée — Concorde",
     body:
       "Réplique Concorde en tirage limité pour remercier les partenaires stratégiques. Gravure du logo partenaire, année et numéro de pièce (1/30, 2/30, etc.). Une pièce de collection valorisante.",
-    image: "https://cdn.shopify.com/s/files/1/0921/9312/8788/files/concorde-airfrance.png",
+    image: "/images/concorde-airfrance.webp",
     accent: "#9333ea",
   },
 ];
