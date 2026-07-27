@@ -23,8 +23,8 @@ const DEFAULT_SPECS: { label: string; value: string }[] = [
   { label: "Poids",                value: "~1,3 kg" },
   { label: "Socle",                value: "Bois massif inclus" },
   { label: "Train d'atterrissage", value: "Amovible" },
-  { label: "Activation LED",       value: "Tap ou clap · ~20 s" },
-  { label: "Batterie",             value: "75 mAh · USB ~1h · auto-off" },
+  { label: "Activation LED",       value: "Tap ou clap · s'allume ~20 s (préserve la batterie)" },
+  { label: "Batterie",             value: "75 mAh · rechargeable USB · auto-off" },
 ];
 
 // Specs par défaut pour les accessoires — un porte-clé n'a pas de batterie LED.
@@ -252,7 +252,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             {/* Stock */}
             <div className="mt-4">
               {product.inStock && !variantUnavailable ? (
-                <span className="status-in-stock">En stock · expédié sous 24-48h</span>
+                <span className="status-in-stock">En stock · livraison 7 à 15 jours</span>
               ) : product.comingSoon ? (
                 <span className="status-out">Bientôt disponible</span>
               ) : (
@@ -546,12 +546,12 @@ function buildFallbackDescription(product: Product): string {
   if (isPack) {
     return [
       `${product.title} — une sélection de maquettes réunies dans un pack cohérent pour constituer d'un seul geste le noyau d'une collection.`,
-      "Chaque maquette est peinte à la main dans nos ateliers en France, montée sur socle bois massif avec plaque gravée AirplaneStore. Emballage double-carton, calage mousse, livraison suivie.",
+      "Chaque maquette est peinte à la main dans nos usines partenaires, montée sur socle bois massif avec plaque gravée AirplaneStore. Packaging dans sa boîte d'origine, livraison suivie.",
       "Idéal comme cadeau collectionneur, décoration de bureau ou pièce à offrir à un client / collaborateur passionné d'aviation.",
     ].join("\n\n");
   }
   if (isAccessoire) {
-    return `${product.subtitle ?? product.title} — pièce à l'attention des passionnés d'aviation, fabriquée dans nos ateliers en France.`;
+    return `${product.subtitle ?? product.title} — pièce à l'attention des passionnés d'aviation, produite par nos usines partenaires (entreprise française).`;
   }
 
   // Maquette (Airbus, Boeing, Concorde, Jet)
@@ -560,9 +560,9 @@ function buildFallbackDescription(product: Product): string {
                 : `un ${product.collection.charAt(0).toUpperCase() + product.collection.slice(1)} en résine premium`;
   return [
     `${product.title} — ${family}, sculpté d'une seule pièce dans une résine haute densité pour un rendu net et durable.`,
-    "Peint à la main dans nos ateliers en France : livrée fidèle, filets nets, insignes reproduits avec soin. Chaque maquette est unique dans les micro-détails de finition.",
-    "Livrée avec son socle bois massif et sa plaque gravée AirplaneStore. LED intégré activable au tap ou au clap pour mettre en valeur la maquette la nuit (batterie rechargeable en USB, auto-off).",
-    "Emballage double-carton avec calage mousse. Livraison France 7 à 15 jours. Retour gratuit sous 30 jours.",
+    "Peint à la main dans nos usines partenaires : livrée fidèle, filets nets, insignes reproduits avec soin. Chaque maquette est unique dans les micro-détails de finition.",
+    "Livrée avec son socle bois massif et sa plaque gravée AirplaneStore. LED intégré activable au tap ou au clap ; s'allume environ 20 secondes pour préserver la durée de vie de la batterie (rechargeable USB, auto-off).",
+    "Packaging dans sa boîte d'origine. Livraison France 7 à 15 jours. Retour gratuit sous 30 jours.",
   ].join("\n\n");
 }
 
@@ -572,7 +572,7 @@ function ReassuranceRow() {
   const items = [
     { icon: "🚚", label: "Livraison offerte", sub: "dès 50€ en France" },
     { icon: "↩", label: "Retour 30 jours", sub: "satisfait ou remboursé" },
-    { icon: "🇫🇷", label: "Fait en France", sub: "peint main atelier" },
+    { icon: "🇫🇷", label: "Entreprise française", sub: "usines partenaires" },
     { icon: "🔒", label: "Paiement sécurisé", sub: "SSL · 3D-Secure" },
   ];
   return (

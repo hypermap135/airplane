@@ -61,7 +61,7 @@ export default function Footer() {
             </Link>
             <p className="mt-4 text-sm text-ink-500 max-w-md">
               Maquettes d'avion premium et forfaits entreprise personnalisés
-              sur devis. Fait en France.
+              sur devis. Entreprise française.
             </p>
           </div>
 

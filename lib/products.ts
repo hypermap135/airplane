@@ -98,11 +98,11 @@ export const PRODUCTS: Product[] = [
     id: "a320-af",
     variantId: "53357075595604",
     handle: "a320-neo",
-    title: "Airbus A320 Air France",
-    subtitle: "Moyen-courrier de référence — livrée Air France",
+    title: "Airbus A320 Néo Air France",
+    subtitle: "Moyen-courrier de référence — livrée Air France · A320 Néo",
     price: 99,
     collection: "airbus",
-    inStock: false,
+    inStock: true,
     image: `/images/a320-neo.webp`,
     images: [
       `/images/a320-neo.webp`,
@@ -112,7 +112,8 @@ export const PRODUCTS: Product[] = [
       `/images/a320-neo--shelf.webp`,
       `/images/a320-neo--desk.webp`,
     ],
-    bestseller: false,
+    // Bestseller sélectionné par le client (feedback 27/07/2026)
+    bestseller: true,
     scale: "1/85",
   },
   {
@@ -143,11 +144,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Livrée Transavia — A320 Néo, échelle 1/100",
     price: 99,
     collection: "airbus",
-    // Awaiting real Transavia photo from the client (uploaded via Notion).
-    // Keep as coming-soon until the photo lands; otherwise the product card
-    // would show an Air France livery for a Transavia title.
-    inStock: false,
-    comingSoon: true,
+    // Stock à jour 27/07/2026 (feedback client) : 20 unités disponibles.
+    inStock: true,
     image: `/images/airbus-a320-neo-transavia.webp`,
     images: [
       `/images/airbus-a320-neo-transavia.webp`,
@@ -157,6 +155,8 @@ export const PRODUCTS: Product[] = [
       `/images/airbus-a320-neo-transavia--shelf.webp`,
       `/images/airbus-a320-neo-transavia--desk.webp`,
     ],
+    // Bestseller sélectionné par le client (feedback 27/07/2026)
+    bestseller: true,
     scale: "1/100",
   },
   {
@@ -187,7 +187,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Version allongée — livrée Air France",
     price: 99,
     collection: "airbus",
-    inStock: true,
+    // Épuisé 27/07/2026 (dernier vendu — feedback client)
+    inStock: false,
     image: `/images/a-321.webp`,
     images: [
       `/images/a-321.webp`,
@@ -207,8 +208,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Livrée orange — EasyJet",
     price: 99,
     collection: "airbus",
+    // Épuisé 27/07/2026 (dernier vendu — feedback client)
     inStock: false,
-    comingSoon: true,
     image: `/images/airbus-a321-easyjet.webp`,
     images: [
       `/images/airbus-a321-easyjet.webp`,
@@ -247,8 +248,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Long-courrier — livrée Singapore Airlines",
     price: 99,
     collection: "airbus",
-    inStock: false,
-    comingSoon: true,
+    // Stock 5 unités au 27/07/2026 (feedback client)
+    inStock: true,
     image: `/images/airbus-a350-singapore.webp`,
     images: [
       `/images/airbus-a350-singapore.webp`,
@@ -267,8 +268,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Long-courrier — livrée Iberia",
     price: 99,
     collection: "airbus",
-    inStock: false,
-    comingSoon: true,
+    // Stock 2 unités au 27/07/2026 (feedback client)
+    inStock: true,
     image: `/images/airbus-a350-iberia.webp`,
     images: [
       `/images/airbus-a350-iberia.webp`,
@@ -288,8 +289,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Long-courrier — livrée Emirates",
     price: 99,
     collection: "airbus",
-    inStock: false,
-    comingSoon: true,
+    // Stock 5 unités au 27/07/2026 (feedback client)
+    inStock: true,
     image: `/images/airbus-a350-emirates.webp`,
     images: [
       `/images/airbus-a350-emirates.webp`,
@@ -330,8 +331,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Géant des airs — livrée Singapore Airlines",
     price: 99,
     collection: "airbus",
-    inStock: false,
-    comingSoon: true,
+    // Stock 4 unités au 27/07/2026 (feedback client)
+    inStock: true,
     image: `/images/airbus-a380-singapore.webp`,
     images: [
       `/images/airbus-a380-singapore.webp`,
@@ -397,7 +398,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Le Jumbo Jet — livrée Air France",
     price: 99,
     collection: "boeing",
-    inStock: true,
+    // Épuisé 27/07/2026 (feedback client — pas en stock)
+    inStock: false,
     image: `/images/maquette-avion-maquette-boeing-747.webp`,
     images: [
       `/images/maquette-avion-maquette-boeing-747.webp`,
@@ -407,7 +409,8 @@ export const PRODUCTS: Product[] = [
       `/images/maquette-avion-maquette-boeing-747--shelf.webp`,
       `/images/maquette-avion-maquette-boeing-747--desk.webp`,
     ],
-    bestseller: true,
+    // Retiré des bestsellers 27/07/2026 — épuisé
+    bestseller: false,
     scale: "1/150",
   },
   {
@@ -438,7 +441,8 @@ export const PRODUCTS: Product[] = [
     subtitle: "Long-courrier bi-réacteur — livrée Air France",
     price: 99,
     collection: "boeing",
-    inStock: true,
+    // Épuisé 27/07/2026 (dernier vendu — feedback client)
+    inStock: false,
     image: `/images/boeing-777.webp`,
     images: [
       `/images/boeing-777.webp`,
@@ -583,6 +587,8 @@ export const PRODUCTS: Product[] = [
       `/images/concorde-airfrance--shelf.webp`,
       `/images/concorde-airfrance--desk.webp`,
     ],
+    // Bestseller sélectionné par le client (feedback 27/07/2026)
+    bestseller: true,
     scale: "1/125",
   },
   {
@@ -727,8 +733,8 @@ export const PRODUCTS: Product[] = [
     id: "portecle-airplanestore",
     variantId: "53842722357588",  // default (SkyTeam) — overridden when a variant is picked
     handle: "accessoires-aviation-en-metal",
-    title: "Porte-clé AirplaneStore",
-    subtitle: "Tissu brodé · 8 designs au choix",
+    title: "Porte-clé personnalisé",
+    subtitle: "Tissu brodé · 8 designs au choix (Air France, Pilote, Captain…)",
     price: 4.9,
     collection: "accessoires",
     inStock: true,

@@ -22,7 +22,7 @@ export async function generateMetadata({
   // points so the result line on SERP reads as a real product, not boilerplate.
   const desc =
     `${product.subtitle ?? "Maquette d'avion en résine premium."} ` +
-    `${product.scale ?? ""} · ${product.price}€ · LED intégré · Fait en France.`;
+    `${product.scale ?? ""} · ${product.price}€ · LED intégré · Entreprise française.`;
 
   // Resolve image URL — if it's already absolute (CDN) leave it, otherwise
   // prefix with the site origin so Google / OG crawlers can fetch it.

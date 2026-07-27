@@ -13,11 +13,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 
 export const metadata: Metadata = {
   title: {
-    default: "AirplaneStore — Maquettes d'avion premium · Fait en France",
+    default: "AirplaneStore — Maquettes d'avion premium · Entreprise française",
     template: "%s · AirplaneStore",
   },
   description:
-    "Maquettes d'avion en résine monobloc, peintes main, LED intégré. Airbus, Boeing, Concorde, jets privés. Fait en France · livraison 7-15 j · satisfait ou remboursé 30 j.",
+    "Maquettes d'avion en résine monobloc, peintes main dans nos usines partenaires, LED intégré. Airbus, Boeing, Concorde, jets privés. Entreprise française · livraison 7-15 j · satisfait ou remboursé 30 j.",
   applicationName: "AirplaneStore",
   authors: [{ name: "AirplaneStore", url: "https://airplanestore.fr" }],
   generator: "Next.js",
@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "AirplaneStore — Maquettes d'avion premium · Fait en France",
+    title: "AirplaneStore — Maquettes d'avion premium · Entreprise française",
     description:
-      "Maquettes d'avion en résine monobloc, peintes main, LED intégré. Airbus, Boeing, Concorde — fait en France · livraison 7-15 j.",
+      "Maquettes d'avion en résine monobloc, peintes main dans nos usines partenaires, LED intégré. Airbus, Boeing, Concorde — fait en France · livraison 7-15 j.",
     url: "https://airplanestore.fr",
     type: "website",
     locale: "fr_FR",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AirplaneStore — Maquettes d'avion premium · Fait en France",
+    title: "AirplaneStore — Maquettes d'avion premium · Entreprise française",
     description:
       "Maquettes d'avion en résine monobloc, LED intégré. Airbus, Boeing, Concorde — fait en France.",
     images: ["/og-image.png"],
@@ -119,8 +119,8 @@ const ORG_LD = {
   },
   image: "https://airplanestore.fr/og-image.png",
   description:
-    "Maquettes d'avion en résine monobloc, peintes main, LED intégré. Airbus, Boeing, Concorde, jets privés. Fait en France.",
-  slogan: "Maquettes d'avion premium · Fait en France",
+    "Maquettes d'avion en résine monobloc, peintes main dans nos usines partenaires, LED intégré. Airbus, Boeing, Concorde, jets privés. Entreprise française.",
+  slogan: "Maquettes d'avion premium · Entreprise française",
   email: "hypermap.pro@gmail.com",
   priceRange: "€€",
   paymentAccepted: [

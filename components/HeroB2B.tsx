@@ -13,18 +13,18 @@ export default function HeroB2B() {
           {/* ─── Left : copy ─── */}
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-brand-light px-3 py-1 text-xs font-semibold text-brand-dark">
-              <span aria-hidden>★</span> Personnalisation entreprise
+              <span aria-hidden>★</span> Spécialiste maquettes personnalisées
             </span>
 
             <h1
               className="mt-5 h-display"
               style={{ fontSize: "clamp(2.2rem, 5vw, 3.5rem)" }}
             >
-              Maquettes d&apos;avion
+              Spécialisé dans les
               <br />
-              <span className="text-brand">personnalisées</span>
+              <span className="text-brand">maquettes d&apos;avion</span>
               <br />
-              pour votre <span className="text-brand">entreprise.</span>
+              <span className="text-brand">personnalisées.</span>
             </h1>
 
             <p className="mt-5 text-base md:text-lg text-ink-500 max-w-lg leading-relaxed">
@@ -56,7 +56,7 @@ export default function HeroB2B() {
 
             {/* Trust row — plus compact */}
             <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-xs text-ink-500">
-              <span className="flex items-center gap-1.5"><span className="text-brand">✓</span> Fait en France</span>
+              <span className="flex items-center gap-1.5"><span className="text-brand">✓</span> Entreprise française</span>
               <span className="flex items-center gap-1.5"><span className="text-brand">✓</span> Devis en 24 h</span>
               <span className="flex items-center gap-1.5"><span className="text-brand">✓</span> Écrin + plaque incluse</span>
             </div>
@@ -68,12 +68,12 @@ export default function HeroB2B() {
             style={{ background: "var(--tile-gray)", aspectRatio: "5 / 4" }}
           >
             <Image
-              src="/images/maquette-avion-maquette-airbus-a380.webp"
-              alt="Maquette Airbus A380 Air France, résine premium peinte main, socle bois gravé"
+              src="/images/hero/hero-benfica.webp"
+              alt="Maquette A320 personnalisée SL Benfica Lisbon — livrée sur-mesure gravée main"
               fill
               priority
               sizes="(min-width: 1024px) 640px, 100vw"
-              style={{ objectFit: "contain", padding: "6% 8%" }}
+              style={{ objectFit: "cover" }}
             />
             <span className="badge-featured absolute top-4 left-4">
               <span aria-hidden>★</span> Signature
