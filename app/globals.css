@@ -8,9 +8,12 @@
 
 :root {
   color-scheme: light;
-  --brand-blue: #1c7ee6;
-  --brand-blue-dark: #175fb0;
-  --brand-blue-light: #eaf3fc;
+  /* Palette OR — refonte 27/07/2026 (feedback client : "le bleu ne plaît pas,
+     plutôt or"). Les variables gardent le nom --brand-blue* pour minimiser la
+     diff dans les composants, mais les valeurs sont désormais dorées. */
+  --brand-blue: #c9a24b;         /* or profond, lisible sur blanc */
+  --brand-blue-dark: #8a6b1f;    /* or foncé — hover / accent haute densité */
+  --brand-blue-light: #fbf3dc;   /* or pâle — background chips / badges */
   --tile-gray: #eeeeee;
   --tile-gray-dark: #e2e4e8;
   --ink-900: #0a0a14;

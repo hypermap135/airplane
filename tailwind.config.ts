@@ -13,9 +13,9 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#1c7ee6",
-          dark:    "#175fb0",
-          light:   "#eaf3fc",
+          DEFAULT: "#c9a24b",   // or (remplace le bleu royal — feedback client 27/07/2026)
+          dark:    "#8a6b1f",
+          light:   "#fbf3dc",
           bar:     "#1476df",
         },
         tile: {

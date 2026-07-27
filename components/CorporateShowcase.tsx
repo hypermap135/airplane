@@ -19,7 +19,7 @@ const CASES = [
     body:
       "Réplique Airbus A320 aux couleurs exactes de leur compagnie. Livrée personnalisée, plaque nominative gravée au socle avec le nom de chaque destinataire. Écrin en carton renforcé imprimé aux couleurs de la marque.",
     image: "/images/airbus-a320-echelle-1-85-finition-premium.webp",
-    accent: "#3a8eff",
+    accent: "#c9a24b",
   },
   {
     tag: "Séminaire annuel",
