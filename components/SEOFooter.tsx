@@ -5,26 +5,33 @@ import Link from "next/link";
  * new light theme. Server-rendered so crawlers get it on first paint.
  */
 
+// Collections effectivement peuplées — "chasse" (Aviation militaire) retirée
+// tant qu'aucun Rafale/Mirage/F16 n'est en catalogue (retrait 27/07/2026).
 const COLLECTIONS_LINKS = [
   { href: "/collections/airbus",      label: "Maquettes Airbus",      detail: "A220, A320, A321, A350, A380" },
   { href: "/collections/boeing",      label: "Maquettes Boeing",      detail: "737, 747, 777, 787 Dreamliner" },
   { href: "/collections/concorde",    label: "Maquettes Concorde",    detail: "Air France · British Airways" },
   { href: "/collections/jet",         label: "Maquettes Jet privé",   detail: "Gulfstream G650 et autres" },
-  { href: "/collections/chasse",      label: "Aviation militaire",    detail: "Rafale, Mirage, F16" },
   { href: "/collections/packs",       label: "Packs & offres",        detail: "Bundles Airbus / Boeing / Duo" },
   { href: "/collections/accessoires", label: "Accessoires aviation",  detail: "Porte-clés, horloges, gravures" },
 ];
 
+// Modèles populaires — refresh 27/07/2026 selon feedback client
+// (retire A321 AF, 747 AF épuisés, Pack Prestige épuisé ; ajoute A320 Néo
+// Transavia, Concorde 30 cm, A350/A380 des livrées récentes en stock).
 const POPULAR_LINKS = [
-  { href: "/products/a320-neo",                                   label: "Airbus A320 Air France" },
-  { href: "/products/airbus-a220-air-france",                     label: "Airbus A220 Air France" },
-  { href: "/products/airbus-a380-air-france",                     label: "Airbus A380 Air France" },
-  { href: "/products/boeing-747",                                 label: "Boeing 747 Air France" },
-  { href: "/products/boeing-787",                                 label: "Boeing 787 Dreamliner Air France" },
-  { href: "/products/concorde-airfrance",                         label: "Concorde Air France 50 cm" },
-  { href: "/products/concorde-british",                           label: "Concorde British Airways 50 cm" },
-  { href: "/products/jet-prive",                                  label: "Gulfstream G650" },
-  { href: "/products/pack-prestige-air-france",                   label: "Pack Prestige Air France" },
+  { href: "/products/a320-neo",                              label: "Airbus A320 Néo Air France" },
+  { href: "/products/airbus-a320-neo-transavia",             label: "Airbus A320 Néo Transavia" },
+  { href: "/products/airbus-a320-echelle-1-85-finition-premium", label: "A320 New Livery Air France" },
+  { href: "/products/airbus-a220-air-france",                label: "Airbus A220 Air France" },
+  { href: "/products/maquette-avion-maquette-airbus-a380",   label: "Airbus A380 Air France" },
+  { href: "/products/airbus-a380-singapore",                 label: "Airbus A380 Singapore Airlines" },
+  { href: "/products/airbus-a350-singapore",                 label: "Airbus A350 Singapore" },
+  { href: "/products/airbus-a350-emirates",                  label: "Airbus A350 Emirates" },
+  { href: "/products/boeing-787",                            label: "Boeing 787 Dreamliner Air France" },
+  { href: "/products/concorde-airfrance",                    label: "Concorde Air France 50 cm" },
+  { href: "/products/concorde-british",                      label: "Concorde British Airways 50 cm" },
+  { href: "/products/jet-prive",                             label: "Gulfstream G650" },
 ];
 
 export default function SEOFooter() {
