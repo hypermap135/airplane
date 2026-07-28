@@ -556,7 +556,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "chasse",
     inStock: true,
-    image: `/images/hero/hero-benfica.webp`, // TODO: photo Rafale à venir
+    image: `/images/rafale-dassault.webp`,
     scale: "1/72",
   },
   {
@@ -568,7 +568,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "chasse",
     inStock: true,
-    image: `/images/hero/hero-benfica.webp`, // TODO: photo Mirage à venir
+    image: `/images/mirage-2000.webp`,
     scale: "1/100",
   },
   {
@@ -580,7 +580,7 @@ export const PRODUCTS: Product[] = [
     price: 99,
     collection: "chasse",
     inStock: true,
-    image: `/images/hero/hero-benfica.webp`, // TODO: photo F16 à venir
+    image: `/images/f16.webp`,
     scale: "1/100",
   },
 
