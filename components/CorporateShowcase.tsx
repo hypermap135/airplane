@@ -96,15 +96,15 @@ export default function CorporateShowcase() {
               className="bg-white border border-ink-line rounded-md overflow-hidden flex flex-col"
             >
               <div
-                className="relative w-full"
-                style={{ background: "var(--tile-gray)", aspectRatio: "16 / 10" }}
+                className="relative w-full overflow-hidden"
+                style={{ background: "#0a0a14", aspectRatio: "4 / 3" }}
               >
                 <Image
                   src={c.image}
                   alt={c.title}
                   fill
                   sizes="(min-width: 1024px) 420px, 100vw"
-                  style={{ objectFit: "contain", padding: "8%" }}
+                  style={{ objectFit: "cover" }}
                 />
                 <span
                   className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider"
