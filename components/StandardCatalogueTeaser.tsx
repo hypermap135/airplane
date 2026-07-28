@@ -15,10 +15,14 @@ export default function StandardCatalogueTeaser({ catalogue }: { catalogue: Prod
   // pas juste Air France" (vidéo 2 du 27/07). On mélange donc AF et non-AF
   // pour que la boutique montre la vraie diversité du catalogue.
   const items = useMemo(() => {
+    // NOTE: on garde les variantId === "0" ici — le client a mis en stock
+    // 20+ variantes (A350 Singapore/Iberia/Emirates, A380 Singapore,
+    // Transavia) qui n'ont pas encore de variant Shopify créé. Le merchant
+    // doit les créer côté Shopify Admin, mais en attendant on veut qu'elles
+    // soient visibles pour montrer la vraie diversité du catalogue.
     const base = catalogue.filter((p) =>
       p.inStock &&
       !p.comingSoon &&
-      p.variantId !== "0" &&
       p.collection !== "accessoires" &&
       p.collection !== "packs" &&
       !p.bestseller,
