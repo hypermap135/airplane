@@ -620,7 +620,7 @@ const MINI_FAQ = [
   },
   {
     q: "La maquette est-elle fragile ?",
-    a: "Résine monobloc peinte main, socle bois massif. Emballage double-carton avec calage mousse. Retour gratuit 30 jours si problème.",
+    a: "Résine monobloc peinte main, socle bois massif. Livrée dans sa boîte d'origine. Retour gratuit 30 jours si problème.",
   },
   {
     q: "Puis-je retourner ma commande ?",
