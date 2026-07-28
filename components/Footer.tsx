@@ -20,7 +20,16 @@ const NAV = [
       { href: "/a-propos", label: "À propos" },
       { href: "/contact",  label: "Contact" },
       { href: "/faq",      label: "FAQ" },
-      { href: "/cgv",      label: "CGV" },
+      { href: "/livraison-retours", label: "Livraison & retours" },
+    ],
+  },
+  {
+    title: "Informations",
+    links: [
+      { href: "/cgv",                        label: "CGV" },
+      { href: "/mentions-legales",           label: "Mentions légales" },
+      { href: "/politique-confidentialite",  label: "Confidentialité" },
+      { href: "/cookies",                    label: "Cookies" },
     ],
   },
 ];
@@ -47,17 +56,16 @@ export default function Footer() {
         </div>
 
         {/* Nav columns */}
-        <div className="grid gap-10 md:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2.5 font-extrabold text-ink-900" style={{ textDecoration: "none", fontSize: "1.05rem" }}>
-              <span
-                aria-hidden
-                className="inline-grid place-items-center rounded-full bg-brand text-white"
-                style={{ width: 28, height: 28, fontWeight: 900 }}
-              >
-                ✈
-              </span>
-              <span className="uppercase tracking-wide">Airplanestore</span>
+            <Link href="/" aria-label="AirplaneStore" className="inline-flex items-center text-ink-900" style={{ textDecoration: "none" }}>
+              <svg viewBox="0 0 320 80" width="180" height="36" fill="currentColor" aria-hidden style={{ display: "block" }}>
+                <path d="M4 34 Q 20 32 34 32" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.6"/>
+                <path d="M12 40 L 46 40 L 60 30 L 66 30 L 58 40 L 74 40 L 72 42 L 58 42 L 66 52 L 60 52 L 46 42 L 12 42 Z"/>
+                <text x="86" y="48" fontFamily="Inter, system-ui, sans-serif" fontWeight={800} fontSize={22} letterSpacing={1.5} fill="currentColor">
+                  AIRPLANESTORE
+                </text>
+              </svg>
             </Link>
             <p className="mt-4 text-sm text-ink-500 max-w-md">
               Maquettes d'avion premium et forfaits entreprise personnalisés

@@ -24,7 +24,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/faq`,        lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE}/contact`,    lastModified: now, changeFrequency: "yearly",  priority: 0.4 },
     { url: `${BASE}/a-propos`,   lastModified: now, changeFrequency: "yearly",  priority: 0.4 },
-    { url: `${BASE}/cgv`,        lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${BASE}/cgv`,                       lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${BASE}/mentions-legales`,          lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${BASE}/politique-confidentialite`, lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${BASE}/cookies`,                   lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${BASE}/livraison-retours`,         lastModified: now, changeFrequency: "yearly",  priority: 0.3 },
   ];
 
   const collectionPages: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
