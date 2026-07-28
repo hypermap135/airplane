@@ -80,30 +80,21 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Center slot : logo AIRPLANESTORE (silhouette avion + wordmark) */}
+        {/* Center slot : vrai logo Air Plane Store (récupéré depuis Shopify) */}
         <Link
           href="/"
-          aria-label="AirplaneStore — accueil"
-          className="inline-flex items-center text-white"
+          aria-label="Air Plane Store — accueil"
+          className="inline-flex items-center"
           style={{ textDecoration: "none" }}
         >
-          <svg
-            viewBox="0 0 320 80"
-            width="200"
-            height="40"
-            fill="currentColor"
-            aria-hidden
-            style={{ display: "block" }}
-          >
-            {/* Trainée */}
-            <path d="M4 34 Q 20 32 34 32" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.7"/>
-            {/* Fuselage + ailes */}
-            <path d="M12 40 L 46 40 L 60 30 L 66 30 L 58 40 L 74 40 L 72 42 L 58 42 L 66 52 L 60 52 L 46 42 L 12 42 Z"/>
-            {/* Wordmark */}
-            <text x="86" y="48" fontFamily="Inter, system-ui, sans-serif" fontWeight={800} fontSize={22} letterSpacing={1.5} fill="currentColor">
-              AIRPLANESTORE
-            </text>
-          </svg>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-airplanestore-white.webp"
+            alt="Air Plane Store"
+            width={180}
+            height={40}
+            style={{ height: 40, width: "auto", display: "block" }}
+          />
         </Link>
 
         {/* Right slot : actions */}

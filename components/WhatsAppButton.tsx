@@ -39,10 +39,13 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contacter sur WhatsApp"
-      className="fixed z-30 transition-transform hover:scale-110"
+      // z-index sous la sticky bar CTA (z-30) sur PDP pour éviter le
+      // chevauchement. Bottom augmenté sur PDP (5rem) pour laisser la place
+      // au CTA sticky. Sur autres pages, remonté à 1.25rem.
+      className="fixed z-20 transition-transform hover:scale-110"
       style={{
         right: "1.25rem",
-        bottom: "1.25rem",
+        bottom: isProduct ? "5.5rem" : "1.25rem",
         width: 56,
         height: 56,
         borderRadius: 999,
