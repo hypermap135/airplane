@@ -11,17 +11,28 @@ import { formatPrice, type Product } from "@/lib/products";
  * in a compact airmodels-style grid.
  */
 export default function StandardCatalogueTeaser({ catalogue }: { catalogue: Product[] }) {
+  // Le client a explicitement demandé de "montrer aussi les autres livrées,
+  // pas juste Air France" (vidéo 2 du 27/07). On mélange donc AF et non-AF
+  // pour que la boutique montre la vraie diversité du catalogue.
   const items = useMemo(() => {
-    return catalogue
-      .filter((p) =>
-        p.inStock &&
-        !p.comingSoon &&
-        p.variantId !== "0" &&
-        p.collection !== "accessoires" &&
-        p.collection !== "packs" &&
-        !p.bestseller,
-      )
-      .slice(0, 8);
+    const base = catalogue.filter((p) =>
+      p.inStock &&
+      !p.comingSoon &&
+      p.variantId !== "0" &&
+      p.collection !== "accessoires" &&
+      p.collection !== "packs" &&
+      !p.bestseller,
+    );
+    const nonAF = base.filter((p) => !p.title.toLowerCase().includes("air france"));
+    const af    = base.filter((p) => p.title.toLowerCase().includes("air france"));
+    // Interleave nonAF / AF pour éviter d'avoir 5 AF d'affilée en tête
+    const mixed: typeof base = [];
+    const n = Math.max(nonAF.length, af.length);
+    for (let i = 0; i < n; i++) {
+      if (nonAF[i]) mixed.push(nonAF[i]);
+      if (af[i])    mixed.push(af[i]);
+    }
+    return mixed.slice(0, 12);
   }, [catalogue]);
 
   if (items.length === 0) return null;
