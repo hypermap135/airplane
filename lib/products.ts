@@ -52,9 +52,10 @@ export const COLLECTIONS: { slug: Collection; label: string }[] = [
   { slug: "airbus",      label: "Airbus" },
   { slug: "boeing",      label: "Boeing" },
   { slug: "concorde",    label: "Concorde" },
-  // "chasse" (Aviation militaire) retiré tant qu'aucun modèle Rafale/Mirage/F16
-  // n'est en catalogue — sinon la page apparaît vide et casse la confiance.
-  // Réactiver dès qu'au moins un produit est ajouté avec collection: "chasse".
+  // "chasse" (Aviation militaire) réactivée 27/07/2026 après découverte que
+  // Shopify a en fait 3 produits en stock : Rafale (50833505026388),
+  // Mirage 2000 (50833498702164), F16 (50833491722580).
+  { slug: "chasse",      label: "Aviation militaire" },
   { slug: "jet",         label: "Jet privé" },
   { slug: "packs",       label: "Packs" },
   { slug: "accessoires", label: "Accessoires" },
@@ -138,7 +139,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a320-neo-transavia",
-    variantId: "0",
+    variantId: "56573671244116",
     handle: "airbus-a320-neo-transavia",
     title: "Airbus A320 Néo Transavia",
     subtitle: "Livrée Transavia — A320 Néo, échelle 1/100",
@@ -538,6 +539,49 @@ export const PRODUCTS: Product[] = [
       `/images/boeing-787-etihad-manchester-city--desk.webp`,
     ],
     scale: "1/130",
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // AVIATION MILITAIRE (chasse)
+  // ══════════════════════════════════════════════════════════════════════════
+  // Ajoutés 27/07/2026 — variantIds récupérés depuis Shopify (products.json).
+  // Photos placeholder tant que le client n'a pas envoyé ses vraies photos.
+
+  {
+    id: "rafale-dassault",
+    variantId: "50833505026388",
+    handle: "rafale-dassault",
+    title: "Rafale Dassault",
+    subtitle: "Avion de chasse français — livrée Armée de l'Air",
+    price: 99,
+    collection: "chasse",
+    inStock: true,
+    image: `/images/hero/hero-benfica.webp`, // TODO: photo Rafale à venir
+    scale: "1/72",
+  },
+  {
+    id: "mirage-2000",
+    variantId: "50833498702164",
+    handle: "mirage-2000",
+    title: "Mirage 2000",
+    subtitle: "Chasseur multirôle Dassault — Armée de l'Air française",
+    price: 99,
+    collection: "chasse",
+    inStock: true,
+    image: `/images/hero/hero-benfica.webp`, // TODO: photo Mirage à venir
+    scale: "1/100",
+  },
+  {
+    id: "f16",
+    variantId: "50833491722580",
+    handle: "f16",
+    title: "F-16 Fighting Falcon",
+    subtitle: "Chasseur monoréacteur — livrée américaine",
+    price: 99,
+    collection: "chasse",
+    inStock: true,
+    image: `/images/hero/hero-benfica.webp`, // TODO: photo F16 à venir
+    scale: "1/100",
   },
 
   // ══════════════════════════════════════════════════════════════════════════
