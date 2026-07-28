@@ -570,7 +570,7 @@ function buildFallbackDescription(product: Product): string {
 
 function ReassuranceRow() {
   const items = [
-    { icon: "🚚", label: "Livraison offerte", sub: "dès 50€ en France" },
+    { icon: "🚚", label: "Livraison offerte", sub: "dès 100€ en France" },
     { icon: "↩", label: "Retour 30 jours", sub: "satisfait ou remboursé" },
     { icon: "🇫🇷", label: "Entreprise française", sub: "usines partenaires" },
     { icon: "🔒", label: "Paiement sécurisé", sub: "SSL · 3D-Secure" },
