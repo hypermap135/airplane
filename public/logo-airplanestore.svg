@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" fill="none">
+  <!-- Silhouette d'avion (inspirée de l'insigne Air Plane Store sur photo Benfica) -->
+  <g fill="currentColor">
+    <!-- Trainée -->
+    <path d="M4 34 Q 20 32 34 32" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.7"/>
+    <!-- Fuselage + ailes -->
+    <path d="M12 40 L 46 40 L 60 30 L 66 30 L 58 40 L 74 40 L 72 42 L 58 42 L 66 52 L 60 52 L 46 42 L 12 42 Z"/>
+  </g>
+  <!-- Texte "AIRPLANESTORE" -->
+  <text x="86" y="48"
+        font-family="Inter, system-ui, sans-serif"
+        font-weight="800"
+        font-size="22"
+        letter-spacing="1.5"
+        fill="currentColor">AIRPLANESTORE</text>
+</svg>

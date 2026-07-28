@@ -80,20 +80,30 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Center slot : logo */}
+        {/* Center slot : logo AIRPLANESTORE (silhouette avion + wordmark) */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2.5 font-extrabold text-white"
-          style={{ textDecoration: "none", fontSize: "1.15rem", letterSpacing: "0.03em" }}
+          aria-label="AirplaneStore — accueil"
+          className="inline-flex items-center text-white"
+          style={{ textDecoration: "none" }}
         >
-          <span
+          <svg
+            viewBox="0 0 320 80"
+            width="200"
+            height="40"
+            fill="currentColor"
             aria-hidden
-            className="inline-grid place-items-center rounded-full bg-white text-brand"
-            style={{ width: 32, height: 32, fontSize: "1rem", fontWeight: 900 }}
+            style={{ display: "block" }}
           >
-            ✈
-          </span>
-          <span className="uppercase tracking-wide">Airplanestore</span>
+            {/* Trainée */}
+            <path d="M4 34 Q 20 32 34 32" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.7"/>
+            {/* Fuselage + ailes */}
+            <path d="M12 40 L 46 40 L 60 30 L 66 30 L 58 40 L 74 40 L 72 42 L 58 42 L 66 52 L 60 52 L 46 42 L 12 42 Z"/>
+            {/* Wordmark */}
+            <text x="86" y="48" fontFamily="Inter, system-ui, sans-serif" fontWeight={800} fontSize={22} letterSpacing={1.5} fill="currentColor">
+              AIRPLANESTORE
+            </text>
+          </svg>
         </Link>
 
         {/* Right slot : actions */}
