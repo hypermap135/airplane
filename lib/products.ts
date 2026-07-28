@@ -243,7 +243,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a350-singapore",
-    variantId: "0",
+    variantId: "51611732148564",
     handle: "airbus-a350-singapore",
     title: "Airbus A350 Singapore Airlines",
     subtitle: "Long-courrier — livrée Singapore Airlines",
@@ -263,7 +263,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a350-iberia",
-    variantId: "0",
+    variantId: "53472718487892",
     handle: "airbus-a350-iberia",
     title: "Airbus A350 Iberia",
     subtitle: "Long-courrier — livrée Iberia",
@@ -284,7 +284,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a350-emirates",
-    variantId: "0",
+    variantId: "50905226445140",
     handle: "airbus-a350-emirates",
     title: "Airbus A350 Emirates",
     subtitle: "Long-courrier — livrée Emirates",
@@ -326,7 +326,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a380-singapore",
-    variantId: "0",
+    variantId: "50905268814164",
     handle: "airbus-a380-singapore",
     title: "Airbus A380 Singapore Airlines",
     subtitle: "Géant des airs — livrée Singapore Airlines",
@@ -347,14 +347,13 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "a380-emirates",
-    variantId: "0",
+    variantId: "50904689606996",
     handle: "airbus-a380-emirates",
     title: "Airbus A380 Emirates",
     subtitle: "Géant des airs — livrée Emirates",
     price: 99,
     collection: "airbus",
-    inStock: false,
-    comingSoon: true,
+    inStock: true,
     image: `/images/airbus-a380-emirates.webp`,
     images: [
       `/images/airbus-a380-emirates.webp`,
@@ -458,7 +457,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "b777-qatar",
-    variantId: "0",
+    variantId: "50905358336340",
     handle: "boeing-777-qatar",
     title: "Boeing 777 Qatar World",
     subtitle: "Long-courrier — livrée Qatar Airways World Cup",
@@ -479,7 +478,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "b787-af",
-    variantId: "50905378586964",
+    variantId: "52227315794260",
     handle: "boeing-787",
     title: "Boeing 787 Air France",
     subtitle: "Dreamliner nouvelle génération — livrée Air France",
@@ -521,14 +520,13 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "b787-etihad",
-    variantId: "0",
+    variantId: "52227315827028",
     handle: "boeing-787-etihad-manchester-city",
     title: "Boeing 787 Etihad Manchester City",
     subtitle: "Dreamliner — livrée Etihad × Manchester City",
     price: 99,
     collection: "boeing",
-    inStock: false,
-    comingSoon: true,
+    inStock: true,
     image: `/images/boeing-787-etihad-manchester-city.webp`,
     images: [
       `/images/boeing-787-etihad-manchester-city.webp`,
