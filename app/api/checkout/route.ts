@@ -21,6 +21,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "items required" }, { status: 400 });
     }
 
+    // Reject placeholder variants — "0" means the product isn't wired to a
+    // real Shopify variant yet. Sending it to /cart would break the Shopify
+    // checkout with an unhelpful error page.
+    const badItem = items.find((it) => !it.variantId || it.variantId === "0" || !/^\d{10,20}$/.test(it.variantId));
+    if (badItem) {
+      return NextResponse.json(
+        {
+          error: "invalid_variant",
+          userMessage:
+            "Ce produit n'est pas encore disponible à l'achat en ligne. Contactez-nous pour un devis.",
+        },
+        { status: 400 },
+      );
+    }
+
     // Try Storefront API first (requires SHOPIFY_STOREFRONT_TOKEN)
     const apiUrl = await createCartCheckoutUrl(items, discount ?? null);
     if (apiUrl) {

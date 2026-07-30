@@ -22,6 +22,37 @@ const nextConfig = {
       { protocol: "https", hostname: "*.blob.vercel-storage.com" },
     ],
   },
+  /**
+   * Security headers appliqués à toutes les routes.
+   * Ne casse pas Shopify checkout (redirect externe) ni les images CDN
+   * (déjà déclarés en remotePatterns).
+   */
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          // Empêche l'iframing du site (protection clickjacking)
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // Bloque MIME sniffing
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Referrer minimal en cross-origin
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Restreint les APIs sensibles (caméra, micro, etc.)
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(self), interest-cohort=()",
+          },
+          // HSTS déjà géré par Vercel mais on double
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+    ];
+  },
   experimental: {
     // NOTE : public/images/** ne DOIT PAS être exclu globalement — le
     // handler /_next/image (serverless sur Vercel) lit les sources depuis
