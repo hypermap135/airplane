@@ -62,7 +62,7 @@ function productLd(product: Product) {
     "@type": "Product",
     name: product.title,
     description:
-      product.subtitle ?? "Maquette d'avion en résine premium, fait en France.",
+      product.subtitle ?? "Maquette d'avion en résine premium, entreprise française.",
     image: imageUrl,
     sku: product.id,
     mpn: product.variantId,

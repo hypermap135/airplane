@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "modèle réduit avion",
     "maquette Air France",
     "maquette LED",
-    "fait en France",
+    "entreprise française",
   ],
   category: "shopping",
   metadataBase: new URL("https://airplanestore.fr"),
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AirplaneStore — Maquettes d'avion premium · Entreprise française",
     description:
-      "Maquettes d'avion en résine monobloc, peintes main dans nos usines partenaires, LED intégré. Airbus, Boeing, Concorde — fait en France · livraison 7-15 j.",
+      "Maquettes d'avion en résine monobloc, peintes main dans nos usines partenaires, LED intégré. Airbus, Boeing, Concorde — entreprise française · livraison 7-15 j.",
     url: "https://airplanestore.fr",
     type: "website",
     locale: "fr_FR",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AirplaneStore — Maquettes d'avion premium · Entreprise française",
     description:
-      "Maquettes d'avion en résine monobloc, LED intégré. Airbus, Boeing, Concorde — fait en France.",
+      "Maquettes d'avion en résine monobloc, LED intégré. Airbus, Boeing, Concorde — entreprise française.",
     images: ["/og-image.png"],
   },
   icons: {
