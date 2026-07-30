@@ -49,9 +49,12 @@ async function ghFetch(path: string, init: RequestInit = {}, env: StorageEnv) {
       "Content-Type": "application/json",
       ...(init.headers || {}),
     },
-    // Never cache GitHub API responses at the fetch layer — Next.js's
-    // unstable_cache handles caching at the store level with tag invalidation.
-    cache: "no-store",
+    // Next.js data cache — invalidé via revalidateTag(PRODUCTS_TAG) après
+    // chaque save admin. Évite le "Dynamic server usage" quand appelé depuis
+    // un route cachée (pages statiques). Pour les writes (PUT), le caller
+    // passe `cache: "no-store"` explicite dans init.
+    next: init.method === "PUT" ? undefined : { tags: ["products"], revalidate: 60 },
+    ...(init.method === "PUT" ? { cache: "no-store" as RequestCache } : {}),
   });
   return res;
 }
