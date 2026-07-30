@@ -7,6 +7,7 @@ import LogoutButton from "./LogoutButton";
 import CopyPill from "./CopyPill";
 import SyncPricesButton from "./SyncPricesButton";
 import CatalogueFilter from "./CatalogueFilter";
+import ViewFicheChip from "./ViewFicheChip";
 
 export const dynamic = "force-dynamic";
 
@@ -211,33 +212,8 @@ export default async function AdminHome() {
                       transition: "border-color 0.18s, transform 0.18s",
                     }}
                   >
-                    {/* Bouton "voir fiche publique" — accessible sans passer par l'éditeur */}
-                    <a
-                      href={`/products/${p.handle}`}
-                      target="_blank"
-                      rel="noopener"
-                      onClick={(e) => e.stopPropagation()}
-                      aria-label={`Voir la fiche publique de ${p.title}`}
-                      title="Voir la fiche publique dans un nouvel onglet"
-                      style={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        width: 28,
-                        height: 28,
-                        display: "grid",
-                        placeItems: "center",
-                        borderRadius: 8,
-                        background: "rgba(58,142,255,0.15)",
-                        color: "rgba(58,142,255,0.9)",
-                        border: "1px solid rgba(58,142,255,0.35)",
-                        fontSize: 14,
-                        textDecoration: "none",
-                        zIndex: 2,
-                      }}
-                    >
-                      ↗
-                    </a>
+                    {/* Bouton "voir fiche publique" — client component (onClick interdit dans server) */}
+                    <ViewFicheChip handle={p.handle} title={p.title} />
                     {/* Image preview */}
                     <div
                       style={{
