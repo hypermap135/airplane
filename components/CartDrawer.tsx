@@ -57,16 +57,28 @@ export default function CartDrawer() {
       value: total,
       num_items: entries.reduce((sum, e) => sum + e.quantity, 0),
     });
+    const items = entries.map((e) => {
+      const item: { variantId: string; quantity: number; attributes?: { key: string; value: string }[] } = {
+        variantId: e.product.variantId,
+        quantity: e.quantity,
+      };
+      if (e.attributes && e.attributes.length > 0) item.attributes = e.attributes;
+      return item;
+    });
+    const appliedDiscount = promoApplied ? promo.trim().toUpperCase() : undefined;
+
+    // FAST PATH — 99% des paniers n'ont pas d'attributes (gravure). Le cart
+    // permalink Shopify fonctionne directement sans appel API. On économise
+    // 500ms à 1s de latence Storefront API. Redirection instantanée.
+    const hasAttributes = items.some((i) => i.attributes && i.attributes.length > 0);
+    if (!hasAttributes) {
+      window.location.href = checkoutUrl(items, appliedDiscount ?? null);
+      return;
+    }
+
+    // Slow path — nécessite la Storefront API pour préserver les attributes
+    // (gravure text). Fallback sur cart permalink si l'API échoue.
     try {
-      const items = entries.map((e) => {
-        const item: { variantId: string; quantity: number; attributes?: { key: string; value: string }[] } = {
-          variantId: e.product.variantId,
-          quantity: e.quantity,
-        };
-        if (e.attributes && e.attributes.length > 0) item.attributes = e.attributes;
-        return item;
-      });
-      const appliedDiscount = promoApplied ? promo.trim().toUpperCase() : undefined;
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

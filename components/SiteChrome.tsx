@@ -7,9 +7,13 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 // Composants non critiques au premier rendu — chargés après hydratation.
-// CartDrawer ne s'affiche qu'à l'ouverture ; WhatsAppButton est ancré en
-// bas de page ; Toaster est vide tant qu'on n'a pas déclenché de toast.
-const CartDrawer     = dynamic(() => import("./CartDrawer"),     { ssr: false });
+// CartDrawer : previously lazy → causait 200-500ms de délai au premier
+// clic "Ajouter au panier" (téléchargement du chunk + hydratation).
+// Repassé en import statique — le drawer reste caché tant que
+// setOpen(true) n'est pas appelé, donc rendu instantané au clic.
+import CartDrawer from "./CartDrawer";
+// WhatsAppButton : ancré en bas, pas critique — lazy OK
+// Toaster : vide tant qu'on n'a pas déclenché de toast — lazy OK
 const WhatsAppButton = dynamic(() => import("./WhatsAppButton"), { ssr: false });
 const Toaster        = dynamic(() => import("./Toaster"),        { ssr: false });
 
