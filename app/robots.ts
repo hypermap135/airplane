@@ -11,7 +11,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/cart/"],
+        // Bloque : APIs (endpoints server), routes cart (UI Shopify), et
+        // tout l'admin (backoffice — protégé par middleware mais on évite
+        // que Google le liste dans les résultats)
+        disallow: ["/api/", "/cart/", "/admin", "/maintenance"],
       },
     ],
     sitemap: "https://airplanestore.fr/sitemap.xml",
