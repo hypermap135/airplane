@@ -103,5 +103,61 @@
         "value": "75 mAh · USB ~1h · auto-off"
       }
     ]
+  },
+  "a320-qatar-psg": {
+    "title": "Airbus A320 Qatar PSG Livery",
+    "subtitle": "Livrée sponsor — édition Paris Saint-Germain",
+    "description": "",
+    "price": 99,
+    "scale": "1/85",
+    "collection": "airbus",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": false,
+    "hidden": false,
+    "image": "/images/copie-airbus-a320-echelle-1-85-finition-premium.webp",
+    "images": [
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-front.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-rear.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--top.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--shelf.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--desk.webp",
+      "/images/uploads/products/a320-qatar-psg/gallery/3mcepa-6CD25FD8-2BE0-4CBF-857A-281837814689.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/cutqfq-0068E94A-3533-416F-BEF2-018786EC27C6.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/aqujhj-901347BE-5BBF-4AB0-8548-5B068ADDB451.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/g99kap-FBEEA11F-6778-47F7-B276-E6A9B764DC46.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/9q67hp-87BBCC7A-C675-41F5-91C6-8D8DC7F1FC2A.png"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
   }
 }
