@@ -265,12 +265,12 @@
     "title": "Porte-clé personnalisé",
     "subtitle": "Tissu brodé · 8 designs au choix (Air France, Pilote, Captain…)",
     "description": "",
-    "price": 4.9,
+    "price": 9.9,
     "scale": "",
     "collection": "accessoires",
     "inStock": true,
     "comingSoon": false,
-    "bestseller": false,
+    "bestseller": true,
     "hidden": false,
     "image": "/images/porte-cle-air-france-lhr.webp",
     "images": [
@@ -279,7 +279,13 @@
       "/images/porte-cle-air-france-navy.webp",
       "/images/porte-cle-air-france-rouge-navy.webp",
       "/images/porte-cle-captain.webp",
-      "/images/porte-cle-pilot.webp"
+      "/images/porte-cle-pilot.webp",
+      "/images/uploads/products/portecle-airplanestore/gallery/a0qio2-6EB1F897-9AF7-42C6-B69D-5530A0568B28.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/9qq8b1-813BBE31-6E2A-4F2C-BBA5-858E08D8CD8D.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/d8hp5w-282F390E-9991-46BA-AE58-C6EF21C7BAD3.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/859kix-6342A08E-110F-4874-A2DC-45012BB450A8.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/budn3-80045733-46A7-4607-90B8-282A8A0CD6BB.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/csoo42-925E2960-276D-41B6-B756-CA35AE96979E.png"
     ],
     "specs": [
       {
@@ -288,27 +294,11 @@
       },
       {
         "label": "Longueur",
-        "value": "~47 cm"
+        "value": "~413 cm"
       },
       {
         "label": "Poids",
-        "value": "~1,3 kg"
-      },
-      {
-        "label": "Socle",
-        "value": "Bois massif inclus"
-      },
-      {
-        "label": "Train d'atterrissage",
-        "value": "Amovible"
-      },
-      {
-        "label": "Activation LED",
-        "value": "Tap ou clap · ~20 s"
-      },
-      {
-        "label": "Batterie",
-        "value": "75 mAh · USB ~1h · auto-off"
+        "value": "100g"
       }
     ]
   }
