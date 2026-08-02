@@ -216,5 +216,49 @@
         "value": "75 mAh · USB ~1h · auto-off"
       }
     ]
+  },
+  "rafale-dassault": {
+    "title": "Rafale Dassault",
+    "subtitle": "Avion de chasse français — livrée Armée de l'Air",
+    "description": "",
+    "price": 99,
+    "scale": "1/72",
+    "collection": "chasse",
+    "inStock": false,
+    "comingSoon": true,
+    "bestseller": false,
+    "hidden": false,
+    "image": "/images/rafale-dassault.webp",
+    "images": [],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
   }
 }
