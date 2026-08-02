@@ -52,5 +52,56 @@
         "value": "75 mAh · USB ~1h · auto-off"
       }
     ]
+  },
+  "a380-af": {
+    "title": "Airbus A380 Air France",
+    "subtitle": "Quadriréacteur long-courrier — livrée Air France",
+    "description": "",
+    "price": 99,
+    "scale": "1/160",
+    "collection": "airbus",
+    "inStock": false,
+    "comingSoon": true,
+    "bestseller": true,
+    "hidden": false,
+    "image": "/images/maquette-avion-maquette-airbus-a380.webp",
+    "images": [
+      "/images/maquette-avion-maquette-airbus-a380.webp",
+      "/images/maquette-avion-maquette-airbus-a380--3quarter-front.webp",
+      "/images/maquette-avion-maquette-airbus-a380--3quarter-rear.webp",
+      "/images/maquette-avion-maquette-airbus-a380--top.webp",
+      "/images/maquette-avion-maquette-airbus-a380--shelf.webp",
+      "/images/maquette-avion-maquette-airbus-a380--desk.webp"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
   }
 }
