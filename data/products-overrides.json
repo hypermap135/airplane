@@ -1,8 +1,305 @@
 {
-  "b747-af": {
-    "inStock": false
+  "concorde-ba-50": {
+    "subtitle": "Supersonique légendaire — livrée British Airways · 50 cm"
   },
-  "b777-af": {
-    "inStock": false
+  "a320-af": {
+    "title": "Airbus A320 Néo Air France",
+    "subtitle": "Moyen-courrier de référence — livrée Air France · A320 Néo",
+    "description": "",
+    "price": 99,
+    "scale": "1/100",
+    "collection": "airbus",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": true,
+    "hidden": false,
+    "image": "/images/uploads/products/a320-af/main/dj6r72-04047397-ACA9-4DC6-8A6A-19EC2B6D3789.png",
+    "images": [
+      "/images/a320-neo.webp",
+      "/images/a320-neo--3quarter-front.webp",
+      "/images/a320-neo--3quarter-rear.webp",
+      "/images/a320-neo--top.webp",
+      "/images/a320-neo--shelf.webp",
+      "/images/a320-neo--desk.webp"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
+  },
+  "a380-af": {
+    "title": "Airbus A380 Air France",
+    "subtitle": "Quadriréacteur long-courrier — livrée Air France",
+    "description": "",
+    "price": 99,
+    "scale": "1/160",
+    "collection": "airbus",
+    "inStock": false,
+    "comingSoon": true,
+    "bestseller": true,
+    "hidden": false,
+    "image": "/images/maquette-avion-maquette-airbus-a380.webp",
+    "images": [
+      "/images/maquette-avion-maquette-airbus-a380.webp",
+      "/images/maquette-avion-maquette-airbus-a380--3quarter-front.webp",
+      "/images/maquette-avion-maquette-airbus-a380--3quarter-rear.webp",
+      "/images/maquette-avion-maquette-airbus-a380--top.webp",
+      "/images/maquette-avion-maquette-airbus-a380--shelf.webp",
+      "/images/maquette-avion-maquette-airbus-a380--desk.webp"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
+  },
+  "a320-qatar-psg": {
+    "title": "Airbus A320 Qatar PSG Livery",
+    "subtitle": "Livrée sponsor — édition Paris Saint-Germain",
+    "description": "",
+    "price": 99,
+    "scale": "1/85",
+    "collection": "airbus",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": false,
+    "hidden": false,
+    "image": "/images/copie-airbus-a320-echelle-1-85-finition-premium.webp",
+    "images": [
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-front.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-rear.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--top.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--shelf.webp",
+      "/images/copie-airbus-a320-echelle-1-85-finition-premium--desk.webp",
+      "/images/uploads/products/a320-qatar-psg/gallery/3mcepa-6CD25FD8-2BE0-4CBF-857A-281837814689.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/cutqfq-0068E94A-3533-416F-BEF2-018786EC27C6.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/aqujhj-901347BE-5BBF-4AB0-8548-5B068ADDB451.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/g99kap-FBEEA11F-6778-47F7-B276-E6A9B764DC46.png",
+      "/images/uploads/products/a320-qatar-psg/gallery/9q67hp-87BBCC7A-C675-41F5-91C6-8D8DC7F1FC2A.png"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
+  },
+  "a320-neo-transavia": {
+    "title": "Airbus A320 Néo Transavia",
+    "subtitle": "Livrée Transavia — A320 Néo, échelle 1/100",
+    "description": "",
+    "price": 99,
+    "scale": "1/100",
+    "collection": "airbus",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": true,
+    "hidden": false,
+    "image": "/images/airbus-a320-neo-transavia.webp",
+    "images": [
+      "/images/uploads/products/a320-neo-transavia/gallery/78cecl-0F8CBC4E-6DD6-4F03-8E53-F88A72ACFA40.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/flwfc6-59AB59BD-0F04-43EE-86F9-38D2BC435CAA.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/55t04l-8D07F8FB-068F-4FA7-B7B9-89F4B58F84D0.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/3noapz-1FEC1C61-37B5-48A0-B87A-2BAC1F23EA76.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/4o07ii-016D6FCE-E114-4F59-ADA5-C4CA02A39617.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/2ruhzp-DE5E52ED-541A-4B4D-AF01-359B15ABC15A.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/8rni9c-17BEAFE1-CE32-4BE1-950D-9281D5FAAE0A.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/c4mb6q-1F7F15BB-BD69-4E56-A988-F594211F6E85.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/9ip38r-A93748E0-2AA1-45E8-B4DE-530CFDCD443D.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/k3k2h-21DA18A2-5A94-4AB0-B77D-5F67EF6238BA.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/59q9xf-AD072D65-2FF2-42C8-B603-C9BAB1EE6214.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/dd5opy-5DE801F6-BDF8-443A-A68A-1CDA547BBA72.png"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
+  },
+  "rafale-dassault": {
+    "title": "Rafale Dassault",
+    "subtitle": "Avion de chasse français — livrée Armée de l'Air",
+    "description": "",
+    "price": 99,
+    "scale": "1/72",
+    "collection": "chasse",
+    "inStock": false,
+    "comingSoon": true,
+    "bestseller": false,
+    "hidden": false,
+    "image": "/images/rafale-dassault.webp",
+    "images": [],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
+  },
+  "portecle-airplanestore": {
+    "title": "Porte-clé personnalisé",
+    "subtitle": "Tissu brodé · 8 designs au choix (Air France, Pilote, Captain…)",
+    "description": "",
+    "price": 9.9,
+    "scale": "",
+    "collection": "accessoires",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": true,
+    "hidden": false,
+    "image": "/images/porte-cle-air-france-lhr.webp",
+    "images": [
+      "/images/uploads/products/portecle-airplanestore/gallery/a0qio2-6EB1F897-9AF7-42C6-B69D-5530A0568B28.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/9qq8b1-813BBE31-6E2A-4F2C-BBA5-858E08D8CD8D.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/d8hp5w-282F390E-9991-46BA-AE58-C6EF21C7BAD3.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/859kix-6342A08E-110F-4874-A2DC-45012BB450A8.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/budn3-80045733-46A7-4607-90B8-282A8A0CD6BB.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/csoo42-925E2960-276D-41B6-B756-CA35AE96979E.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/byojlm-BA55E343-264C-418B-9564-AEF586BA58D0.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/5w842z-FE1A0218-9A89-47AF-B205-7DDF9519243E.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/6qa8mo-34F6AFF2-93A8-4DD7-B3D4-17BA9B43CEA8.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/c9ym75-BDF5995F-AB38-4E7B-ACCF-9E0F140809E6.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/7swuno-5375F1C4-6095-41CA-88D2-3C552E51A444.png",
+      "/images/uploads/products/portecle-airplanestore/gallery/2kolp3-0ED9A56C-F422-4F33-A2C2-CF99F6AB1025.png"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~413 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "100g"
+      }
+    ]
   }
 }
