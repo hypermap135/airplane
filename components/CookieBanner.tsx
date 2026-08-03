@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CONSENT_COOKIE, readConsent, writeConsent } from "@/lib/consent";
 
@@ -16,6 +17,8 @@ import { CONSENT_COOKIE, readConsent, writeConsent } from "@/lib/consent";
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname() ?? "";
+  const isAdmin = pathname.startsWith("/admin");
 
   useEffect(() => {
     setMounted(true);
@@ -23,6 +26,9 @@ export default function CookieBanner() {
     if (current === null) setVisible(true);
   }, []);
 
+  // Le banner n'a pas de sens dans l'admin — les gestionnaires n'ont pas
+  // à donner leur consentement pour du tracking marketing.
+  if (isAdmin) return null;
   if (!mounted || !visible) return null;
 
   const accept = () => { writeConsent("granted"); setVisible(false); };
