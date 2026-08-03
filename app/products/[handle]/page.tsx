@@ -20,9 +20,14 @@ export async function generateMetadata({
 
   // Rich description for Google snippets — includes price + key selling
   // points so the result line on SERP reads as a real product, not boilerplate.
-  const desc =
-    `${product.subtitle ?? "Maquette d'avion en résine premium."} ` +
-    `${product.scale ?? ""} · ${product.price}€ · LED intégré · Entreprise française.`;
+  const bits = [
+    product.subtitle ?? "Maquette d'avion en résine premium.",
+    product.scale,
+    `${product.price}€`,
+    "LED intégré",
+    "Entreprise française.",
+  ].filter(Boolean);
+  const desc = bits.join(" · ").replace(/\.$/, "") + ".";
 
   // Resolve image URL — if it's already absolute (CDN) leave it, otherwise
   // prefix with the site origin so Google / OG crawlers can fetch it.

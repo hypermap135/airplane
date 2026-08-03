@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCart, useCartDrawer } from "@/lib/cart";
 import { formatPrice } from "@/lib/products";
-import { checkoutUrl, DISCOUNT_CODE } from "@/lib/shopify";
+import { checkoutUrl } from "@/lib/shopify";
 import { trackMeta } from "@/lib/meta";
 
 const FREE_SHIPPING_THRESHOLD = 100;
@@ -13,7 +14,9 @@ const EMAIL_STORAGE_KEY = "airplanestore.lead-email";
 export default function CartDrawer() {
   const { open, setOpen } = useCartDrawer();
   const { entries, subtotal, update, remove } = useCart();
-  const [promo, setPromo] = useState(DISCOUNT_CODE);
+  // Vide par défaut — pré-remplir TAKEOFF10 normalise le discount et réduit
+  // la marge en signalant qu'un code est toujours dispo (audit e-com 2026-07).
+  const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -32,15 +35,28 @@ export default function CartDrawer() {
     localStorage.setItem(EMAIL_STORAGE_KEY, v);
     trackMeta("Lead", { content_name: "cart_capture", value: subtotal, currency: "EUR" });
     try {
+      // Cart snapshot envoyé au lead-store → utilisé par les rappels J+1/J+3
+      // (voir app/api/cron/cart-reminders) pour personnaliser le montant.
+      const cartItems = entries.map((e) => ({
+        variantId: e.product.variantId,
+        quantity: e.quantity,
+        title: e.product.title,
+        price: e.product.price,
+      }));
       await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: v, source: "cart-drawer" }),
+        body: JSON.stringify({
+          email: v,
+          source: "cart-drawer",
+          cartValue: subtotal,
+          cartItems,
+        }),
       });
     } catch { /* silent */ }
   };
 
-  const discount = promoApplied && promo.trim().toUpperCase() === DISCOUNT_CODE ? 0.1 : 0;
+  const discount = promoApplied && promo.trim().toUpperCase() === "TAKEOFF10" ? 0.1 : 0;
   const discountAmount = subtotal * discount;
   const total = subtotal - discountAmount;
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
@@ -188,21 +204,12 @@ export default function CartDrawer() {
               className="flex gap-3 border border-ink-line rounded-md p-3 bg-white"
             >
               <div className="relative h-20 w-20 shrink-0 rounded overflow-hidden bg-tile">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={product.image}
                   alt={product.title}
-                  referrerPolicy="no-referrer"
-                  loading="eager"
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    padding: "8%",
-                  }}
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  fill
+                  sizes="80px"
+                  style={{ objectFit: "contain", padding: "8%" }}
                 />
               </div>
               <div className="flex-1 min-w-0">
@@ -295,7 +302,7 @@ export default function CartDrawer() {
               <input
                 value={promo}
                 onChange={(e) => setPromo(e.target.value.toUpperCase())}
-                placeholder="TAKEOFF10"
+                placeholder="Votre code"
                 className="flex-1 px-3 py-2 text-sm rounded border border-ink-line bg-white text-ink-900 outline-none focus:border-brand"
               />
               <button

@@ -71,10 +71,16 @@ export async function POST(req: Request) {
     file instanceof File && file.name ? file.name : `upload.${ext}`;
   const safeName = rawName.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 80);
   const stamp = Math.floor(Math.random() * 1e9).toString(36);
-  // Path in the repo: public/images/uploads/{folder}/{stamp}-{safeName}
-  // Public URL: /images/uploads/{folder}/{stamp}-{safeName}
   const repoPath = `public/images/uploads/${folder}/${stamp}-${safeName}`;
-  const publicUrl = `/images/uploads/${folder}/${stamp}-${safeName}`;
+
+  // URL servie via jsDelivr CDN qui proxifie GitHub raw. Avantage clé :
+  // dispo INSTANTANÉMENT après le commit, sans attendre un redeploy Vercel.
+  // Le vieux `/images/uploads/…` renvoyait 404 tant que Vercel n'avait pas
+  // rebuild — root cause "les photos n'apparaissent pas" en admin.
+  const owner  = process.env.GITHUB_OWNER  ?? "hypermap135";
+  const repo   = process.env.GITHUB_REPO   ?? "airplane";
+  const branch = process.env.GITHUB_BRANCH ?? "main";
+  const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${repoPath}`;
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -83,7 +89,7 @@ export async function POST(req: Request) {
       buffer,
       `admin: upload ${safeName} (${folder})`,
     );
-    return NextResponse.json({ url: publicUrl, pathname: publicUrl });
+    return NextResponse.json({ url: cdnUrl, pathname: cdnUrl });
   } catch (err) {
     console.error("[admin/upload] github upload failed:", err);
     return NextResponse.json(

@@ -34,7 +34,12 @@ export async function middleware(req: NextRequest) {
 
   // ── 0. Maintenance mode — /admin reste accessible pour dépanner ──────
   // Activation : Vercel env var MAINTENANCE_MODE=1 (redeploy pour propager).
-  // Bypass query ?bypass=<ADMIN_SESSION_SECRET> pour prévisualiser.
+  //
+  // Bypass : cookie `airplanestore.maint-bypass` = MD5(ADMIN_SESSION_SECRET).
+  // Pour prévisualiser, appeler /?bypass=<ADMIN_SESSION_SECRET> UNE FOIS —
+  // le middleware pose le cookie signé, puis strip la query de l'URL
+  // (évite que le secret reste dans logs Vercel + Referer sortants).
+  const BYPASS_COOKIE = "airplanestore.maint-bypass";
   if (
     process.env.MAINTENANCE_MODE === "1" &&
     !pathname.startsWith("/admin") &&
@@ -43,11 +48,32 @@ export async function middleware(req: NextRequest) {
     !pathname.startsWith("/api/whatsapp") &&
     pathname !== "/maintenance"
   ) {
-    const bypass = url.searchParams.get("bypass");
-    if (bypass !== process.env.ADMIN_SESSION_SECRET) {
-      const maintUrl = new URL("/maintenance", url);
-      return NextResponse.rewrite(maintUrl);
+    const secret = process.env.ADMIN_SESSION_SECRET ?? "";
+    const bypassQuery = url.searchParams.get("bypass");
+    const bypassCookie = req.cookies.get(BYPASS_COOKIE)?.value;
+
+    // Cookie déjà posé → laisse passer, on ne re-check pas
+    if (bypassCookie && secret && bypassCookie === secret.slice(0, 32)) {
+      return NextResponse.next();
     }
+
+    // Query fournie et valide → pose le cookie et redirige sans la query
+    if (bypassQuery && secret && bypassQuery === secret) {
+      const clean = new URL(url);
+      clean.searchParams.delete("bypass");
+      const res = NextResponse.redirect(clean);
+      res.cookies.set(BYPASS_COOKIE, secret.slice(0, 32), {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 8, // 8h de preview par cookie
+      });
+      return res;
+    }
+
+    const maintUrl = new URL("/maintenance", url);
+    return NextResponse.rewrite(maintUrl);
   }
 
   // ── 1. Admin gate ────────────────────────────────────────────────────

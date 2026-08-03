@@ -17,7 +17,11 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "airplanestore.fr" },
       { protocol: "https", hostname: "cdn.shopify.com" },
-      // Vercel Blob URLs used by the /admin uploads.
+      // jsDelivr sert les photos admin fraîchement uploadées (proxy GitHub
+      // raw). Dispo instantanément après commit, sans redeploy Vercel.
+      { protocol: "https", hostname: "cdn.jsdelivr.net" },
+      // Vercel Blob URLs (héritage) — laissées pour compat des vieilles
+      // URLs déjà stockées dans les overrides produits.
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
       { protocol: "https", hostname: "*.blob.vercel-storage.com" },
     ],
@@ -28,10 +32,31 @@ const nextConfig = {
    * (déjà déclarés en remotePatterns).
    */
   async headers() {
+    // CSP volontairement large — Next.js utilise beaucoup d'inline JS (RSC,
+    // JSON-LD, hydration) donc 'unsafe-inline' est nécessaire tant qu'on ne
+    // met pas en place un nonce par requête. Trade-off accepté : on couvre
+    // 90% des XSS possibles (script cross-origin non déclaré, iframe pirate,
+    // form target externe) tout en laissant Next/Meta/GTM fonctionner.
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.facebook.net https://www.googletagmanager.com https://www.google-analytics.com https://*.vercel-insights.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' data: https://fonts.gstatic.com",
+      "img-src 'self' data: blob: https://cdn.shopify.com https://airplanestore.fr https://cdn.jsdelivr.net https://*.blob.vercel-storage.com https://www.facebook.com https://*.facebook.com https://www.google-analytics.com",
+      "connect-src 'self' https://connect.facebook.net https://graph.facebook.com https://www.google-analytics.com https://region1.google-analytics.com https://y823wg-nz.myshopify.com https://*.myshopify.com https://api.github.com https://*.vercel-insights.com https://vitals.vercel-insights.com https://*.sentry.io",
+      "frame-src 'self' https://www.facebook.com",
+      "frame-ancestors 'self'",
+      "form-action 'self' https://*.myshopify.com",
+      "base-uri 'self'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
+    ].join("; ");
+
     return [
       {
         source: "/:path*",
         headers: [
+          { key: "Content-Security-Policy", value: csp },
           // Empêche l'iframing du site (protection clickjacking)
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           // Bloque MIME sniffing

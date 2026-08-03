@@ -1,71 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-
-/**
- * In-memory rate limiter per IP. Simple sliding window : 5 requêtes /
- * 60 secondes. Suffisant contre le spam basique. Ne survit pas au
- * redémarrage de la serverless function (chaque instance a son propre
- * bucket) — pour du rate limit distribué il faudrait Vercel KV/Redis.
- */
-const RATE_BUCKET = new Map<string, number[]>();
-const RATE_WINDOW_MS = 60_000;
-const RATE_MAX = 5;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const hits = (RATE_BUCKET.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-  if (hits.length >= RATE_MAX) {
-    RATE_BUCKET.set(ip, hits);
-    return true;
-  }
-  hits.push(now);
-  RATE_BUCKET.set(ip, hits);
-  // Garbage collect anciens IPs (~1000 IPs max en mémoire)
-  if (RATE_BUCKET.size > 1000) {
-    for (const [k, v] of RATE_BUCKET) {
-      if (v.every((t) => now - t > RATE_WINDOW_MS)) RATE_BUCKET.delete(k);
-    }
-  }
-  return false;
-}
+import { checkRate, extractIp } from "@/lib/rate-limit";
+import { saveLead } from "@/lib/leads-store";
 
 /**
  * Cart-abandonment / newsletter lead capture.
  *
- * Currently a fire-and-forget logger — the email lands in the Vercel
- * function logs and (in dev) the terminal. When a real CRM/ESP is
- * wired (SendGrid, Postmark, Brevo, ConvertKit), this is the single
- * place to add the forwarding call. The client doesn't need to change.
+ * Persiste sur GitHub storage (data/leads.json) — un cron J+1/J+3 lit
+ * ce fichier et envoie les rappels via Brevo (voir app/api/cron/cart-reminders).
  *
- * Also fires server-side Meta CAPI Lead event so iOS-blocked sessions
- * still count. Idempotent — duplicate emails are accepted, the CRM
- * deduplicates.
+ * Rate limit : 5 requêtes / 60s par IP via lib/rate-limit partagé.
  */
 export async function POST(req: NextRequest) {
   try {
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
-    if (isRateLimited(ip)) {
+    const ip = extractIp(req);
+    const rl = checkRate("lead", ip, 5, 60_000);
+    if (!rl.ok) {
       return NextResponse.json(
         { ok: false, error: "rate_limited", userMessage: "Trop de tentatives. Réessayez dans 1 minute." },
-        { status: 429, headers: { "Retry-After": "60" } },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
       );
     }
 
     const body = await req.json().catch(() => ({}));
     const email = String(body?.email ?? "").trim().toLowerCase();
     const source = String(body?.source ?? "unknown");
+    const cartValue = typeof body?.cartValue === "number" ? body.cartValue : undefined;
+    const cartItems = Array.isArray(body?.cartItems) ? body.cartItems : undefined;
 
-    if (!email || !email.includes("@")) {
+    if (!email || !email.includes("@") || email.length > 200) {
       return NextResponse.json({ ok: false, error: "invalid email" }, { status: 400 });
     }
 
-    // Structured log so we can grep these in Vercel logs.
     console.log(`[lead] email=${email} source=${source} ts=${Date.now()}`);
 
-    // TODO: forward to CRM/ESP when one is configured.
-    //   e.g. fetch("https://api.brevo.com/v3/contacts", { ... })
+    // Persist en GitHub storage — silencieux si non configuré (pas de blocker)
+    try {
+      await saveLead({ email, source, cartValue, cartItems, createdAt: Date.now() });
+    } catch (err) {
+      console.warn("[lead] saveLead failed:", err);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {

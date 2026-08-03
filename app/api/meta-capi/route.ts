@@ -13,6 +13,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { checkRate, extractIp } from "@/lib/rate-limit";
 
 export const runtime = "edge";
 
@@ -30,6 +31,14 @@ type ClientPayload = {
 };
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // Rate limit large (60/min) — chaque navigation légitime peut envoyer
+  // 2-4 events (PageView + ViewContent + AddToCart). On bloque juste
+  // les scripts abusifs qui hammer le pixel pour polluer les données.
+  const rl = checkRate("capi", extractIp(req), 60, 60_000);
+  if (!rl.ok) {
+    return new NextResponse(null, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+  }
+
   if (!PIXEL_ID || !ACCESS_TOKEN) {
     // No credentials → silently 204 so client doesn't error
     return new NextResponse(null, { status: 204 });

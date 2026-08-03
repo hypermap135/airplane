@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCartCheckoutUrl, checkoutUrl } from "@/lib/shopify";
+import { checkRate, extractIp } from "@/lib/rate-limit";
 
 export const runtime = "edge";
 
@@ -14,6 +15,14 @@ type Body = {
 
 export async function POST(req: NextRequest) {
   try {
+    const rl = checkRate("checkout", extractIp(req), 20, 60_000);
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: "rate_limited" },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
+      );
+    }
+
     const body = (await req.json()) as Body;
     const { items, discount } = body;
 

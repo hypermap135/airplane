@@ -3,8 +3,10 @@ import Script from "next/script";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
-
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
+import CookieBanner from "@/components/CookieBanner";
+import MetaPixel from "@/components/MetaPixel";
+import GTM from "@/components/GTM";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Une seule famille — Inter suffit (sans-serif propre, chargement rapide).
 // Space_Grotesk + IBM_Plex_Mono retirés : n'étaient plus utilisés après la
@@ -89,8 +91,13 @@ export const metadata: Metadata = {
     address: false,
   },
   verification: {
-    // google: "TOKEN_FROM_GOOGLE_SEARCH_CONSOLE",
-    // Add when the user verifies the property in Search Console.
+    // Renseigner NEXT_PUBLIC_GSC_TOKEN dans Vercel env vars pour activer
+    // le tracking Search Console (impressions, positions, CTR par mot-clé).
+    // Récup token : search.google.com/search-console → Add property →
+    // choisir "HTML tag" → copier le content= de la meta.
+    ...(process.env.NEXT_PUBLIC_GSC_TOKEN
+      ? { google: process.env.NEXT_PUBLIC_GSC_TOKEN }
+      : {}),
   },
 };
 
@@ -205,16 +212,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }
         `}</Script>
 
-        {/* Meta Pixel — lazyOnload pour ne pas bloquer le LCP */}
-        {META_PIXEL_ID && (
-          <Script id="meta-pixel" strategy="lazyOnload">{`
-            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init','${META_PIXEL_ID}');
-            fbq('track','PageView');
-          `}</Script>
-        )}
+        {/* Meta Pixel + GTM gated par consentement RGPD (voir components/CookieBanner). */}
+        <MetaPixel />
+        <GTM />
 
         <SiteChrome>{children}</SiteChrome>
+        <CookieBanner />
+        <SpeedInsights />
       </body>
     </html>
   );
