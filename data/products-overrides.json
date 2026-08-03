@@ -301,5 +301,56 @@
         "value": "100g"
       }
     ]
+  },
+  "a220-af": {
+    "title": "Airbus A220 Air France",
+    "subtitle": "A220-300 · livrée Air France · activation au toucher",
+    "description": "",
+    "price": 99,
+    "scale": "1/100",
+    "collection": "airbus",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": false,
+    "hidden": false,
+    "image": "/images/airbus-a220-air-france.webp",
+    "images": [
+      "/images/airbus-a220-air-france.webp",
+      "/images/airbus-a220-air-france--3quarter-front.webp",
+      "/images/airbus-a220-air-france--3quarter-rear.webp",
+      "/images/airbus-a220-air-france--top.webp",
+      "/images/airbus-a220-air-france--shelf.webp",
+      "/images/airbus-a220-air-france--desk.webp"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
   }
 }
