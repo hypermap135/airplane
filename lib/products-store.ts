@@ -43,6 +43,8 @@ export type ProductOverride = Partial<{
   hidden: boolean; // soft-hide a product from the catalogue without deleting it
   specs: ProductSpec[];
   description: string;
+  /** Index d'affichage dans les collections (0 = premier). Non défini → ordre naturel PRODUCTS[]. */
+  sortOrder: number;
 }>;
 
 export type OverridesMap = Record<string, ProductOverride>;
@@ -129,16 +131,30 @@ function applyShopifyInventory(
   return { ...p, inStock: shopifyAvailable };
 }
 
+/** Tri par sortOrder (admin) → produits ordonnés en premier, puis les autres
+ *  dans l'ordre naturel de PRODUCTS[]. Stable sort. */
+function sortByOrder(list: Product[], overrides: OverridesMap): Product[] {
+  return [...list].sort((a, b) => {
+    const oa = overrides[a.id]?.sortOrder;
+    const ob = overrides[b.id]?.sortOrder;
+    if (oa === undefined && ob === undefined) return 0;
+    if (oa === undefined) return 1;
+    if (ob === undefined) return -1;
+    return oa - ob;
+  });
+}
+
 /** Public: full catalogue with overrides + Shopify inventory applied; hidden dropped. */
 export async function getProducts(): Promise<Product[]> {
   const [overrides, inventory] = await Promise.all([
     getOverridesCached(),
     getShopifyInventory(),
   ]);
-  return PRODUCTS
+  const list = PRODUCTS
     .filter((p) => !(overrides[p.id]?.hidden === true))
     .map((p) => applyOverride(p, overrides[p.id]))
     .map((p) => applyShopifyInventory(p, inventory, overrides[p.id]?.inStock));
+  return sortByOrder(list, overrides);
 }
 
 /** Public: same as `getProducts` but does not drop hidden products — for /admin only. */
@@ -147,11 +163,12 @@ export async function getProductsAdmin(): Promise<Array<Product & { hidden?: boo
     getOverridesCached(),
     getShopifyInventory(),
   ]);
-  return PRODUCTS.map((p) => {
+  const list = PRODUCTS.map((p) => {
     const withOv = applyOverride(p, overrides[p.id]);
     const final = applyShopifyInventory(withOv, inventory, overrides[p.id]?.inStock);
     return { ...final, hidden: overrides[p.id]?.hidden === true };
   });
+  return sortByOrder(list, overrides) as Array<Product & { hidden?: boolean }>;
 }
 
 /** Public: single product by handle, with override applied (or undefined). */

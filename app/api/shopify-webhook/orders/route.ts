@@ -19,6 +19,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { listLeads, markSent } from "@/lib/leads-store";
+import { sendEmail } from "@/lib/email";
 
 const PIXEL_ID = process.env.META_PIXEL_ID ?? process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
 const CAPI_TOKEN = process.env.META_CAPI_TOKEN ?? "";
@@ -146,5 +147,41 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Notification admin "commande reçue" — envoyée à ADMIN_NOTIFY_EMAIL
+  // (fallback : hypermap.pro@gmail.com). Best-effort, on n'échoue jamais
+  // sur ça — l'important c'est que Shopify reçoive un 200 pour ne pas
+  // retry en boucle.
+  try {
+    await notifyAdmin(order);
+  } catch (err) {
+    console.warn("[shopify-webhook] admin notify failed", err);
+  }
+
   return NextResponse.json({ ok: true, capi: capi.ok, order_id: order.id });
+}
+
+async function notifyAdmin(order: ShopifyOrder): Promise<void> {
+  const to = process.env.ADMIN_NOTIFY_EMAIL ?? "hypermap.pro@gmail.com";
+  const items = (order.line_items ?? [])
+    .map((li) => `• ${li.quantity ?? 1}× (variant ${li.variant_id ?? "?"}) — ${li.price ?? "?"}€`)
+    .join("<br>");
+  const custName = [order.customer?.first_name, order.customer?.last_name].filter(Boolean).join(" ") || "Client";
+  const html = `
+    <h2 style="margin:0 0 12px 0;font-size:20px;">🛒 Nouvelle commande #${order.order_number ?? order.id}</h2>
+    <p><strong>${custName}</strong> · ${order.customer?.email ?? order.email ?? "(sans email)"}</p>
+    <p><strong>Montant : ${order.total_price ?? "?"} ${order.currency ?? "EUR"}</strong></p>
+    <p style="margin-top:16px;"><strong>Articles :</strong><br>${items || "—"}</p>
+    <p style="margin-top:20px;">
+      <a href="https://admin.shopify.com/store/y823wg-nz/orders/${order.id}"
+         style="display:inline-block;padding:12px 24px;background:#0e1013;color:#fff;text-decoration:none;border-radius:999px;font-weight:700;">
+        Voir dans Shopify Admin →
+      </a>
+    </p>
+  `;
+  await sendEmail({
+    to,
+    subject: `🛒 Nouvelle commande #${order.order_number ?? order.id} — ${order.total_price ?? "?"}€`,
+    htmlContent: html,
+    tags: ["order-notification"],
+  });
 }

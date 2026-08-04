@@ -88,7 +88,41 @@ export default async function AdminHome() {
             description, photos, disponibilité.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <Link
+            href="/admin/contenu"
+            style={{
+              padding: "0.55rem 1rem",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              borderRadius: 999,
+              background: "rgba(58,142,255,0.14)",
+              border: "1px solid rgba(58,142,255,0.4)",
+              color: "#3a8eff",
+              textDecoration: "none",
+            }}
+          >
+            ✎ Contenu du site
+          </Link>
+          <Link
+            href="/admin/leads"
+            style={{
+              padding: "0.55rem 1rem",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              borderRadius: 999,
+              background: "rgba(232,192,72,0.14)",
+              border: "1px solid rgba(232,192,72,0.4)",
+              color: "#e8c048",
+              textDecoration: "none",
+            }}
+          >
+            ✉ Leads
+          </Link>
           <SyncPricesButton />
           <LogoutButton />
         </div>

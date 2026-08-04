@@ -1,0 +1,53 @@
+{
+  "hero": {
+    "badge": "★ Spécialiste maquettes personnalisées",
+    "titleLine1": "Spécialisé dans les",
+    "titleHighlight1": "maquettes d'avion",
+    "titleHighlight2": "personnalisées.",
+    "subtitle": "Vos couleurs, vos noms, votre logo — gravés à la main sur bois. Cadeau client, séminaire, remerciement. Devis en 24 h.",
+    "ctaPrimaryLabel": "Demander un devis →",
+    "ctaPrimaryHref": "/contact",
+    "ctaSecondaryLabel": "Voir les bestsellers",
+    "ctaSecondaryHref": "#bestsellers",
+    "imageUrl": "/images/a380-air-france.webp",
+    "imageAlt": "Maquette Airbus A380 Air France premium"
+  },
+  "corporate": {
+    "sectionTag": "Ils nous ont fait confiance",
+    "sectionTitle": "Forfait entreprise sur devis, 100% sur-mesure.",
+    "sectionSubtitle": "Cadeaux clients, séminaires, événements — nous produisons des maquettes personnalisées pour les compagnies aériennes, constructeurs et prestataires du secteur aéronautique.",
+    "logos": ["Air France", "Airbus", "Dassault", "Safran", "ATR", "Groupe ADP"],
+    "cases": [
+      {
+        "tag": "Cadeau clients",
+        "title": "Série sur mesure — Airbus A320",
+        "body": "Réplique Airbus A320 aux couleurs exactes de leur compagnie. Livrée personnalisée, plaque nominative gravée au socle avec le nom de chaque destinataire. Écrin en carton renforcé imprimé aux couleurs de la marque.",
+        "image": "/images/airbus-a320-echelle-1-85-finition-premium.webp",
+        "accent": "#c9a24b"
+      },
+      {
+        "tag": "Séminaire annuel",
+        "title": "Édition événement — Boeing 787",
+        "body": "Version mini-format du Dreamliner offerte aux 120 participants du séminaire annuel. Livrée dans un écrin premium avec plaque gravée au nom de l'événement et de l'année. Remise sur scène par le dirigeant.",
+        "image": "/images/boeing-787.webp",
+        "accent": "#e8c048"
+      },
+      {
+        "tag": "Remerciement partenaires",
+        "title": "Édition limitée — Concorde",
+        "body": "Réplique Concorde en tirage limité pour remercier les partenaires stratégiques. Gravure du logo partenaire, année et numéro de pièce (1/30, 2/30, etc.). Une pièce de collection valorisante.",
+        "image": "/images/concorde-airfrance.webp",
+        "accent": "#9333ea"
+      }
+    ]
+  },
+  "faq": [
+    { "q": "Quels sont les délais de livraison ?", "a": "7 à 15 jours ouvrés en France, Belgique et Suisse. Livraison suivie et offerte dès 100€ d'achat. Nous expédions également dans toute l'Europe." },
+    { "q": "Comment fonctionne l'éclairage LED ?", "a": "L'éclairage s'active de deux façons : un tap sur le fuselage, ou un clap des mains à proximité de l'avion. Le fuselage et le cockpit s'allument pendant environ 20 secondes — puis l'éclairage s'éteint automatiquement pour préserver la durée de vie de la batterie lithium. Recharge par USB (câble fourni), temps de charge ~1h." },
+    { "q": "Quelle est votre politique de retour ?", "a": "Satisfait ou remboursé 30 jours. Retour offert depuis la France. La maquette doit être retournée dans sa boîte d'origine, en parfait état." },
+    { "q": "La maquette est-elle fragile ?", "a": "Non. Nos maquettes sont coulées en résine monobloc sous pression — le même matériau utilisé pour les pièces industrielles. Elles résistent aux chocs du quotidien et ne se cassent pas comme le plastique ordinaire. L'emballage de livraison est conçu pour protéger la pièce pendant le transport." },
+    { "q": "C'est un cadeau. Y a-t-il un emballage soigné ?", "a": "Oui. Chaque maquette est livrée dans une boîte premium avec calage sur mesure. L'emballage est pensé pour être offert directement. Vous pouvez également ajouter une gravure personnalisée (+15€) pour rendre le cadeau inoubliable." },
+    { "q": "Puis-je payer en plusieurs fois ?", "a": "Oui. Le paiement en 3x ou 4x sans frais est disponible au moment du règlement. Vous pouvez régler par carte bancaire, PayPal ou Apple Pay. Toutes les transactions sont sécurisées SSL." },
+    { "q": "Est-ce une copie bon marché fabriquée en Chine ?", "a": "Absolument pas. Nos maquettes sont fabriquées en résine haute densité, peintes à la main, et contrôlées pièce par pièce avant expédition. Elles ne peuvent pas être comparées aux reproductions plastique que l'on trouve sur les marketplaces. C'est pour cela que 347 clients — dont de nombreux pilotes et collectionneurs — nous font confiance." }
+  ]
+}

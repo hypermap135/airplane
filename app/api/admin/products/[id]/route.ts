@@ -22,6 +22,7 @@ const ALLOWED_FIELDS: ReadonlySet<keyof ProductOverride> = new Set([
   "hidden",
   "specs",
   "description",
+  "sortOrder",
 ]);
 
 const VALID_COLLECTIONS = new Set(COLLECTIONS.map((c) => c.slug));
@@ -53,6 +54,10 @@ function coerceField(
     case "bestseller":
     case "hidden":
       return typeof v === "boolean" ? v : undefined;
+    case "sortOrder":
+      return typeof v === "number" && Number.isFinite(v) && v >= 0 && v < 10_000
+        ? v
+        : undefined;
     case "images":
       return Array.isArray(v) && v.every((x) => typeof x === "string")
         ? (v as string[]).slice(0, 12)
