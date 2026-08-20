@@ -3,9 +3,9 @@
     "subtitle": "Supersonique légendaire — livrée British Airways · 50 cm"
   },
   "a320-af": {
-    "title": "Airbus A320 Néo Air France",
-    "subtitle": "Moyen-courrier de référence — livrée Air France · A320 Néo",
-    "description": "",
+    "title": "Airbus A320neo Air France",
+    "subtitle": "Moyen-courrier de référence — livrée Air France · A320neo",
+    "description": "Airbus A320neo aux couleurs de la compagnie Air France . Une belle pièce de 37 cm de long, équipée de LED pour un rendu réaliste. Le système LED s'allume environ 20 secondes. Afin de garder la longévité de la batterie.\n- Type de produit : Maquette d'avion de collection\n- Modèle : Airbus A320neo\n- Compagnie aérienne : Air France\n- Dimensions : 37 cm\n- Poids: 1.3kg environ \n- Équipement: LED intégrées du fuselage avec train d'atterrissage\n- Accessoires inclus : câble USB",
     "price": 99,
     "scale": "1/100",
     "collection": "airbus",
@@ -15,12 +15,16 @@
     "hidden": false,
     "image": "/images/uploads/products/a320-af/main/dj6r72-04047397-ACA9-4DC6-8A6A-19EC2B6D3789.png",
     "images": [
-      "/images/a320-neo.webp",
-      "/images/a320-neo--3quarter-front.webp",
-      "/images/a320-neo--3quarter-rear.webp",
-      "/images/a320-neo--top.webp",
-      "/images/a320-neo--shelf.webp",
-      "/images/a320-neo--desk.webp"
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/867ye8-04047397-ACA9-4DC6-8A6A-19EC2B6D3789.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/fp0w9p-2599D765-A7F1-4573-95E5-8752E1DAF1E3.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/7ribmx-1E26F495-079C-4ECD-8E39-3EBBC04CA4C3.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/73zovb-36824B9D-AF14-4E84-979B-93BBA840B7B6.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/dxfov5-43112F03-5DD1-4D14-A66C-FA11CADE1E2C.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/bsbnoh-66DD05EB-2678-4C7E-8837-5E7099E9AE14.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/2hq362-C1A49800-632F-427C-BEDE-5206AFD5B3A8.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/bpcphh-085FA15E-DF69-4A13-AEC9-5C095EA670E3.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/3hnmcc-E09CC691-82CB-4C55-AE6B-3682A72DE77F.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/96ivqa-6F97BDC2-8C50-4013-99AC-9EFE553D90A6.png"
     ],
     "specs": [
       {
@@ -304,8 +308,8 @@
   },
   "a220-af": {
     "title": "Airbus A220 Air France",
-    "subtitle": "A220-300 · livrée Air France · résine 1:100",
-    "description": "l'Airbus A220\nAir France réalisée en résine, présentée sur un socle avec son emballage d'origine.\n- Type de produit : Maquette d'avion\n- Modèle : Airbus A220 Air France\n- Matière : Résine\n- Échelle : 1:100 soit 38cm\n- Poids : environ 1,3Kg\n- Emballage : Boîte d'origine incluse\nÉtat neuf",
+    "subtitle": "A220-300 · livrée Air France · activation au toucher",
+    "description": "",
     "price": 99,
     "scale": "1/100",
     "collection": "airbus",
@@ -313,18 +317,13 @@
     "comingSoon": false,
     "bestseller": false,
     "hidden": false,
-    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/main/c1ilm-BFE692F3-121A-4F90-9445-9EE3CF13574F.png",
+    "image": "/images/airbus-a220-air-france.webp",
     "images": [
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/3ghdc5-BFE692F3-121A-4F90-9445-9EE3CF13574F.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/70hkki-1E6AFF6D-7AC3-47B9-B0E8-6DF1AE3268B2.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/fxt8ta-C01C8EFC-CCA3-45C1-B131-265BE1B50BE9.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/1u69h2-E905AE6D-0D7C-4E73-B391-B47AE1C98C24.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/b4wauy-8a93acd04a1f03afcd398cf2a0a446.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/3qf0gr-ca992a31c005a04e098696439ebc2d.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/fd10gq-6857faace6d4e4bc3805cda73a2fd1.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/4m61h2-d7ce4949b0ffdab812c6468987b3c5.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/baoaav-a715a36a9b2eb264fc3d39518e93bf.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/md7f-1136801C-F47C-4711-B3B0-5EED7207467E.png",
+      "/images/airbus-a220-air-france.webp",
+      "/images/airbus-a220-air-france--3quarter-front.webp",
+      "/images/airbus-a220-air-france--3quarter-rear.webp",
+      "/images/airbus-a220-air-france--top.webp",
+      "/images/airbus-a220-air-france--shelf.webp",
       "/images/airbus-a220-air-france--desk.webp"
     ],
     "specs": [
@@ -342,7 +341,7 @@
       },
       {
         "label": "Socle",
-        "value": "Bois inclus"
+        "value": "Bois massif inclus"
       },
       {
         "label": "Train d'atterrissage",
