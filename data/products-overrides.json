@@ -3,9 +3,9 @@
     "subtitle": "Supersonique légendaire — livrée British Airways · 50 cm"
   },
   "a320-af": {
-    "title": "Airbus A320neo Air France",
-    "subtitle": "Moyen-courrier de référence — livrée Air France · A320neo",
-    "description": "Airbus A320neo aux couleurs de la compagnie Air France . Une belle pièce de 37 cm de long, équipée de LED pour un rendu réaliste. Le système LED s'allume environ 20 secondes. Afin de garder la longévité de la batterie.\n- Type de produit : Maquette d'avion de collection\n- Modèle : Airbus A320neo\n- Compagnie aérienne : Air France\n- Dimensions : 37 cm\n- Poids: 1.3kg environ \n- Équipement: LED intégrées du fuselage avec train d'atterrissage\n- Accessoires inclus : câble USB",
+    "title": "Airbus A320 Néo Air France",
+    "subtitle": "Moyen-courrier de référence — livrée Air France · A320 Néo",
+    "description": "",
     "price": 99,
     "scale": "1/100",
     "collection": "airbus",
@@ -15,16 +15,12 @@
     "hidden": false,
     "image": "/images/uploads/products/a320-af/main/dj6r72-04047397-ACA9-4DC6-8A6A-19EC2B6D3789.png",
     "images": [
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/867ye8-04047397-ACA9-4DC6-8A6A-19EC2B6D3789.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/fp0w9p-2599D765-A7F1-4573-95E5-8752E1DAF1E3.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/7ribmx-1E26F495-079C-4ECD-8E39-3EBBC04CA4C3.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/73zovb-36824B9D-AF14-4E84-979B-93BBA840B7B6.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/dxfov5-43112F03-5DD1-4D14-A66C-FA11CADE1E2C.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/bsbnoh-66DD05EB-2678-4C7E-8837-5E7099E9AE14.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/2hq362-C1A49800-632F-427C-BEDE-5206AFD5B3A8.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/bpcphh-085FA15E-DF69-4A13-AEC9-5C095EA670E3.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/3hnmcc-E09CC691-82CB-4C55-AE6B-3682A72DE77F.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-af/gallery/96ivqa-6F97BDC2-8C50-4013-99AC-9EFE553D90A6.png"
+      "/images/a320-neo.webp",
+      "/images/a320-neo--3quarter-front.webp",
+      "/images/a320-neo--3quarter-rear.webp",
+      "/images/a320-neo--top.webp",
+      "/images/a320-neo--shelf.webp",
+      "/images/a320-neo--desk.webp"
     ],
     "specs": [
       {
@@ -165,9 +161,9 @@
     ]
   },
   "a320-neo-transavia": {
-    "title": "Airbus A320 Neo Transavia",
-    "subtitle": "Livrée Transavia — A320 Neo, échelle 1/100",
-    "description": "Airbus A320neo aux couleurs de la compagnie Transavia . Une belle pièce de 37 cm de long, équipée de LED pour un rendu réaliste. Le système LED s'allume environ 20 secondes. Afin de garder la longévité de la batterie.\n- Type de produit : Maquette d'avion de collection\n- Modèle : Airbus A320neo\n- Compagnie aérienne : Air France\n- Dimensions : 37 cm\n- Équipement: LED intégrées du fuselage avec train d'atterrissage\n- Accessoires inclus : câble USB",
+    "title": "Airbus A320 Néo Transavia",
+    "subtitle": "Livrée Transavia — A320 Néo, échelle 1/100",
+    "description": "",
     "price": 99,
     "scale": "1/100",
     "collection": "airbus",
@@ -175,20 +171,20 @@
     "comingSoon": false,
     "bestseller": true,
     "hidden": false,
-    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/main/eqxm3b-DE5E52ED-541A-4B4D-AF01-359B15ABC15A.png",
+    "image": "/images/airbus-a320-neo-transavia.webp",
     "images": [
+      "/images/uploads/products/a320-neo-transavia/gallery/78cecl-0F8CBC4E-6DD6-4F03-8E53-F88A72ACFA40.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/flwfc6-59AB59BD-0F04-43EE-86F9-38D2BC435CAA.png",
       "/images/uploads/products/a320-neo-transavia/gallery/55t04l-8D07F8FB-068F-4FA7-B7B9-89F4B58F84D0.png",
       "/images/uploads/products/a320-neo-transavia/gallery/3noapz-1FEC1C61-37B5-48A0-B87A-2BAC1F23EA76.png",
       "/images/uploads/products/a320-neo-transavia/gallery/4o07ii-016D6FCE-E114-4F59-ADA5-C4CA02A39617.png",
       "/images/uploads/products/a320-neo-transavia/gallery/2ruhzp-DE5E52ED-541A-4B4D-AF01-359B15ABC15A.png",
       "/images/uploads/products/a320-neo-transavia/gallery/8rni9c-17BEAFE1-CE32-4BE1-950D-9281D5FAAE0A.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/c4mb6q-1F7F15BB-BD69-4E56-A988-F594211F6E85.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/9ip38r-A93748E0-2AA1-45E8-B4DE-530CFDCD443D.png",
       "/images/uploads/products/a320-neo-transavia/gallery/k3k2h-21DA18A2-5A94-4AB0-B77D-5F67EF6238BA.png",
-      "/images/uploads/products/a320-neo-transavia/gallery/dd5opy-5DE801F6-BDF8-443A-A68A-1CDA547BBA72.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/gallery/ci8ryk-926755CC-9B83-419A-A045-BE712666A9C0.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/gallery/cev2l4-5DE801F6-BDF8-443A-A68A-1CDA547BBA72.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/gallery/1pg2oq-17BEAFE1-CE32-4BE1-950D-9281D5FAAE0A.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/gallery/8z8tac-21DA18A2-5A94-4AB0-B77D-5F67EF6238BA.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/gallery/87feuf-AD072D65-2FF2-42C8-B603-C9BAB1EE6214.png"
+      "/images/uploads/products/a320-neo-transavia/gallery/59q9xf-AD072D65-2FF2-42C8-B603-C9BAB1EE6214.png",
+      "/images/uploads/products/a320-neo-transavia/gallery/dd5opy-5DE801F6-BDF8-443A-A68A-1CDA547BBA72.png"
     ],
     "specs": [
       {
@@ -308,8 +304,8 @@
   },
   "a220-af": {
     "title": "Airbus A220 Air France",
-    "subtitle": "A220-300 · livrée Air France · 1:100  résine avec Led ",
-    "description": "Maquette d'avion finition Premium de l'Airbus A220-300 d'Air France haut de gamme et de qualité supérieure luxe\nPremium avec détails réaliste a la compagnie aérienne.\nCes magnifiques maquettes sont idéal pour les passionnés d'aviation, collectionneurs ou amateurs de belles pièces décoratives.\n- Longueur environ : 38 cm\n- Echelle: 1/100ème\n- Matière : Résine monobloc\n- Socle inclus\n- Poids de la maquette: environ 1,3kg\n- Détails réalistes :Trains d'atterrissage\n- Etat Neuf boîte d'origine packaging",
+    "subtitle": "A220-300 · livrée Air France · activation au toucher",
+    "description": "",
     "price": 99,
     "scale": "1/100",
     "collection": "airbus",
@@ -317,20 +313,14 @@
     "comingSoon": false,
     "bestseller": false,
     "hidden": false,
-    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/main/6gnvn-BFE692F3-121A-4F90-9445-9EE3CF13574F.png",
+    "image": "/images/airbus-a220-air-france.webp",
     "images": [
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/2bplsq-BFE692F3-121A-4F90-9445-9EE3CF13574F.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/fj69cn-1E6AFF6D-7AC3-47B9-B0E8-6DF1AE3268B2.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/2tlz63-3E3B4093-5351-468F-9950-36A1996DEC00.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/fd7mob-C01C8EFC-CCA3-45C1-B131-265BE1B50BE9.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/8fsgpl-E905AE6D-0D7C-4E73-B391-B47AE1C98C24.png",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/2xzykc-8a93acd04a1f03afcd398cf2a0a446.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/7wghnm-ca992a31c005a04e098696439ebc2d.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/dmmvym-6857faace6d4e4bc3805cda73a2fd1.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/1mhhe8-d7ce4949b0ffdab812c6468987b3c5.jpeg",
-      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/dgd9bi-a715a36a9b2eb264fc3d39518e93bf.jpeg",
-      "/images/airbus-a220-air-france--desk.webp",
-      "/images/airbus-a220-air-france--3quarter-rear.webp"
+      "/images/airbus-a220-air-france.webp",
+      "/images/airbus-a220-air-france--3quarter-front.webp",
+      "/images/airbus-a220-air-france--3quarter-rear.webp",
+      "/images/airbus-a220-air-france--top.webp",
+      "/images/airbus-a220-air-france--shelf.webp",
+      "/images/airbus-a220-air-france--desk.webp"
     ],
     "specs": [
       {
@@ -352,6 +342,67 @@
       {
         "label": "Train d'atterrissage",
         "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
+  },
+  "a320-new-livery-af": {
+    "title": "Airbus A320 Air France Spécial Livery",
+    "subtitle": "",
+    "description": "Maquette d'avion finition Premium de l'Airbus A320\nAir France New Livery avec éclairage du fuselage version lumineuse LED haut de gamme et de qualité supérieure luxe Premium avec détails réaliste. \nCes magnifiques maquettes sont idéal pour les passionnés d'aviation, collectionneurs ou amateurs de belles pièces décoratives.\n- Type: Maquette d'avion\n- Longueur environ : 47 cm\n- Echelle : 1:85 eme\n- Matière : Résine monobloc\n- Socle inclus\n- Poids de la maquette: environ 1,3kg\n- Détails réalistes :Trains d'atterrissage et éclairage LED intégré du fuselage et du cockpit (s'allume ~ 20 secondes puis s'éteint automatiquement)\n- (claquement de mains/toucher)\n- Commandes tactiles et sonores\n- Interrupteur marche/arrêt sous la maquette\n- Batterie lithium rechargeable (75 mAh)\n- Temps de charge : env. 1 heure\n- Chargement USB (câble inclus)\n- État Neuf boîte d'origine packaging",
+    "price": 99,
+    "scale": "1/85",
+    "collection": "airbus",
+    "inStock": true,
+    "comingSoon": false,
+    "bestseller": false,
+    "hidden": false,
+    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/main/arhkbn-1EB4694A-E70B-4F5E-B026-067BF6AF0167.png",
+    "images": [
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/e5lct3-1EB4694A-E70B-4F5E-B026-067BF6AF0167.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/g2319l-E85C8563-D7FC-4825-90B4-6C2FBDD6176C.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/7fuwdm-8823FF71-690A-445B-89E7-0583B3EB5F79.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/5wi6qm-98002F1D-0861-45A0-808B-34FA4283160E.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/af2b3o-C2689AC9-3309-4AB5-B549-CC5FFD931416.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/bysz64-CC0A2D17-E5E8-40C2-9ABE-B6BD0093B5C9.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/5exz6w-35A25268-ABE8-4128-B3DD-B76A32DDDF3C.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/grmau-BFC38B2E-2021-40C5-91E7-73489EDE4730.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/ccc070-875A4031-BC00-4479-90FE-E85BBEE9C11C.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/18sy45-47D38024-AC1F-47E2-B7C7-3BB63947E0FB.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/6zb0mt-0ECB3A56-BA5E-4D7F-B01B-27058AD852C9.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-new-livery-af/gallery/fdtvyu-07D1163B-62B5-40EA-A4DE-9F1A0FCE2A40.png"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
       },
       {
         "label": "Batterie",
