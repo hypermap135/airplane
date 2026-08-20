@@ -162,8 +162,8 @@
   },
   "a320-neo-transavia": {
     "title": "Airbus A320 Néo Transavia",
-    "subtitle": "Livrée Transavia — A320 Néo, échelle 1/100",
-    "description": "",
+    "subtitle": "Livrée Transavia — A320 Neo, échelle 1/100",
+    "description": "Airbus A320neo aux couleurs de la compagnie Transavia . Une belle pièce de 37 cm de long, équipée de LED pour un rendu réaliste. Le système LED s'allume environ 20 secondes. Afin de garder la longévité de la batterie.\n- Type de produit : Maquette d'avion de collection\n- Modèle : Airbus A320neo\n- Compagnie aérienne : Air France\n- Dimensions : 37 cm\n- Équipement: LED intégrées du fuselage avec train d'atterrissage\n- Accessoires inclus : câble USB",
     "price": 99,
     "scale": "1/100",
     "collection": "airbus",
@@ -171,7 +171,7 @@
     "comingSoon": false,
     "bestseller": true,
     "hidden": false,
-    "image": "/images/airbus-a320-neo-transavia.webp",
+    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/main/eqxm3b-DE5E52ED-541A-4B4D-AF01-359B15ABC15A.png",
     "images": [
       "/images/uploads/products/a320-neo-transavia/gallery/78cecl-0F8CBC4E-6DD6-4F03-8E53-F88A72ACFA40.png",
       "/images/uploads/products/a320-neo-transavia/gallery/flwfc6-59AB59BD-0F04-43EE-86F9-38D2BC435CAA.png",
