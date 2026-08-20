@@ -4,6 +4,20 @@
       "email": "test@test.com",
       "source": "unknown",
       "createdAt": 1785761042994
+    },
+    {
+      "email": "aurelien.grignoux@gmail.com",
+      "source": "cart-drawer",
+      "cartValue": 99,
+      "cartItems": [
+        {
+          "variantId": "56573671244116",
+          "quantity": 1,
+          "title": "Airbus A320 Néo Transavia",
+          "price": 99
+        }
+      ],
+      "createdAt": 1787247652360
     }
   ]
 }
