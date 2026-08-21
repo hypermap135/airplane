@@ -105,9 +105,9 @@
     ]
   },
   "a320-qatar-psg": {
-    "title": "Airbus A320 Qatar PSG Livery",
-    "subtitle": "Livrée sponsor — édition Paris Saint-Germain",
-    "description": "",
+    "title": "Airbus A320 Qatar PSG Livery edition League des champions ",
+    "subtitle": "",
+    "description": "Maquette d'avion finition Premium de l'Airbus A320 Qatar livrée PSG trophée League des champions avec éclairage du fuselage version lumineuse LED haut de gamme et de qualité supérieure luxe Premium avec détails réaliste a la compagnie aérienne.\nCes magnifiques maquettes sont idéal pour les passionnés d'aviation, collectionneurs ou amateurs de belles pièces décoratives.\n- Type: Maquette d'avion\n- Longueur environ : 47 cm\n- Echelle : 1/85\n- Matière : Résine monobloc\n- Socle inclus\n- Poids de la maquette: environ 1,3kg\n- Détails réalistes :Trains d'atterrissage et éclairage LED intégré du fuselage et du cockpit (s'allume ~ 20 secondes puis s'éteint automatiquement)\n- (claquement de mains/toucher)\n- Commandes tactiles et sonores\n- Interrupteur marche/arrêt sous la maquette\n- Batterie lithium rechargeable (75 mAh)\n- lemps de charge : env. 1 heure\n- Chargement USB (câble inclus)\n- État Neuf boîte d'origine packaging",
     "price": 99,
     "scale": "1/85",
     "collection": "airbus",
@@ -117,17 +117,18 @@
     "hidden": false,
     "image": "/images/copie-airbus-a320-echelle-1-85-finition-premium.webp",
     "images": [
-      "/images/copie-airbus-a320-echelle-1-85-finition-premium.webp",
-      "/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-front.webp",
-      "/images/copie-airbus-a320-echelle-1-85-finition-premium--3quarter-rear.webp",
-      "/images/copie-airbus-a320-echelle-1-85-finition-premium--top.webp",
-      "/images/copie-airbus-a320-echelle-1-85-finition-premium--shelf.webp",
-      "/images/copie-airbus-a320-echelle-1-85-finition-premium--desk.webp",
-      "/images/uploads/products/a320-qatar-psg/gallery/3mcepa-6CD25FD8-2BE0-4CBF-857A-281837814689.png",
-      "/images/uploads/products/a320-qatar-psg/gallery/cutqfq-0068E94A-3533-416F-BEF2-018786EC27C6.png",
-      "/images/uploads/products/a320-qatar-psg/gallery/aqujhj-901347BE-5BBF-4AB0-8548-5B068ADDB451.png",
-      "/images/uploads/products/a320-qatar-psg/gallery/g99kap-FBEEA11F-6778-47F7-B276-E6A9B764DC46.png",
-      "/images/uploads/products/a320-qatar-psg/gallery/9q67hp-87BBCC7A-C675-41F5-91C6-8D8DC7F1FC2A.png"
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/f0ltbj-20CADC7D-8025-44BF-A228-4B58B2578F26.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/3l9ie9-51235292-4F2D-49EF-B988-C2E859A60606.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/g9vf5x-DC896DE0-F804-41CE-BEBB-60C696E2AC14.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/9l00i4-9C4C4676-2426-49ED-BA82-7EB496D689D8.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/cw4ioh-45E58A2F-6DFE-4708-9DB1-97B9836B389D.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/6oo4x1-28CE9CE0-7A6F-4C6A-A555-DDAC3206163D.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/acmw8n-0068E94A-3533-416F-BEF2-018786EC27C6.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/dkzz9k-901347BE-5BBF-4AB0-8548-5B068ADDB451.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/8q9n1k-F237FA85-5EBB-41BD-B799-A232FC045FC1.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/9hc62a-6F8D735B-73E3-4F51-85F8-33C7A32EAAFA.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/l99v6-6CD25FD8-2BE0-4CBF-857A-281837814689.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-qatar-psg/gallery/7lnwid-C84BA782-AFBC-4D97-A802-05B6175B4A2A.png"
     ],
     "specs": [
       {
