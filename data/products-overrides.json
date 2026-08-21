@@ -410,5 +410,59 @@
         "value": "75 mAh · USB ~1h · auto-off"
       }
     ]
+  },
+  "a321-af": {
+    "title": "Airbus A321 Air France 1:100 ",
+    "subtitle": "Version allongée — livrée Air France",
+    "description": "Maquette d'avion finition Premium l'AIRBUS A321 avec éclairage du fuselage version lumineuse LED haut de gamme et de qualité supérieure luxe Premium avec détails réaliste à la compagnie aérienne.\nCes magnifiques maquettes sont idéal pour les passionnés d'aviation, collectionneurs ou amateurs de belles pièces décoratives.\n- Type: Maquette d'avion\n- Longueur environ : 45 cm\n- Echelle : 1/100\n- Matière : Résine monobloc\n- Socle inclus\n- Poids de la maquette: environ 1,3kg\n- Détails réalistes :Trains d'atterrissage et éclairage LED intégré du fuselage et du cockpit (s'allume ~ 20 secondes puis s'éteint automatiquement)\n- (claquement de mains/toucher)\n- Commandes tactiles et sonores\n- Interrupteur marche/arrêt sous la maquette\n- Batterie lithium rechargeable (75 mAh)\n- Temps de charge : env. 1 heure\n- Chargement USB (câble inclus)\n- État Neuf boîte d'origine packaging",
+    "price": 99,
+    "scale": "1/100",
+    "collection": "airbus",
+    "inStock": false,
+    "comingSoon": true,
+    "bestseller": false,
+    "hidden": true,
+    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/main/1nvzl-A661C470-F3A0-4378-B42E-713EF8A8985E.png",
+    "images": [
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/9mfwkm-7D10A4DA-70AD-4E1F-9BB5-1E8D402A8150.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/68eizz-A661C470-F3A0-4378-B42E-713EF8A8985E.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/ddlruf-3A091AD4-8BD8-4B0A-BE80-DF318D329134.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/alk5uf-6B12A5C1-53C0-476F-8A71-7169A8D3B92F.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/9xsuc1-18622255-6CED-4D05-8DB1-41FCD91D4039.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/jdx7s-2ED0A0D4-06C6-4D6A-84BF-B63BDAE0B907.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/7itdw6-2AECC8CF-BBB8-405E-A541-301E08B4457F.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/45hjmn-0B851AF2-58F4-491C-88E1-561DFAC9855C.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a321-af/gallery/9a0w9y-F1F17BC1-931E-4B15-AC19-CE22CA314787.png"
+    ],
+    "specs": [
+      {
+        "label": "Matière",
+        "value": "Résine monobloc"
+      },
+      {
+        "label": "Longueur",
+        "value": "~47 cm"
+      },
+      {
+        "label": "Poids",
+        "value": "~1,3 kg"
+      },
+      {
+        "label": "Socle",
+        "value": "Bois massif inclus"
+      },
+      {
+        "label": "Train d'atterrissage",
+        "value": "Amovible"
+      },
+      {
+        "label": "Activation LED",
+        "value": "Tap ou clap · ~20 s"
+      },
+      {
+        "label": "Batterie",
+        "value": "75 mAh · USB ~1h · auto-off"
+      }
+    ]
   }
 }
