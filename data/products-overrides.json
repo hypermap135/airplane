@@ -316,12 +316,16 @@
     "hidden": false,
     "image": "/images/airbus-a220-air-france.webp",
     "images": [
-      "/images/airbus-a220-air-france.webp",
-      "/images/airbus-a220-air-france--3quarter-front.webp",
-      "/images/airbus-a220-air-france--3quarter-rear.webp",
-      "/images/airbus-a220-air-france--top.webp",
-      "/images/airbus-a220-air-france--shelf.webp",
-      "/images/airbus-a220-air-france--desk.webp"
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/8i10s9-BFE692F3-121A-4F90-9445-9EE3CF13574F.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/4odyuw-0A7D0A8E-FEF9-41F7-8B6A-67E8FEE91562.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/2nehqa-C01C8EFC-CCA3-45C1-B131-265BE1B50BE9.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/47w7nx-E905AE6D-0D7C-4E73-B391-B47AE1C98C24.png",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/1qz8ll-8a93acd04a1f03afcd398cf2a0a446.jpeg",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/d0q667-ca992a31c005a04e098696439ebc2d.jpeg",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/c36ff4-6857faace6d4e4bc3805cda73a2fd1.jpeg",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/f1uint-d7ce4949b0ffdab812c6468987b3c5.jpeg",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/d1zd2h-a715a36a9b2eb264fc3d39518e93bf.jpeg",
+      "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a220-af/gallery/d95qgj-1136801C-F47C-4711-B3B0-5EED7207467E.png"
     ],
     "specs": [
       {
