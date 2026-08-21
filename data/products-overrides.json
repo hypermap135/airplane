@@ -171,7 +171,7 @@
     "comingSoon": false,
     "bestseller": true,
     "hidden": false,
-    "image": "/images/airbus-a320-neo-transavia.webp",
+    "image": "https://cdn.jsdelivr.net/gh/hypermap135/airplane@main/public/images/uploads/products/a320-neo-transavia/main/25ay9u-2B7AF40C-7D84-4AD9-9FAE-601EC4ED577A.png",
     "images": [
       "/images/uploads/products/a320-neo-transavia/gallery/78cecl-0F8CBC4E-6DD6-4F03-8E53-F88A72ACFA40.png",
       "/images/uploads/products/a320-neo-transavia/gallery/flwfc6-59AB59BD-0F04-43EE-86F9-38D2BC435CAA.png",
